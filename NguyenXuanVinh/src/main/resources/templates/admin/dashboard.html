@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | NXV BlindBox</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        /* === PREMIUM ADMIN DASHBOARD === */
+
+        :root {
+            --admin-bg: #0a0e1a;
+            --sidebar-bg: #0d1117;
+            --card-bg: #161b22;
+            --hover-bg: #1c2128;
+            --border-color: #30363d;
+            --neon-cyan: #66fcf1;
+            --neon-purple: #a855f7;
+            --neon-pink: #ec4899;
+            --neon-green: #10b981;
+            --neon-yellow: #fbbf24;
+            --neon-red: #ef4444;
+        }
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--admin-bg);
+            overflow-x: hidden;
+        }
+
+        /* === ANIMATED BACKGROUND === */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(102, 252, 241, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(236, 72, 153, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .sidebar, .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === PREMIUM SIDEBAR === */
+        .sidebar {
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+            height: 100vh;
+            position: fixed;
+            width: 280px;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .sidebar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        }
+
+        .sidebar .nav-link {
+            margin: 4px 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: #8b949e;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0;
+            width: 3px; height: 100%;
+            background: var(--neon-cyan);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(102, 252, 241, 0.08);
+            color: var(--neon-cyan);
+            transform: translateX(4px);
+        }
+
+        .sidebar .nav-link.active::before {
+            transform: scaleY(1);
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* User Profile in Sidebar */
+        .sidebar-user {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: #000;
+        }
+
+        /* === MAIN CONTENT === */
+        .main-content {
+            margin-left: 280px;
+            padding: 32px;
+            min-height: 100vh;
+        }
+
+        /* === PREMIUM STATS CARDS === */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), transparent);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-color);
+        }
+
+        .stat-card.cyan { --accent-color: var(--neon-cyan); }
+        .stat-card.green { --accent-color: var(--neon-green); }
+        .stat-card.yellow { --accent-color: var(--neon-yellow); }
+        .stat-card.purple { --accent-color: var(--neon-purple); }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+            background: rgba(102, 252, 241, 0.1);
+            color: var(--accent-color);
+        }
+
+        .stat-card.cyan .stat-icon { background: rgba(102, 252, 241, 0.1); }
+        .stat-card.green .stat-icon { background: rgba(16, 185, 129, 0.1); }
+        .stat-card.yellow .stat-icon { background: rgba(251, 191, 36, 0.1); }
+        .stat-card.purple .stat-icon { background: rgba(168, 85, 247, 0.1); }
+
+        .stat-label {
+            font-size: 13px;
+            color: #8b949e;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .stat-trend {
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-trend.up { color: var(--neon-green); }
+        .stat-trend.down { color: var(--neon-red); }
+
+        /* === PREMIUM CARD === */
+        .premium-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .premium-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 8px 32px rgba(102, 252, 241, 0.1);
+        }
+
+        .card-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .card-title i {
+            font-size: 20px;
+            color: var(--neon-cyan);
+        }
+
+        /* === PREMIUM TABLE === */
+        .premium-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .premium-table thead th {
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            background: transparent;
+        }
+
+        .premium-table tbody tr {
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .premium-table tbody tr:hover {
+            background: var(--hover-bg);
+            transform: scale(1.01);
+        }
+
+        .premium-table tbody td {
+            padding: 16px;
+            color: #c9d1d9;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .premium-table tbody td:first-child {
+            border-left: 1px solid var(--border-color);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .premium-table tbody td:last-child {
+            border-right: 1px solid var(--border-color);
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Product Image */
+        .product-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        /* === PREMIUM BUTTONS === */
+        .btn-premium {
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--neon-cyan), #45a29e);
+            color: #000;
+            box-shadow: 0 4px 16px rgba(102, 252, 241, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 252, 241, 0.4);
+        }
+
+        .btn-icon-only {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #8b949e;
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon-only:hover {
+            background: var(--hover-bg);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .btn-icon-only.danger:hover {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+        }
+
+        /* === BADGES === */
+        .badge-custom {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+        }
+
+        .badge-inactive {
+            background: rgba(139, 148, 158, 0.15);
+            color: #8b949e;
+            border: 1px solid #8b949e;
+        }
+
+        /* === PREMIUM FORM === */
+        .form-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .form-label-custom {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--neon-cyan);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control-custom,
+        .form-select-custom {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom:focus,
+        .form-select-custom:focus {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 0 3px rgba(102, 252, 241, 0.1);
+            outline: none;
+        }
+
+        .form-control-custom::placeholder {
+            color: #6e7681;
+        }
+
+        /* === TOP USERS LIST === */
+        .top-user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .top-user-item:hover {
+            background: var(--hover-bg);
+            border-color: var(--neon-yellow);
+        }
+
+        .user-rank {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--neon-yellow), #f59e0b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000;
+            font-size: 14px;
+        }
+
+        .user-rank.first {
+            background: linear-gradient(135deg, #ffd700, #f59e0b);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.4);
+        }
+
+        /* === PREMIUM MODAL === */
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 20px 24px;
+        }
+
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.5;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        /* === ANIMATIONS === */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-in {
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        /* === SCROLLBAR === */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--admin-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* === LOADING ANIMATION === */
+        .skeleton {
+            background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0.02) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(255, 255, 255, 0.02) 100%
+            );
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar d-flex flex-column">
+    <div class="sidebar-brand">
+        <i class="fas fa-crown"></i> NXV ADMIN
+    </div>
+
+    <ul class="nav flex-column mb-auto" style="padding: 12px 0;">
+        <li class="nav-item">
+            <a href="/admin" class="nav-link active">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/orders" class="nav-link">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Đơn Hàng</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/inventory" class="nav-link">
+                <i class="fas fa-warehouse"></i>
+                <span>Kho & Cảnh Báo</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/categories" class="nav-link">
+                <i class="fas fa-layer-group"></i>
+                <span>Danh Mục</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/banners" class="nav-link">
+                <i class="fas fa-images"></i>
+                <span>Banner / Slider</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/news" class="nav-link">
+                <i class="fas fa-newspaper"></i>
+                <span>Tin Tức</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/feedbacks" class="nav-link">
+                <i class="fas fa-comment-dots"></i>
+                <span>Phản Hồi</span>
+            </a>
+        </li>
+        <li class="nav-item" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+            <a href="/" class="nav-link" style="color: var(--neon-cyan);">
+                <i class="fas fa-arrow-left"></i>
+                <span>Về Trang Web</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-user">
+        <div class="d-flex align-items-center mb-3">
+            <div class="avatar-circle me-3" th:text="${#strings.substring(nxvUser.username,0,1).toUpperCase()}">A</div>
+            <div style="flex: 1;">
+                <div class="fw-bold text-light" style="font-size: 14px;" th:text="${nxvUser.fullName}">Admin</div>
+                <div class="small" style="color: #8b949e;">Super Admin</div>
+            </div>
+        </div>
+        <a href="/logout" class="btn btn-sm w-100" style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 8px; font-weight: 600;">
+            <i class="fas fa-sign-out-alt me-2"></i> Đăng Xuất
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 style="color: #fff; font-weight: 800; font-size: 28px; margin-bottom: 4px;">Dashboard</h2>
+            <p style="color: #8b949e; margin: 0; font-size: 14px;">Chào mừng quay trở lại, <span th:text="${nxvUser.fullName}">Admin</span>!</p>
+        </div>
+        <div style="color: #8b949e; font-size: 14px;">
+            <i class="far fa-clock me-2"></i>
+            <span id="currentTime"></span>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid animate__animated animate__fadeInUp">
+        <div class="stat-card cyan">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-label">Tổng Thành Viên</div>
+            <div class="stat-value" th:text="${stats.totalUsers}">0</div>
+            <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>12% tháng này</span>
+            </div>
+        </div>
+
+        <div class="stat-card green">
+            <div class="stat-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div class="stat-label">Tổng Tiền Nạp</div>
+            <div class="stat-value" th:text="${#numbers.formatDecimal(stats.totalDeposit, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+            <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>8% tháng này</span>
+            </div>
+        </div>
+
+        <div class="stat-card yellow">
+            <div class="stat-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-label">Doanh Thu Thực</div>
+            <div class="stat-value" th:text="${#numbers.formatDecimal(stats.totalSpent, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+            <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>15% tháng này</span>
+            </div>
+        </div>
+
+        <div class="stat-card purple">
+            <div class="stat-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="stat-label">Tổng Hộp Mù</div>
+            <div class="stat-value" th:text="${boxes.size()}">0</div>
+            <div class="stat-trend up">
+                <i class="fas fa-arrow-up"></i>
+                <span>5 hộp mới</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="row g-4">
+        <!-- Left Column: Products Table -->
+        <div class="col-lg-8">
+            <div class="premium-card animate__animated animate__fadeInUp">
+                <div class="card-header-custom">
+                    <h5 class="card-title">
+                        <i class="fas fa-box-open"></i>
+                        Quản Lý Hộp Mù
+                    </h5>
+                    <button class="btn btn-premium btn-primary-custom" onclick="openModal()">
+                        <i class="fas fa-plus"></i>
+                        <span>Thêm Hộp Mới</span>
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="premium-table">
+                        <thead>
+                        <tr>
+                            <th>SẢN PHẨM</th>
+                            <th>DANH MỤC</th>
+                            <th>GIÁ</th>
+                            <th>TRẠNG THÁI</th>
+                            <th>THAO TÁC</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="box : ${boxes}" class="animate-in">
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img th:src="${box.imageUrl}" class="product-img">
+                                    <div>
+                                        <div class="fw-bold" style="color: #fff; font-size: 14px;" th:text="${box.boxName}">Box Name</div>
+                                        <div style="color: #8b949e; font-size: 12px;">ID: <span th:text="${box.boxId}">1</span></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                    <span style="color: var(--neon-cyan); font-weight: 500; font-size: 13px;"
+                                          th:text="${box.nxvCategory != null ? box.nxvCategory.categoryName : 'Chưa phân loại'}">
+                                        Category
+                                    </span>
+                            </td>
+                            <td>
+                                    <span class="fw-bold" style="color: var(--neon-yellow); font-size: 15px;"
+                                          th:text="${#numbers.formatDecimal(box.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                        0 đ
+                                    </span>
+                            </td>
+                            <td>
+                                    <span th:if="${box.isActive}" class="badge-custom badge-active">
+                                        <i class="fas fa-check-circle me-1"></i> Active
+                                    </span>
+                                <span th:unless="${box.isActive}" class="badge-custom badge-inactive">
+                                        <i class="fas fa-times-circle me-1"></i> Inactive
+                                    </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button class="btn-icon-only" title="Chỉnh sửa"
+                                            th:onclick="openModal([[${box.boxId}]], [[${box.boxName}]], [[${box.price}]], [[${box.description}]], [[${box.imageUrl}]], [[${box.nxvCategory != null ? box.nxvCategory.id : ''}]], [[${box.isActive}]])">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <a th:href="@{/admin/delete-box/{id}(id=${box.boxId})}"
+                                       class="btn-icon-only danger"
+                                       title="Xóa"
+                                       onclick="return confirm('Bạn có chắc muốn xóa hộp này?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Tools & Top Users -->
+        <div class="col-lg-4">
+
+            <!-- Add Money Form -->
+            <div class="premium-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                <div class="card-header-custom">
+                    <h5 class="card-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Bơm Tiền User
+                    </h5>
+                </div>
+                <form action="/admin/add-money" method="post">
+                    <div class="mb-3">
+                        <label class="form-label-custom">Chọn User</label>
+                        <select name="userId" class="form-select-custom form-select" required>
+                            <option value="" disabled selected>-- Chọn User --</option>
+                            <option th:each="u : ${users}"
+                                    th:value="${u.userId}"
+                                    th:text="${u.username} + ' (' + ${u.fullName} + ')'">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-custom">Số Tiền (VNĐ)</label>
+                        <input type="number"
+                               name="amount"
+                               class="form-control-custom form-control"
+                               placeholder="Nhập số tiền..."
+                               required>
+                    </div>
+                    <button type="submit" class="btn btn-premium btn-primary-custom w-100">
+                        <i class="fas fa-bolt"></i>
+                        <span>Nạp Ngay</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Top Users -->
+            <div class="premium-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="card-header-custom">
+                    <h5 class="card-title">
+                        <i class="fas fa-crown"></i>
+                        Top Đại Gia
+                    </h5>
+                </div>
+                <div>
+                    <div class="top-user-item" th:each="top, iter : ${topUsers}">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="user-rank" th:classappend="${iter.index == 0} ? 'first'">
+                                <span th:text="${iter.count}">1</span>
+                            </div>
+                            <div>
+                                <div class="fw-bold" style="color: #fff; font-size: 14px;" th:text="${top.user.username}">User</div>
+                                <div style="color: #8b949e; font-size: 12px;" th:text="${top.user.fullName}">Name</div>
+                            </div>
+                        </div>
+                        <div class="fw-bold" style="color: var(--neon-yellow); font-size: 14px;">
+                            <span th:text="${#numbers.formatDecimal(top.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Premium Modal -->
+<div class="modal fade" id="productModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="/admin/save-box" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">
+                        <i class="fas fa-box-open"></i>
+                        <span>THÊM HỘP MỚI</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="boxId" name="boxId">
+
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label-custom">Tên Hộp</label>
+                            <input type="text"
+                                   class="form-control-custom form-control"
+                                   id="boxName"
+                                   name="boxName"
+                                   placeholder="VD: Hộp Bí Mật Plushie"
+                                   required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Giá Tiền (VNĐ)</label>
+                            <input type="number"
+                                   class="form-control-custom form-control"
+                                   id="price"
+                                   name="price"
+                                   placeholder="150000"
+                                   required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Danh Mục</label>
+                            <select class="form-select-custom form-select" id="boxCategory" name="nxvCategory.id">
+                                <option value="" disabled selected>-- Chọn Danh Mục --</option>
+                                <option th:each="cat : ${listCategories}"
+                                        th:value="${cat.id}"
+                                        th:text="${cat.categoryName}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Trạng Thái</label>
+                            <select class="form-select-custom form-select" id="isActive" name="isActive">
+                                <option value="true">Đang Bán</option>
+                                <option value="false">Ngừng Bán</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label-custom">Link Ảnh (URL)</label>
+                            <input type="text"
+                                   class="form-control-custom form-control"
+                                   id="imageUrl"
+                                   name="imageUrl"
+                                   placeholder="https://example.com/images/box.jpg">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label-custom">Mô Tả</label>
+                            <textarea class="form-control-custom form-control"
+                                      id="description"
+                                      name="description"
+                                      rows="4"
+                                      placeholder="Mô tả chi tiết về hộp mù..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-premium"
+                            style="background: rgba(139, 148, 158, 0.1); border: 1px solid var(--border-color); color: #8b949e;"
+                            data-bs-dismiss="modal">
+                        Đóng
+                    </button>
+                    <button type="submit" class="btn btn-premium btn-primary-custom">
+                        <i class="fas fa-save"></i>
+                        <span>Lưu Dữ Liệu</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        document.getElementById('currentTime').textContent = now.toLocaleDateString('vi-VN', options);
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+
+    // Modal handling
+    function openModal(id = '', name = '', price = '', desc = '', img = '', catId = '', isActive = true) {
+        document.getElementById('boxId').value = id;
+        document.getElementById('boxName').value = name;
+        document.getElementById('price').value = price;
+        document.getElementById('description').value = desc;
+        document.getElementById('imageUrl').value = img;
+
+        const catSelect = document.getElementById('boxCategory');
+        catSelect.value = catId;
+
+        const statusSelect = document.getElementById('isActive');
+        statusSelect.value = isActive.toString();
+
+        const modalTitle = document.getElementById('modalTitle');
+        if (id) {
+            modalTitle.innerHTML = '<i class="fas fa-edit"></i><span>CẬP NHẬT HỘP MÙ</span>';
+        } else {
+            modalTitle.innerHTML = '<i class="fas fa-plus"></i><span>THÊM HỘP MỚI</span>';
+        }
+
+        new bootstrap.Modal(document.getElementById('productModal')).show();
+    }
+
+    // Add animation on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate__fadeInUp');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.premium-card, .stat-card').forEach((el) => {
+        observer.observe(el);
+    });
+</script>
+
+</body>
+</html>

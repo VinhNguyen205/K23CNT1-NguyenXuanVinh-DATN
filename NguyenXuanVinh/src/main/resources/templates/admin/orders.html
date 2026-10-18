@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản Lý Vận Đơn | NXV Admin Premium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        /* ========== GLOBAL COLOR RESET - PREVENT WHITE TEXT ========== */
+
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Force no white/light text in table */
+        .table-custom tbody td,
+        .table-custom tbody td div,
+        .table-custom tbody td span,
+        .table-custom tbody td p {
+            color: initial;
+        }
+
+        /* Override any Bootstrap text utilities */
+        .table tbody .text-light {
+            color: #b8c5d6 !important;
+        }
+
+        .table tbody .text-white {
+            color: #e0e0e0 !important;
+        }
+
+        /* ========== PREMIUM ADMIN ORDERS PAGE ========== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #c5c6c7;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(102, 252, 241, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulse-bg 10s ease-in-out infinite;
+        }
+
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* ========== PREMIUM SIDEBAR ========== */
+        .sidebar {
+            min-height: 100vh;
+            width: 280px;
+            background: linear-gradient(180deg, #0f1419 0%, #050608 100%);
+            border-right: 2px solid rgba(102, 252, 241, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-brand {
+            padding: 32px 24px;
+            text-align: center;
+            border-bottom: 2px solid rgba(102, 252, 241, 0.2);
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.05), transparent);
+            position: relative;
+        }
+
+        .sidebar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #66fcf1, transparent);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .sidebar-brand h4 {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #66fcf1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            letter-spacing: 2px;
+        }
+
+        .sidebar-brand h4 i {
+            background: linear-gradient(135deg, #66fcf1, #45a29e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 12px;
+            font-size: 32px;
+        }
+
+        /* Nav Links Premium */
+        .nav-link {
+            padding: 14px 20px;
+            margin: 6px 12px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            color: #8b949e !important;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-link:hover::before {
+            opacity: 1;
+        }
+
+        .nav-link:hover {
+            color: #66fcf1 !important;
+            transform: translateX(8px);
+            background: rgba(102, 252, 241, 0.05);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.15), rgba(168, 85, 247, 0.1)) !important;
+            color: #66fcf1 !important;
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+        }
+
+        .nav-link i {
+            width: 24px;
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            background: transparent;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Page Header Premium */
+        .page-header {
+            background: linear-gradient(135deg, rgba(15, 20, 35, 0.8), rgba(26, 31, 58, 0.6));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(102, 252, 241, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #66fcf1, #a855f7, transparent);
+            animation: shimmer 4s linear infinite;
+        }
+
+        .page-header h2 {
+            font-size: 32px;
+            font-weight: 900;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .page-header h2 i {
+            font-size: 36px;
+            background: linear-gradient(135deg, #66fcf1, #45a29e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Search Bar Premium */
+        .search-bar-wrapper {
+            background: rgba(15, 20, 35, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            background: rgba(31, 40, 51, 0.8);
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px 16px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .search-input:focus {
+            background: rgba(31, 40, 51, 1);
+            color: #fff;
+            border-color: #66fcf1;
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.3);
+            outline: none;
+        }
+
+        .search-input option {
+            background: #1f2833;
+            color: #fff;
+        }
+
+        ::placeholder {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #66fcf1, #45a29e);
+            border: none;
+            color: #000;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-search:hover {
+            background: linear-gradient(135deg, #45a29e, #66fcf1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 252, 241, 0.4);
+        }
+
+        .btn-refresh {
+            background: rgba(108, 117, 125, 0.2);
+            border: 2px solid #6c757d;
+            color: #6c757d;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh:hover {
+            background: rgba(108, 117, 125, 0.3);
+            border-color: #adb5bd;
+            color: #adb5bd;
+            transform: rotate(180deg);
+        }
+
+        /* ========== PREMIUM TABLE ========== */
+        .table-container {
+            background: linear-gradient(135deg, rgba(15, 20, 35, 0.6), rgba(26, 31, 58, 0.4));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(102, 252, 241, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .table-custom {
+            color: #e0e0e0;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            width: 100%;
+            margin: 0;
+        }
+
+        .table-custom thead th {
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.1), rgba(168, 85, 247, 0.05));
+            color: #66fcf1;
+            border: none;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            padding: 16px;
+            position: relative;
+        }
+
+        .table-custom thead th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #66fcf1, transparent);
+        }
+
+        .table-custom tbody tr {
+            background: linear-gradient(135deg, rgba(31, 40, 51, 0.8), rgba(26, 31, 58, 0.6));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 252, 241, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .table-custom tbody tr::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #66fcf1, #a855f7);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .table-custom tbody tr:hover::before {
+            opacity: 1;
+        }
+
+        .table-custom tbody tr:hover {
+            transform: translateY(-4px) scale(1.01);
+            background: linear-gradient(135deg, rgba(31, 40, 51, 1), rgba(26, 31, 58, 0.8));
+            border-color: rgba(102, 252, 241, 0.3);
+            box-shadow: 0 8px 32px rgba(102, 252, 241, 0.2);
+        }
+
+        .table-custom td {
+            border: none;
+            vertical-align: middle;
+            padding: 20px 16px;
+            font-size: 14px;
+        }
+
+        .table-custom td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        .table-custom td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        /* Order ID Badge */
+        .order-id {
+            font-size: 20px;
+            font-weight: 900;
+            color: #66fcf1;
+            text-shadow: 0 0 10px rgba(102, 252, 241, 0.5);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ========== STATUS BADGES PREMIUM ========== */
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 130px;
+            justify-content: center;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-badge::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .status-badge:hover::before {
+            opacity: 1;
+        }
+
+        .st-pending {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.05));
+            color: #ffc107;
+            border: 2px solid rgba(255, 193, 7, 0.5);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.2);
+            animation: pulse-pending 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-pending {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 193, 7, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 193, 7, 0.4);
+            }
+        }
+
+        .st-shipping {
+            background: linear-gradient(135deg, rgba(13, 202, 240, 0.15), rgba(13, 202, 240, 0.05));
+            color: #0dcaf0;
+            border: 2px solid rgba(13, 202, 240, 0.5);
+            box-shadow: 0 0 20px rgba(13, 202, 240, 0.2);
+            animation: pulse-shipping 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-shipping {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(13, 202, 240, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(13, 202, 240, 0.4);
+            }
+        }
+
+        .st-delivered {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05));
+            color: #2ecc71;
+            border: 2px solid rgba(46, 204, 113, 0.5);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.2);
+        }
+
+        .st-cancelled {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.15), rgba(255, 71, 87, 0.05));
+            color: #ff4757;
+            border: 2px solid rgba(255, 71, 87, 0.5);
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.2);
+        }
+
+        /* ========== ACTION BUTTONS PREMIUM ========== */
+        .btn-action {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-left: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-action::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .btn-action:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        .btn-action i {
+            font-size: 16px;
+        }
+
+        /* View Button */
+        .btn-view {
+            background: rgba(108, 117, 125, 0.2);
+            border-color: rgba(108, 117, 125, 0.3);
+            color: #adb5bd;
+        }
+
+        .btn-view:hover {
+            background: rgba(108, 117, 125, 0.3);
+            border-color: #adb5bd;
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+            color: #fff;
+        }
+
+        /* Approve Button */
+        .btn-approve {
+            background: rgba(13, 202, 240, 0.2);
+            border-color: rgba(13, 202, 240, 0.3);
+            color: #0dcaf0;
+        }
+
+        .btn-approve:hover {
+            background: rgba(13, 202, 240, 0.3);
+            border-color: #0dcaf0;
+            box-shadow: 0 6px 20px rgba(13, 202, 240, 0.4);
+            color: #fff;
+        }
+
+        /* Cancel Button */
+        .btn-cancel {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 71, 87, 0.3);
+            border-color: #ff4757;
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+            color: #fff;
+        }
+
+        /* Complete Button */
+        .btn-complete {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+
+        .btn-complete:hover {
+            background: rgba(46, 204, 113, 0.3);
+            border-color: #2ecc71;
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+            color: #fff;
+        }
+
+        /* ========== UNIVERSAL COLOR OVERRIDES - MAXIMUM PRIORITY ========== */
+
+        /* Force all spans and divs inside table to not be white */
+        .table-custom tbody td * {
+            color: inherit !important;
+        }
+
+        .table-custom tbody td span {
+            color: inherit !important;
+        }
+
+        /* Remove any white or light colors from Bootstrap */
+        .table-custom .text-light,
+        .table-custom .text-white {
+            color: #b8c5d6 !important;
+        }
+
+        /* ========== INFO CELLS ========== */
+        .receiver-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: #66fcf1 !important;
+            margin-bottom: 6px;
+            text-shadow: 0 0 10px rgba(102, 252, 241, 0.3);
+        }
+
+        .phone-number {
+            font-size: 13px;
+            color: #a0b3c9 !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .phone-number * {
+            color: #a0b3c9 !important;
+        }
+
+        .phone-number i {
+            color: #66fcf1 !important;
+        }
+
+        .phone-number span {
+            color: #a0b3c9 !important;
+        }
+
+        .address-info {
+            color: #b8c5d6 !important;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            line-height: 1.5;
+        }
+
+        .address-info * {
+            color: #b8c5d6 !important;
+        }
+
+        .address-info i {
+            margin-top: 2px;
+            color: #ff6b6b !important;
+        }
+
+        .address-info span {
+            color: #b8c5d6 !important;
+        }
+
+        .note-info {
+            font-size: 13px;
+            color: #ffa726 !important;
+            font-style: italic;
+            font-weight: 600;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(255, 167, 38, 0.12), rgba(255, 152, 0, 0.08)) !important;
+            border-left: 4px solid #ffa726;
+            border-radius: 10px;
+            line-height: 1.6;
+            box-shadow: 0 2px 8px rgba(255, 167, 38, 0.15);
+        }
+
+        .note-info * {
+            color: #ffa726 !important;
+            font-weight: 600 !important;
+        }
+
+        .note-info i {
+            margin-top: 3px;
+            color: #ffb74d !important;
+            font-size: 14px;
+            filter: drop-shadow(0 0 6px rgba(255, 167, 38, 0.5));
+        }
+
+        .note-info span {
+            color: #ffa726 !important;
+            font-weight: 600 !important;
+        }
+
+        /* Extra specificity to override Bootstrap */
+        .table-custom .note-info,
+        .table-custom .note-info span,
+        .table-custom .note-info *,
+        td .note-info span,
+        tbody tr td .note-info span {
+            color: #ffa726 !important;
+            font-weight: 600 !important;
+        }
+
+        .table-custom .address-info span,
+        td .address-info span {
+            color: #b8c5d6 !important;
+        }
+
+        .table-custom .phone-number span,
+        td .phone-number span {
+            color: #a0b3c9 !important;
+        }
+
+        .date-info {
+            color: #8b949e;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .date-info i {
+            color: #66fcf1;
+            opacity: 0.6;
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, rgba(15, 20, 35, 0.4), rgba(26, 31, 58, 0.2));
+            border-radius: 16px;
+            border: 2px dashed rgba(139, 148, 158, 0.2);
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            color: #6c757d;
+            opacity: 0.3;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .empty-text {
+            font-size: 18px;
+            color: #8b949e;
+        }
+
+        /* ========== MODAL PREMIUM ========== */
+        .modal-content {
+            background: linear-gradient(135deg, #1f2833, #0f1419);
+            color: #fff;
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+        }
+
+        .modal-header {
+            border-bottom: 2px solid rgba(102, 252, 241, 0.2);
+            padding: 24px;
+        }
+
+        .modal-title {
+            font-weight: 800;
+            font-size: 20px;
+            color: #66fcf1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .modal-footer {
+            border-top: 2px solid rgba(102, 252, 241, 0.2);
+            padding: 20px 24px;
+        }
+
+        /* ========== LOGOUT BUTTON ========== */
+        .btn-logout {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(220, 53, 69, 0.1));
+            border: 2px solid rgba(255, 71, 87, 0.5);
+            color: #ff4757;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.3), rgba(220, 53, 69, 0.2));
+            border-color: #ff4757;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+        }
+
+        /* ========== DEBUG: TEMPORARY TEST COLORS ========== */
+        /* Uncomment below to test if CSS is loading properly */
+        /*
+        .note-info, .note-info * {
+            background: red !important;
+            color: yellow !important;
+        }
+        */
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 260px;
+            }
+
+            .main-content {
+                margin-left: 260px;
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .page-header h2 {
+                font-size: 24px;
+            }
+
+            .search-bar-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 20px;
+            }
+
+            .table-custom {
+                font-size: 12px;
+            }
+
+            .table-custom td {
+                padding: 12px 8px;
+            }
+
+            .btn-action {
+                width: 36px;
+                height: 36px;
+            }
+
+            .status-badge {
+                min-width: 100px;
+                font-size: 10px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        /* Stagger animation for table rows */
+        .table-custom tbody tr {
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        .table-custom tbody tr:nth-child(1) { animation-delay: 0.05s; }
+        .table-custom tbody tr:nth-child(2) { animation-delay: 0.1s; }
+        .table-custom tbody tr:nth-child(3) { animation-delay: 0.15s; }
+        .table-custom tbody tr:nth-child(4) { animation-delay: 0.2s; }
+        .table-custom tbody tr:nth-child(5) { animation-delay: 0.25s; }
+        .table-custom tbody tr:nth-child(n+6) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+
+<!-- Premium Sidebar -->
+<div class="sidebar d-flex flex-column">
+    <div class="sidebar-brand">
+        <h4 class="m-0">
+            <i class="fas fa-gamepad"></i>
+            NXV ADMIN
+        </h4>
+    </div>
+
+    <ul class="nav flex-column mb-auto p-3">
+        <li class="nav-item mb-2">
+            <a href="/admin" class="nav-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="/admin/orders" class="nav-link active">
+                <i class="fas fa-truck"></i> Vận Đơn (Ship)
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="/admin/inventory" class="nav-link">
+                <i class="fas fa-warehouse"></i> Kho & Cảnh Báo
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="/admin/categories" class="nav-link">
+                <i class="fas fa-list"></i> Danh Mục
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="/admin/news" class="nav-link">
+                <i class="fas fa-newspaper"></i> Tin Tức
+            </a>
+        </li>
+        <li class="nav-item mt-5 pt-3 border-top" style="border-color: rgba(102, 252, 241, 0.2) !important;">
+            <a href="/" class="nav-link" style="color: #ffd700 !important;">
+                <i class="fas fa-home"></i> Về Website
+            </a>
+        </li>
+    </ul>
+
+    <div class="p-3">
+        <a href="/logout" class="btn btn-logout w-100">
+            <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header animate__animated animate__fadeInDown">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2>
+                    <i class="fas fa-shipping-fast"></i>
+                    QUẢN LÝ VẬN ĐƠN
+                </h2>
+                <p class="text-muted small m-0 mt-2">Duyệt và xử lý các yêu cầu giao hàng từ khách</p>
+            </div>
+
+            <!-- Search Bar -->
+            <form action="/admin/orders" method="get" class="search-bar-wrapper">
+                <select name="status" class="form-select search-input" style="width: 160px;">
+                    <option value="" th:selected="${currentStatus == null || currentStatus == ''}">-- Trạng thái --</option>
+                    <option value="PENDING" th:selected="${currentStatus == 'PENDING'}">⏳ Chờ Duyệt</option>
+                    <option value="SHIPPING" th:selected="${currentStatus == 'SHIPPING'}">🚚 Đang Giao</option>
+                    <option value="DELIVERED" th:selected="${currentStatus == 'DELIVERED'}">✅ Hoàn Thành</option>
+                    <option value="CANCELLED" th:selected="${currentStatus == 'CANCELLED'}">❌ Đã Hủy</option>
+                </select>
+                <input type="text" name="keyword" class="form-control search-input"
+                       th:value="${currentKeyword}" placeholder="Nhập tên khách / SĐT..." style="width: 240px;">
+                <button type="submit" class="btn btn-search">
+                    <i class="fas fa-search"></i> Tìm
+                </button>
+                <a href="/admin/orders" class="btn btn-refresh" title="Làm mới">
+                    <i class="fas fa-sync"></i>
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+        <div class="table-responsive">
+            <table class="table table-custom align-middle">
+                <thead>
+                <tr>
+                    <th scope="col" class="text-center" style="width: 100px;">Mã VĐ</th>
+                    <th scope="col">Người Nhận</th>
+                    <th scope="col" style="width: 35%;">Địa Chỉ & Ghi Chú</th>
+                    <th scope="col">Ngày Yêu Cầu</th>
+                    <th scope="col" class="text-center">Trạng Thái</th>
+                    <th scope="col" class="text-end">Thao Tác</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="ship : ${listOrders}">
+
+                    <td class="text-center">
+                        <div class="order-id">#<span th:text="${ship.shipmentId}">101</span></div>
+                    </td>
+
+                    <td>
+                        <div class="receiver-name" th:text="${ship.receiverName}">Nguyen Van A</div>
+                        <div class="phone-number">
+                            <i class="fas fa-phone-alt"></i>
+                            <span th:text="${ship.phoneNumber}" style="color: #a0b3c9 !important;">098...</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="address-info">
+                            <i class="fas fa-map-marker-alt text-danger"></i>
+                            <span th:text="${ship.address}" style="color: #b8c5d6 !important;">Hà Nội</span>
+                        </div>
+                        <div class="note-info" th:if="${ship.note != null and !ship.note.isEmpty()}">
+                            <i class="fas fa-sticky-note"></i>
+                            <span th:text="${ship.note}" style="color: #ffa726 !important; font-weight: 600;"></span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="date-info">
+                            <i class="far fa-clock"></i>
+                            <span th:text="${#temporals.format(ship.requestDate, 'dd/MM/yyyy HH:mm')}"></span>
+                        </div>
+                    </td>
+
+                    <td class="text-center">
+                        <span th:if="${ship.shipmentStatus == 'PENDING'}" class="status-badge st-pending">
+                            <i class="fas fa-hourglass-half"></i> Chờ Duyệt
+                        </span>
+                        <span th:if="${ship.shipmentStatus == 'SHIPPING'}" class="status-badge st-shipping">
+                            <i class="fas fa-truck"></i> Đang Giao
+                        </span>
+                        <span th:if="${ship.shipmentStatus == 'DELIVERED'}" class="status-badge st-delivered">
+                            <i class="fas fa-check-circle"></i> Đã Giao
+                        </span>
+                        <span th:if="${ship.shipmentStatus == 'CANCELLED'}" class="status-badge st-cancelled">
+                            <i class="fas fa-ban"></i> Đã Hủy
+                        </span>
+                    </td>
+
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end">
+
+                            <button class="btn btn-action btn-view" title="Xem chi tiết"
+                                    th:onclick="'viewDetail(' + ${ship.shipmentId} + ')'">
+                                <i class="fas fa-eye"></i>
+                            </button>
+
+                            <th:block th:if="${ship.shipmentStatus == 'PENDING'}">
+                                <button class="btn btn-action btn-approve" title="Duyệt & Gửi Hàng"
+                                        th:onclick="'updateStatus(' + ${ship.shipmentId} + ', \'SHIPPING\')'">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                                <button class="btn btn-action btn-cancel" title="Hủy Yêu Cầu"
+                                        th:onclick="'updateStatus(' + ${ship.shipmentId} + ', \'CANCELLED\')'">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </th:block>
+
+                            <th:block th:if="${ship.shipmentStatus == 'SHIPPING'}">
+                                <button class="btn btn-action btn-complete" title="Xác nhận đã giao"
+                                        th:onclick="'updateStatus(' + ${ship.shipmentId} + ', \'DELIVERED\')'">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </th:block>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${listOrders == null or listOrders.isEmpty()}">
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <p class="empty-text">Chưa có yêu cầu vận chuyển nào.</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Premium -->
+<div class="modal fade" id="orderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-info-circle"></i>
+                    Chi Tiết Vận Đơn #<span id="modalOrderId"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="spinner-border text-info" role="status" id="loadingSpinner" style="display: none;"></div>
+                <div id="modalContent">
+                    <p class="text-muted">
+                        <i class="fas fa-tools"></i> Tính năng xem danh sách vật phẩm đang cập nhật...
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Enhanced SweetAlert2 for status updates
+    function updateStatus(shipmentId, newStatus) {
+        let title, text, icon, btnColor, confirmBtn;
+
+        if (newStatus === 'SHIPPING') {
+            title = '🚀 Duyệt & Gửi Hàng?';
+            text = 'Yêu cầu sẽ chuyển sang trạng thái ĐANG GIAO.';
+            icon = 'info';
+            btnColor = '#0dcaf0';
+            confirmBtn = 'Gửi Ngay';
+        } else if (newStatus === 'DELIVERED') {
+            title = '✅ Xác Nhận Hoàn Thành?';
+            text = 'Xác nhận khách đã nhận được hàng.';
+            icon: 'success';
+            btnColor = '#2ecc71';
+            confirmBtn = 'Hoàn Thành';
+        } else if (newStatus === 'CANCELLED') {
+            title = '❌ Hủy Yêu Cầu?';
+            text = 'Hủy vận đơn này? Hành động không thể hoàn tác!';
+            icon = 'warning';
+            btnColor = '#ff4757';
+            confirmBtn = 'Hủy Bỏ';
+        }
+
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonText: confirmBtn,
+            cancelButtonText: 'Quay lại',
+            confirmButtonColor: btnColor,
+            cancelButtonColor: '#333',
+            background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+            color: '#fff',
+            focusCancel: true,
+            customClass: {
+                popup: 'animate__animated animate__zoomIn'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Đang xử lý...',
+                    text: 'Vui lòng đợi trong giây lát',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+                    color: '#fff',
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Call API
+                fetch('/admin/orders/update-status', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `id=${shipmentId}&status=${newStatus}`
+                })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            title: '🎉 Thành công!',
+                            text: 'Trạng thái đã được cập nhật.',
+                            icon: 'success',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+                            color: '#fff',
+                            customClass: {
+                                popup: 'animate__animated animate__bounceIn'
+                            }
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire({
+                            title: 'Lỗi',
+                            text: 'Không thể cập nhật trạng thái.',
+                            icon: 'error',
+                            background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+                            color: '#fff',
+                            confirmButtonColor: '#ff4757'
+                        });
+                    }
+                })
+                .catch(err => {
+                    Swal.fire({
+                        title: 'Lỗi mạng',
+                        text: 'Không thể kết nối đến máy chủ.',
+                        icon: 'error',
+                        background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+                        color: '#fff',
+                        confirmButtonColor: '#ff4757'
+                    });
+                });
+            }
+        });
+    }
+
+    function viewDetail(id) {
+        document.getElementById('modalOrderId').innerText = id;
+        new bootstrap.Modal(document.getElementById('orderModal')).show();
+    }
+
+    // Scroll reveal animation
+    document.addEventListener('DOMContentLoaded', function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate__fadeInUp');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.table-custom tbody tr').forEach((el) => {
+            observer.observe(el);
+        });
+    });
+</script>
+
+</body>
+</html>

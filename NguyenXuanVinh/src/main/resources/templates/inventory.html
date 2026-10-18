@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kho Đồ Của Tôi | Mystery Box</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        /* ========== COMPLETE PREMIUM INVENTORY STYLES ========== */
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(102, 252, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(46, 204, 113, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulse-bg 10s ease-in-out infinite;
+        }
+
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========== PREMIUM HEADER ========== */
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0 50px 0;
+            padding: 32px 40px;
+            background: rgba(15, 20, 35, 0.8);
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            border-radius: 24px;
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inventory-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: linear-gradient(90deg, transparent, #66fcf1, #2ecc71, #ffd700, transparent);
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .inventory-title {
+            font-size: 38px;
+            font-weight: 900;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            text-shadow: 0 0 30px rgba(102, 252, 241, 0.5);
+        }
+
+        .inventory-title i {
+            font-size: 44px;
+            background: linear-gradient(135deg, #66fcf1, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* Action Buttons Group */
+        .btn-action-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-history {
+            padding: 16px 32px;
+            background: rgba(102, 252, 241, 0.1);
+            border: 2px solid #66fcf1;
+            color: #66fcf1;
+            border-radius: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-history::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-history:hover::before {
+            opacity: 1;
+        }
+
+        .btn-history:hover {
+            background: rgba(102, 252, 241, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(102, 252, 241, 0.4);
+            color: #fff;
+        }
+
+        .btn-ship-request {
+            padding: 16px 36px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 50%, #16a085 100%);
+            border: none;
+            color: #fff;
+            border-radius: 14px;
+            font-weight: 900;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ship-request::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .btn-ship-request:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-ship-request:hover {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 50%, #1abc9c 100%);
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(46, 204, 113, 0.7);
+            color: #fff;
+        }
+
+        /* ========== STATS BAR WITH PREMIUM EFFECTS ========== */
+        .inventory-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(15, 20, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(102, 252, 241, 0.2);
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, var(--accent-color-alpha), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover::after {
+            opacity: 0.15;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--accent-color);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 30px var(--accent-color-alpha);
+        }
+
+        .stat-card.cyan {
+            --accent-color: #66fcf1;
+            --accent-color-alpha: rgba(102, 252, 241, 0.3);
+        }
+        .stat-card.gold {
+            --accent-color: #ffd700;
+            --accent-color-alpha: rgba(255, 215, 0, 0.3);
+        }
+        .stat-card.purple {
+            --accent-color: #a855f7;
+            --accent-color-alpha: rgba(168, 85, 247, 0.3);
+        }
+        .stat-card.green {
+            --accent-color: #2ecc71;
+            --accent-color-alpha: rgba(46, 204, 113, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 42px;
+            margin-bottom: 14px;
+            color: var(--accent-color);
+            filter: drop-shadow(0 0 10px var(--accent-color));
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.15) rotateY(180deg);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover .stat-value {
+            color: var(--accent-color);
+            text-shadow: 0 0 30px var(--accent-color);
+        }
+
+        /* Auto-update stats animation */
+        .stat-updating {
+            animation: stat-pulse 0.6s ease;
+        }
+
+        @keyframes stat-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); color: var(--accent-color); }
+        }
+
+        /* ========== FILTER BAR ========== */
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding: 20px 28px;
+            background: rgba(15, 20, 35, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            border-radius: 16px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .rank-filters {
+            display: flex;
+            gap: 12px;
+        }
+
+        .rank-filter-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #8b949e;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .rank-filter-btn:hover,
+        .rank-filter-btn.active {
+            border-color: #66fcf1;
+            color: #66fcf1;
+            background: rgba(102, 252, 241, 0.1);
+        }
+
+        /* ========== PREMIUM ITEMS GRID ========== */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        /* Premium Item Card */
+        .item-card {
+            background: rgba(15, 20, 35, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .item-card:hover {
+            transform: translateY(-10px);
+            border-color: #66fcf1;
+            box-shadow: 0 20px 50px rgba(102, 252, 241, 0.3);
+        }
+
+        .item-card:hover::before {
+            opacity: 1;
+        }
+
+        /* ========== PREMIUM RANK BADGES ========== */
+        .rank-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 12px 28px;
+            font-weight: 900;
+            font-size: 20px;
+            z-index: 10;
+            border-bottom-right-radius: 18px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+        }
+
+        .rank-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 300%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .item-card:hover .rank-badge::before {
+            left: 150%;
+        }
+
+        .rank-S {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 25%, #ff6b35 50%, #ff8c42 75%, #ffd700 100%);
+            background-size: 200% 200%;
+            color: #000;
+            box-shadow:
+                0 0 50px rgba(255, 215, 0, 1),
+                0 10px 30px rgba(255, 215, 0, 0.6),
+                inset 0 -3px 15px rgba(255, 107, 53, 0.4),
+                inset 0 3px 15px rgba(255, 255, 255, 0.3);
+            animation: glow-gold 3s ease-in-out infinite, bg-shift 8s ease infinite;
+            border: 3px solid rgba(255, 255, 255, 0.6);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes glow-gold {
+            0%, 100% {
+                box-shadow:
+                    0 0 50px rgba(255, 215, 0, 1),
+                    0 10px 30px rgba(255, 215, 0, 0.6);
+            }
+            50% {
+                box-shadow:
+                    0 0 80px rgba(255, 215, 0, 1),
+                    0 15px 50px rgba(255, 215, 0, 0.9),
+                    0 0 100px rgba(255, 215, 0, 0.4);
+            }
+        }
+
+        @keyframes bg-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .rank-A {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 25%, #ff8fa3 50%, #ffadc2 75%, #ff4757 100%);
+            background-size: 200% 200%;
+            color: #fff;
+            box-shadow:
+                0 0 40px rgba(255, 71, 87, 0.9),
+                0 10px 30px rgba(255, 71, 87, 0.5),
+                inset 0 -3px 15px rgba(255, 143, 163, 0.4);
+            animation: glow-red 3s ease-in-out infinite, bg-shift 8s ease infinite;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes glow-red {
+            0%, 100% {
+                box-shadow:
+                    0 0 40px rgba(255, 71, 87, 0.9),
+                    0 10px 30px rgba(255, 71, 87, 0.5);
+            }
+            50% {
+                box-shadow:
+                    0 0 70px rgba(255, 71, 87, 1),
+                    0 15px 50px rgba(255, 71, 87, 0.8);
+            }
+        }
+
+        .rank-B {
+            background: linear-gradient(135deg, #a855f7 0%, #c084fc 25%, #e879f9 50%, #f0abfc 75%, #a855f7 100%);
+            background-size: 200% 200%;
+            color: #fff;
+            box-shadow:
+                0 0 40px rgba(168, 85, 247, 0.9),
+                0 10px 30px rgba(168, 85, 247, 0.5),
+                inset 0 -3px 15px rgba(232, 121, 249, 0.4);
+            animation: glow-purple 3s ease-in-out infinite, bg-shift 8s ease infinite;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes glow-purple {
+            0%, 100% {
+                box-shadow:
+                    0 0 40px rgba(168, 85, 247, 0.9),
+                    0 10px 30px rgba(168, 85, 247, 0.5);
+            }
+            50% {
+                box-shadow:
+                    0 0 70px rgba(168, 85, 247, 1),
+                    0 15px 50px rgba(168, 85, 247, 0.8);
+            }
+        }
+
+        .rank-C {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 25%, #93c5fd 50%, #bfdbfe 75%, #3b82f6 100%);
+            background-size: 200% 200%;
+            color: #fff;
+            box-shadow:
+                0 0 40px rgba(59, 130, 246, 0.9),
+                0 10px 30px rgba(59, 130, 246, 0.5),
+                inset 0 -3px 15px rgba(147, 197, 253, 0.4);
+            animation: glow-blue 3s ease-in-out infinite, bg-shift 8s ease infinite;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes glow-blue {
+            0%, 100% {
+                box-shadow:
+                    0 0 40px rgba(59, 130, 246, 0.9),
+                    0 10px 30px rgba(59, 130, 246, 0.5);
+            }
+            50% {
+                box-shadow:
+                    0 0 70px rgba(59, 130, 246, 1),
+                    0 15px 50px rgba(59, 130, 246, 0.8);
+            }
+        }
+
+        .rank-D {
+            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 50%, #d1d5db 100%);
+            color: #fff;
+            box-shadow:
+                0 0 25px rgba(107, 114, 128, 0.6),
+                0 10px 30px rgba(107, 114, 128, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Item Image Container */
+        .item-image-wrapper {
+            height: 240px;
+            background: radial-gradient(circle at center, rgba(44, 62, 80, 0.3), rgba(11, 12, 16, 0.9));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-image-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(102, 252, 241, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .item-card:hover .item-image-wrapper::before {
+            opacity: 1;
+        }
+
+        .item-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .item-card:hover .item-image {
+            transform: scale(1.15) rotate(3deg);
+        }
+
+        /* Item Info Section */
+        .item-info {
+            padding: 20px;
+            background: rgba(11, 12, 16, 0.95);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .item-name {
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1.4;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .item-value {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .value-label {
+            font-size: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .value-amount {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Sell Button Premium */
+        .btn-sell {
+            width: 100%;
+            padding: 14px;
+            background: rgba(46, 204, 113, 0.1);
+            border: 2px solid #2ecc71;
+            color: #2ecc71;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-sell::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(46, 204, 113, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .btn-sell:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-sell span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-sell:hover {
+            background: #2ecc71;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(46, 204, 113, 0.5);
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            background: rgba(15, 20, 35, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px dashed rgba(139, 148, 158, 0.3);
+            border-radius: 24px;
+            margin: 60px 0;
+        }
+
+        .empty-icon {
+            font-size: 120px;
+            color: #8b949e;
+            opacity: 0.3;
+            margin-bottom: 32px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .empty-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 18px;
+            color: #8b949e;
+            margin-bottom: 40px;
+        }
+
+        .btn-go-shop {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #66fcf1, #45a29e);
+            color: #000;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(102, 252, 241, 0.4);
+        }
+
+        .btn-go-shop:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 32px rgba(102, 252, 241, 0.6);
+            color: #000;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        /* Delete Animation */
+        .deleting {
+            animation: deleteOut 0.5s ease-out forwards;
+        }
+
+        @keyframes deleteOut {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1200px) {
+            .inventory-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .inventory-header {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+            }
+
+            .btn-action-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-history,
+            .btn-ship-request {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .inventory-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .inventory-title {
+                font-size: 28px;
+            }
+
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .rank-filters {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div class="logo">
+        <a href="/" style="text-decoration:none; color:#66fcf1;">
+            <i class="fas fa-gift"></i> Mystery Box
+        </a>
+    </div>
+
+    <div class="menu">
+        <a href="/" class="nav-link">🏠 Trang Chủ</a>
+        <a href="/cart" class="nav-link">🛍️ Giỏ Hàng</a>
+        <a href="/inventory" class="nav-link active">🎒 Kho Đồ</a>
+        <a href="/deposit" class="nav-link deposit-btn">💎 Nạp Xu</a>
+        <a href="/admin" class="nav-link admin-btn" th:if="${nxvUser != null and nxvUser.isAdmin}">🛠️ Quản Trị</a>
+    </div>
+
+    <div class="user-info d-flex align-items-center" th:if="${nxvUser != null}">
+        <div class="wallet-badge me-3" title="Số Dư Hiện Tại">
+            <i class="fas fa-coins wallet-icon"></i>
+            <span id="wallet-balance" class="wallet-amount" th:text="${#numbers.formatDecimal(nxvUser.walletBalance, 0, 'COMMA', 0, 'POINT')}">0</span>
+            <small class="currency">đ</small>
+        </div>
+
+        <div class="user-dropdown-container">
+            <div class="user-trigger">
+                <span class="username d-none d-lg-inline me-2" th:text="${nxvUser.username}">User</span>
+                <img th:src="'https://ui-avatars.com/api/?background=random&color=fff&name=' + ${nxvUser.fullName}" class="user-avatar-glow">
+            </div>
+
+            <div class="dropdown-menu-custom">
+                <div class="dropdown-header-info">
+                    Xin chào, <b th:text="${nxvUser.fullName}" style="color: #fff;">Name</b>
+                </div>
+                <a href="/profile" class="dropdown-item-custom"><i class="fas fa-id-card"></i> Hồ Sơ Cá Nhân</a>
+                <a href="/inventory" class="dropdown-item-custom"><i class="fas fa-box-open"></i> Kho Đồ</a>
+                <a href="/shipment/history" class="dropdown-item-custom"><i class="fas fa-history"></i> Lịch Sử Giao Dịch</a>
+                <a href="/logout" class="dropdown-item-custom logout"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-info" th:if="${nxvUser == null}">
+        <a href="/login" class="btn-buy" style="padding: 8px 25px; text-decoration: none; display: inline-block;">Đăng Nhập</a>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+
+    <!-- Page Header -->
+    <div class="inventory-header animate__animated animate__fadeInDown">
+        <h2 class="inventory-title">
+            <i class="fas fa-box-open"></i>
+            <span>Kho Đồ Của Tôi</span>
+        </h2>
+
+        <div class="btn-action-group">
+            <a href="/shipment/history" class="btn-history">
+                <i class="fas fa-history"></i>
+                <span>Lịch Sử</span>
+            </a>
+
+            <a href="/shipment/create" class="btn-ship-request" th:if="${!inventoryList.isEmpty()}">
+                <i class="fas fa-truck-fast"></i>
+                <span>Yêu Cầu Giao Hàng</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="inventory-stats animate__animated animate__fadeInUp" th:if="${!inventoryList.isEmpty()}">
+        <div class="stat-card cyan">
+            <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+            <div class="stat-label">Tổng Vật Phẩm</div>
+            <div class="stat-value" th:text="${inventoryList.size()}">0</div>
+        </div>
+        <div class="stat-card gold">
+            <div class="stat-icon"><i class="fas fa-coins"></i></div>
+            <div class="stat-label">Tổng Giá Trị</div>
+            <div class="stat-value" id="totalValue">
+                <span style="font-size: 16px; color: #8b949e;"> đ</span>
+            </div>
+        </div>
+        <div class="stat-card purple">
+            <div class="stat-icon"><i class="fas fa-crown"></i></div>
+            <div class="stat-label">Vật Phẩm Hiếm</div>
+            <div class="stat-value" id="rareItems">0</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-icon"><i class="fas fa-hand-holding-dollar"></i></div>
+            <div class="stat-label">Có Thể Bán</div>
+            <div class="stat-value" id="sellValue">
+                <span style="font-size: 16px; color: #8b949e;"> đ</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar animate__animated animate__fadeInUp" th:if="${!inventoryList.isEmpty()}" style="animation-delay: 0.1s;">
+        <div class="filter-label">Lọc Theo Rank:</div>
+        <div class="rank-filters">
+            <button class="rank-filter-btn active" onclick="filterRank('all')">Tất Cả</button>
+            <button class="rank-filter-btn" onclick="filterRank('S')">S</button>
+            <button class="rank-filter-btn" onclick="filterRank('A')">A</button>
+            <button class="rank-filter-btn" onclick="filterRank('B')">B</button>
+            <button class="rank-filter-btn" onclick="filterRank('C')">C</button>
+            <button class="rank-filter-btn" onclick="filterRank('D')">D</button>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${inventoryList.isEmpty()}" class="empty-state animate__animated animate__zoomIn">
+        <div class="empty-icon">
+            <i class="fas fa-ghost"></i>
+        </div>
+        <h3 class="empty-title">Kho Trống Trơn!</h3>
+        <p class="empty-text">Hãy ra trang chủ mở hộp để kiếm vật phẩm xịn nhé</p>
+        <a href="/" class="btn-go-shop">
+            <i class="fas fa-magic"></i>
+            <span>Đi Săn Ngay</span>
+        </a>
+    </div>
+
+    <!-- Items Grid -->
+    <div class="items-grid" id="itemsGrid">
+        <div class="item-card animate__animated animate__fadeInUp"
+             th:each="item, iter : ${inventoryList}"
+             th:id="'card-' + ${item.inventoryId}"
+             th:data-rank="${item.boxItem.rarityLevel}"
+             th:style="'animation-delay: ' + ${iter.index * 0.05} + 's'">
+
+            <div class="rank-badge"
+                 th:classappend="'rank-' + ${item.boxItem.rarityLevel}"
+                 th:text="${item.boxItem.rarityLevel}">
+                S
+            </div>
+
+            <div class="item-image-wrapper">
+                <img th:src="${item.boxItem.imageUrl}" alt="Item Image" class="item-image">
+            </div>
+
+            <div class="item-info">
+                <div class="item-name" th:text="${item.boxItem.itemName}">Item Name</div>
+
+                <div class="item-value">
+                    <span class="value-label">Giá Trị</span>
+                    <span class="value-amount">
+                        <span th:text="${#numbers.formatDecimal(item.boxItem.marketValue, 0, 'COMMA', 0, 'POINT')}">0</span> đ
+                    </span>
+                </div>
+
+                <button class="btn-sell" th:onclick="'sellItem(' + ${item.inventoryId} + ', ' + ${item.boxItem.marketValue} + ')'">
+                    <i class="fas fa-hand-holding-dollar"></i>
+                    <span>Bán Lại (90%)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const userId = [[${nxvUser.userId}]];
+
+    // ========== ENHANCED STATS CALCULATION WITH AUTO-UPDATE ==========
+    function updateStats() {
+        const cards = document.querySelectorAll('.item-card:not([style*="display: none"])');
+        let totalValue = 0;
+        let rareCount = 0;
+        let sellValue = 0;
+
+        cards.forEach(card => {
+            const valueText = card.querySelector('.value-amount span').textContent.replace(/,/g, '');
+            const marketValue = parseInt(valueText);
+            const rank = card.getAttribute('data-rank');
+
+            totalValue += marketValue;
+            sellValue += marketValue * 0.9;
+            if (rank === 'S' || rank === 'A') rareCount++;
+        });
+
+        // Animate updates
+        animateStatUpdate('totalValue', totalValue, ' đ');
+        animateStatUpdate('rareItems', rareCount, '');
+        animateStatUpdate('sellValue', Math.floor(sellValue), ' đ');
+
+        // Update total items count
+        const totalEl = document.querySelector('.stat-card.cyan .stat-value');
+        if (totalEl) {
+            totalEl.classList.add('stat-updating');
+            totalEl.textContent = cards.length;
+            setTimeout(() => totalEl.classList.remove('stat-updating'), 600);
+        }
+    }
+
+    function animateStatUpdate(elementId, value, suffix) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+
+        el.classList.add('stat-updating');
+        el.innerHTML = `<span>${new Intl.NumberFormat('en-US').format(value)}</span><span style="font-size: 16px; color: #8b949e;">${suffix}</span>`;
+        setTimeout(() => el.classList.remove('stat-updating'), 600);
+    }
+
+    // ========== FILTER BY RANK ==========
+    function filterRank(rank) {
+        const cards = document.querySelectorAll('.item-card');
+        const buttons = document.querySelectorAll('.rank-filter-btn');
+
+        // Update active button
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Filter cards
+        cards.forEach(card => {
+            const cardRank = card.getAttribute('data-rank');
+            if (rank === 'all' || cardRank === rank) {
+                card.style.display = 'flex';
+                card.classList.add('animate__fadeIn');
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Update stats after filtering
+        updateStats();
+    }
+
+    // ========== ENHANCED SELL ITEM FUNCTION ==========
+    function sellItem(inventoryId, marketValue) {
+        const sellPrice = Math.floor(marketValue * 0.9);
+        const formattedSellPrice = new Intl.NumberFormat('vi-VN').format(sellPrice);
+
+        Swal.fire({
+            title: '<div style="color: #fff; font-weight: 800;">💰 Bán Vật Phẩm?</div>',
+            html: `
+                <div style="padding: 20px; text-align: center;">
+                    <p style="color: #b8c5d6; font-size: 16px; margin-bottom: 20px;">
+                        Bạn sẽ nhận được <span style="color: #2ecc71; font-weight: 800; font-size: 20px;">${formattedSellPrice} đ</span> (90% giá trị)
+                    </p>
+                    <div style="padding: 16px; background: rgba(46, 204, 113, 0.1); border: 2px dashed #2ecc71; border-radius: 12px; margin-top: 16px;">
+                        <i class="fas fa-info-circle" style="color: #2ecc71;"></i>
+                        <span style="color: #8b949e; font-size: 13px;"> Số tiền sẽ được thêm ngay vào ví</span>
+                    </div>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fas fa-check me-2"></i> Đồng Ý Bán',
+            cancelButtonText: '<i class="fas fa-times me-2"></i> Giữ Lại',
+            confirmButtonColor: '#2ecc71',
+            cancelButtonColor: '#6c757d',
+            background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+            color: '#fff',
+            customClass: {
+                popup: 'animate__animated animate__zoomIn'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Đang Xử Lý...',
+                    html: 'Vui lòng đợi trong giây lát',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+                    color: '#fff',
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Call API
+                fetch(`/api/blindbox/sell?userId=${userId}&inventoryId=${inventoryId}`, { method: 'POST' })
+                .then(response => {
+                    if (!response.ok) throw new Error("Lỗi bán hàng!");
+                    return response.json();
+                })
+                .then(data => {
+                    // Success notification
+                    Swal.fire({
+                        title: '<div style="color: #2ecc71; font-weight: 800;">✅ Bán Thành Công!</div>',
+                        html: `
+                            <div style="padding: 20px; text-align: center;">
+                                <div style="font-size: 48px; margin-bottom: 20px;">💰</div>
+                                <p style="color: #b8c5d6; font-size: 16px; margin-bottom: 12px;">
+                                    Bạn đã nhận được
+                                </p>
+                                <p style="color: #2ecc71; font-weight: 900; font-size: 32px; margin-bottom: 20px;">
+                                    +${formattedSellPrice} đ
+                                </p>
+                                <div style="padding: 12px; background: rgba(102, 252, 241, 0.1); border-radius: 10px;">
+                                    <span style="color: #8b949e; font-size: 14px;">Số dư mới: </span>
+                                    <span style="color: #66fcf1; font-weight: 700; font-size: 16px;">${new Intl.NumberFormat('vi-VN').format(data.newBalance)} đ</span>
+                                </div>
+                            </div>
+                        `,
+                        icon: 'success',
+                        confirmButtonText: 'Tuyệt Vời!',
+                        confirmButtonColor: '#2ecc71',
+                        background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+                        color: '#fff',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        customClass: {
+                            popup: 'animate__animated animate__bounceIn'
+                        }
+                    });
+
+                    // Remove card with animation
+                    const card = document.getElementById('card-' + inventoryId);
+                    card.classList.add('deleting');
+                    setTimeout(() => {
+                        card.remove();
+
+                        // AUTO-UPDATE STATS AFTER REMOVAL
+                        updateStats();
+
+                        // Reload if empty
+                        if(document.querySelectorAll('.item-card').length === 0) {
+                            location.reload();
+                        }
+                    }, 500);
+
+                    // Update wallet balance
+                    const newBalanceFormatted = new Intl.NumberFormat('en-US').format(data.newBalance);
+                    document.querySelectorAll('#wallet-balance').forEach(el => {
+                        el.innerText = newBalanceFormatted;
+                    });
+                })
+                .catch(() => {
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: 'Không thể thực hiện giao dịch',
+                        icon: 'error',
+                        confirmButtonColor: '#ff4757',
+                        background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+                        color: '#fff'
+                    });
+                });
+            }
+        });
+    }
+
+    // ========== INITIALIZE ON PAGE LOAD ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        // Calculate and display initial stats
+        updateStats();
+
+        // Scroll reveal animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate__fadeInUp');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.item-card').forEach((el) => {
+            observer.observe(el);
+        });
+    });
+    /*]]>*/
+</script>
+
+</body>
+</html>

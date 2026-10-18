@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Quản Lý Banner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #050505; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; }
+        .neon-card { background: #111; border: 1px solid #00f3ff; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); padding: 20px; border-radius: 8px; }
+        .table-dark-custom { background-color: #1a1a1a; color: #fff; }
+        .table-dark-custom th { color: #00f3ff; border-bottom: 2px solid #00f3ff; }
+        .banner-preview { width: 120px; height: 60px; object-fit: cover; border: 1px solid #ff00de; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark mb-4 border-bottom border-secondary">
+    <div class="container-fluid">
+        <span class="navbar-brand text-info">ADMIN BANNERS</span>
+        <a href="/admin/dashboard" class="btn btn-sm btn-outline-light">Dashboard</a>
+    </div>
+</nav>
+<div class="container">
+    <div class="neon-card">
+        <div class="d-flex justify-content-between mb-3">
+            <h3 class="text-light">Quản Lý Banner Quảng Cáo</h3>
+            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#bannerModal">
+                <i class="fas fa-plus"></i> Thêm Banner
+            </button>
+        </div>
+        <table class="table table-dark-custom">
+            <thead><tr><th>Ảnh</th><th>Tiêu Đề</th><th>Link</th><th>Thứ Tự</th><th>Trạng Thái</th><th>Action</th></tr></thead>
+            <tbody>
+            <tr th:each="b : ${listBanners}">
+                <td><img th:src="${b.imageUrl}" class="banner-preview"></td>
+                <td th:text="${b.title}"></td>
+                <td th:text="${b.linkUrl}"></td>
+                <td th:text="${b.displayOrder}"></td>
+                <td><span th:if="${b.isActive}" class="badge bg-success">Active</span></td>
+                <td><a th:href="@{/admin/banners/delete/{id}(id=${b.bannerId})}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="bannerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white border-info">
+            <form th:action="@{/admin/banners/save}" method="post" th:object="${newBanner}">
+                <div class="modal-header"><h5 class="modal-title">Thêm Banner</h5></div>
+                <div class="modal-body">
+                    <input type="text" class="form-control mb-2 bg-dark text-white" placeholder="Tiêu đề" th:field="*{title}" required>
+                    <input type="text" class="form-control mb-2 bg-dark text-white" placeholder="URL Ảnh" th:field="*{imageUrl}" required>
+                    <input type="text" class="form-control mb-2 bg-dark text-white" placeholder="Link đích" th:field="*{linkUrl}">
+                    <input type="number" class="form-control mb-2 bg-dark text-white" placeholder="Thứ tự hiển thị" th:field="*{displayOrder}">
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-info">Lưu</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

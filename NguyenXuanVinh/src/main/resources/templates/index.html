@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blind Box Shop - Gacha Game Premium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        /* ========== PREMIUM INDEX PAGE - COMPLETE STYLES ========== */
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ========== PREMIUM NAVBAR UPGRADE ========== */
+
+        /* Enhanced Header with Glassmorphism */
+        header {
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.98), rgba(26, 31, 58, 0.95)) !important;
+            backdrop-filter: blur(30px) saturate(180%);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 2px 8px rgba(102, 252, 241, 0.1),
+                inset 0 -1px 0 rgba(102, 252, 241, 0.2);
+            border-bottom: 2px solid rgba(102, 252, 241, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 12px 0;
+            display: flex !important;           /* Enable flexbox */
+            align-items: center !important;     /* Vertical center */
+           justify-content: space-between !important;  /* Space between elements */
+            gap: 20px !important;               /* Spacing */
+            flex-wrap: nowrap !important;       /* Don't wrap on desktop */
+           padding: 12px 30px !important;      /* Proper padding */
+        }
+
+        header.scrolled {
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.99), rgba(26, 31, 58, 0.98)) !important;
+            box-shadow:
+                0 12px 48px rgba(0, 0, 0, 0.6),
+                0 4px 16px rgba(102, 252, 241, 0.2);
+            padding: 8px 0;
+        }
+
+        /* Animated Border Top */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                #66fcf1 20%,
+                #a855f7 40%,
+                #ffd700 60%,
+                #ff006e 80%,
+                transparent 100%
+            );
+            background-size: 300% 100%;
+            animation: gradient-flow 6s linear infinite;
+            z-index: 10;
+        }
+
+        @keyframes gradient-flow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
+        }
+
+        /* Logo Premium */
+        .logo {
+            position: relative;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.15), rgba(168, 85, 247, 0.1));
+            border-radius: 16px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(102, 252, 241, 0.3);
+        }
+
+        .logo:hover::before {
+            opacity: 1;
+        }
+
+        .logo a {
+            font-size: 32px !important;
+            font-weight: 900 !important;
+            letter-spacing: 3px !important;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #66fcf1 0%, #a855f7 50%, #66fcf1 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 5s ease infinite;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .logo a i {
+            font-size: 36px;
+            animation: float-logo 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px #66fcf1);
+        }
+
+        @keyframes float-logo {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(10deg); }
+        }
+
+        .logo:hover a {
+            transform: scale(1.05);
+            text-shadow: 0 0 30px rgba(102, 252, 241, 0.8);
+        }
+
+        /* Search Bar Premium */
+        .search-bar {
+            position: relative;
+            flex-grow: 0.5;
+            max-width: 500px;
+        }
+
+        .search-bar form {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(15, 20, 35, 0.8), rgba(26, 31, 58, 0.6));
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            border-radius: 50px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-bar form::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none; /* Quan trọng: Cho phép click xuyên qua */
+    z-index: 0;
+        }
+
+        .search-bar form:hover::before,
+        .search-bar form:focus-within::before {
+            opacity: 1;
+        }
+
+        .search-bar form:focus-within {
+            border-color: #66fcf1;
+            box-shadow: 0 0 30px rgba(102, 252, 241, 0.4);
+            transform: scale(1.02);
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 14px 24px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            font-weight: 500;
+            position: relative;
+    z-index: 1;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(184, 197, 214, 0.6);
+            font-style: italic;
+        }
+
+        .search-bar button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #66fcf1, #45a29e);
+            border: none;
+            color: #000;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-bar button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .search-bar button:hover::before {
+            transform: translateX(100%);
+        }
+
+        .search-bar button:hover {
+            background: linear-gradient(135deg, #45a29e, #66fcf1);
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* Menu Premium */
+        .menu {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-link {
+            padding: 12px 24px !important;
+            color: #b8c5d6 !important;
+            text-decoration: none;
+            font-weight: 600 !important;
+            font-size: 15px !important;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.1), rgba(168, 85, 247, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 12px;
+        }
+
+        .nav-link:hover::before {
+            opacity: 1;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #66fcf1, #a855f7);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-link:hover {
+            color: #66fcf1 !important;
+            transform: translateY(-2px);
+            text-shadow: 0 0 15px rgba(102, 252, 241, 0.5);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.15), rgba(168, 85, 247, 0.1)) !important;
+            color: #66fcf1 !important;
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.2), inset 0 0 20px rgba(102, 252, 241, 0.05);
+        }
+
+        .nav-link.active::after {
+            width: 80%;
+        }
+
+        /* Special Buttons */
+        .deposit-btn {
+            background: linear-gradient(135deg, #ffd700, #f59e0b) !important;
+            color: #000 !important;
+            font-weight: 800 !important;
+            border: 2px solid rgba(255, 215, 0, 0.5) !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            animation: pulse-gold 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-gold {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        .deposit-btn:hover {
+            background: linear-gradient(135deg, #f59e0b, #ffd700) !important;
+            transform: translateY(-3px) scale(1.05) !important;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6) !important;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, #ff006e, #ff4757) !important;
+            color: #fff !important;
+            font-weight: 800 !important;
+            border: 2px solid rgba(255, 0, 110, 0.5) !important;
+            box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+        }
+
+        .admin-btn:hover {
+            background: linear-gradient(135deg, #ff4757, #ff006e) !important;
+            transform: translateY(-3px) scale(1.05) !important;
+            box-shadow: 0 0 30px rgba(255, 0, 110, 0.6) !important;
+        }
+
+        /* ========== PREMIUM WINNER TICKER (NO PAUSE) ========== */
+
+        .winner-ticker {
+            background: linear-gradient(135deg, #0a0e27, #1a1f3a, #0a0e27) !important;
+            border-top: 1px solid rgba(102, 252, 241, 0.3);
+            border-bottom: 2px solid rgba(102, 252, 241, 0.4);
+            color: #fff;
+            font-size: 13px !important;
+            padding: 12px 0 !important;
+            overflow: hidden;
+            position: relative;
+            white-space: nowrap;
+            box-shadow:
+                0 3px 15px rgba(0, 243, 255, 0.15),
+                inset 0 1px 0 rgba(102, 252, 241, 0.1),
+                0 -1px 0 rgba(102, 252, 241, 0.1);
+            margin-bottom: 25px;
+            z-index: 999;
+        }
+
+        .winner-ticker::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 200%; height: 100%;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(102, 252, 241, 0.08) 20%,
+                rgba(168, 85, 247, 0.1) 40%,
+                rgba(255, 215, 0, 0.08) 60%,
+                rgba(102, 252, 241, 0.08) 80%,
+                transparent 100%
+            );
+            animation: shimmer-slide 5s linear infinite;
+        }
+
+        @keyframes shimmer-slide {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .ticker-wrapper {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: ticker 50s linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        .winner-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 60px;
+            padding: 8px 18px;
+            background: linear-gradient(135deg,
+                rgba(102, 252, 241, 0.12),
+                rgba(168, 85, 247, 0.08),
+                rgba(102, 252, 241, 0.05)
+            );
+            border: 1px solid rgba(102, 252, 241, 0.3);
+            border-radius: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .winner-item::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(135deg, #66fcf1, #a855f7, #ffd700);
+            border-radius: 50px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+            filter: blur(8px);
+        }
+
+        .winner-item:hover::before {
+            opacity: 0.4;
+        }
+
+        .winner-item:hover {
+            transform: scale(1.08) translateY(-3px);
+            background: linear-gradient(135deg,
+                rgba(102, 252, 241, 0.2),
+                rgba(168, 85, 247, 0.15),
+                rgba(255, 215, 0, 0.1)
+            );
+            border-color: #66fcf1;
+            box-shadow:
+                0 8px 24px rgba(102, 252, 241, 0.4),
+                0 0 40px rgba(102, 252, 241, 0.2);
+        }
+
+        .winner-icon {
+            color: #66fcf1;
+            font-size: 14px;
+            animation: pulse-icon 2.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 5px #66fcf1);
+        }
+
+        @keyframes pulse-icon {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: scale(1.15) rotate(-5deg);
+                opacity: 0.9;
+            }
+            75% {
+                transform: scale(1.15) rotate(5deg);
+                opacity: 0.9;
+            }
+        }
+
+        .winner-highlight {
+            color: #ffd700;
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            padding: 2px 8px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg,
+                rgba(255, 215, 0, 0.15),
+                rgba(255, 215, 0, 0.05)
+            );
+            border-radius: 6px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .winner-item:hover .winner-highlight {
+            color: #fff;
+            text-shadow:
+                0 0 20px #ffd700,
+                0 0 40px #ffd700,
+                0 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg,
+                rgba(255, 215, 0, 0.3),
+                rgba(255, 215, 0, 0.15)
+            );
+            transform: scale(1.05);
+        }
+
+        .rank-tag {
+            background: linear-gradient(135deg, #ff006e 0%, #ff4757 50%, #ff8fa3 100%);
+            background-size: 200% 200%;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 10px;
+            margin: 0 4px;
+            box-shadow:
+                0 0 15px rgba(255, 0, 110, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            animation: glow-rank 3s ease-in-out infinite, bg-shift-rank 4s linear infinite;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes glow-rank {
+            0%, 100% {
+                box-shadow:
+                    0 0 15px rgba(255, 0, 110, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow:
+                    0 0 30px rgba(255, 0, 110, 0.9),
+                    0 0 50px rgba(255, 0, 110, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+                transform: scale(1.08);
+            }
+        }
+
+        @keyframes bg-shift-rank {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .rank-tag::before {
+            content: '⭐';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            animation: star-slide 2s linear infinite;
+        }
+
+        @keyframes star-slide {
+            0% { left: -30px; opacity: 0; }
+            50% { opacity: 1; }
+            100% { left: 110%; opacity: 0; }
+        }
+
+        .winner-box-name {
+            color: #a855f7;
+            font-weight: 700;
+            font-style: italic;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+            transition: all 0.3s;
+        }
+
+        .winner-item:hover .winner-box-name {
+            color: #c084fc;
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.8);
+        }
+
+        .winner-item-name {
+            color: #ffd700;
+            font-weight: 800;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+            transition: all 0.3s;
+        }
+
+        .winner-item:hover .winner-item-name {
+            color: #fff;
+            text-shadow: 0 0 25px #ffd700;
+        }
+
+        /* ========== CAROUSEL ENHANCEMENTS ========== */
+        .carousel-item {
+            height: 550px;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .carousel-item img {
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            filter: brightness(0.8) contrast(1.2);
+            transition: all 0.5s ease;
+        }
+
+        .carousel-item:hover img {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        .carousel-caption {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(10, 14, 39, 0.9));
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #66fcf1;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.4), inset 0 0 20px rgba(0, 243, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 5px #66fcf1, 0 0 10px #66fcf1; }
+            50% { box-shadow: 0 0 20px #66fcf1, 0 0 30px #66fcf1, 0 0 40px #66fcf1; }
+        }
+
+        .carousel-caption h2 {
+            color: #66fcf1;
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+        }
+
+        /* ========== TOP USER CARD ULTRA ========== */
+        .top1-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(10, 14, 39, 0.95));
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(255, 215, 0, 0.05);
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .top1-card::before {
+            content: '👑';
+            position: absolute;
+            font-size: 200px;
+            top: -50px;
+            right: -50px;
+            opacity: 0.05;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .top1-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.6);
+        }
+
+        .crown-icon {
+            font-size: 50px;
+            color: #ffd700;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 20px #ffd700);
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .top1-avatar {
+            width: 120px;
+            height: 120px;
+            border: 4px solid #ffd700;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 30px #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        .top1-avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* ========== TOP LIST ENHANCED ========== */
+        .top-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(15, 20, 35, 0.8));
+            border-radius: 12px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top-list-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .top-list-item:hover::before {
+            left: 100%;
+        }
+
+        .top-list-item:hover {
+            border-color: #66fcf1;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(15, 20, 35, 0.9));
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .rank-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a1f3a, #0a0e27);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #C0C0C0, #888);
+            color: #000;
+            box-shadow: 0 0 20px #C0C0C0;
+            border-color: #fff;
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #CD7F32, #8B5A2B);
+            color: #000;
+            box-shadow: 0 0 20px #CD7F32;
+            border-color: #CD7F32;
+        }
+
+        /* ========== NEWS CARD ENHANCEMENT ========== */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .news-card {
+            background: rgba(31, 40, 51, 0.6);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .news-card:hover::after {
+            opacity: 1;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff006e;
+            box-shadow: 0 8px 30px rgba(255, 0, 110, 0.3);
+        }
+
+        .news-thumb {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .news-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .news-date {
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        /* ========== FOOTER PREMIUM ========== */
+        .site-footer {
+            background: linear-gradient(180deg, #0a0e27 0%, #050608 100%);
+            border-top: 3px solid #66fcf1;
+            color: #b8c5d6;
+            padding-top: 60px;
+            padding-bottom: 30px;
+            font-size: 14px;
+            margin-top: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .site-footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #66fcf1, #ff006e, transparent);
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .footer-heading {
+            color: #ffffff;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 12px;
+            letter-spacing: 2px;
+            font-size: 16px;
+        }
+
+        .footer-heading::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #66fcf1, #ff006e);
+            box-shadow: 0 0 10px #66fcf1;
+        }
+
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a {
+            color: #a0b3c9;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .footer-links a:hover {
+            color: #66fcf1;
+            padding-left: 8px;
+            text-shadow: 0 0 10px #66fcf1;
+        }
+
+        .contact-info li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            color: #b8c5d6;
+        }
+        .contact-info i {
+            color: #66fcf1;
+            margin-right: 12px;
+            margin-top: 4px;
+            font-size: 16px;
+            text-shadow: 0 0 5px #66fcf1;
+        }
+
+        .newsletter-form .form-control {
+            background: rgba(31, 40, 51, 0.8);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form .form-control:focus {
+            background: rgba(31, 40, 51, 1);
+            border-color: #66fcf1;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
+        .newsletter-form .btn-submit {
+            background: linear-gradient(135deg, #66fcf1, #0088ff);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .newsletter-form .btn-submit:hover {
+            background: linear-gradient(135deg, #fff, #66fcf1);
+            box-shadow: 0 0 20px #66fcf1;
+            transform: translateY(-2px);
+        }
+
+        .bct-badge {
+            margin-top: 20px;
+            border: 2px solid #66fcf1;
+            padding: 8px 15px;
+            display: inline-block;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 12px;
+            border-radius: 8px;
+            background: rgba(0, 243, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .bct-badge:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+        }
+
+        .hover-neon {
+            transition: all 0.3s ease;
+        }
+
+        .hover-neon:hover {
+            color: #66fcf1 !important;
+            text-shadow: 0 0 10px #66fcf1;
+            transform: translateY(-3px);
+        }
+
+        /* ========== SCROLL TO TOP BUTTON ========== */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #66fcf1, #0088ff);
+            border: 2px solid #66fcf1;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.4);
+        }
+
+        .scroll-top-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.6);
+        }
+
+        .scroll-top-btn i {
+            color: #000;
+            font-size: 20px;
+        }
+
+        /* ========== LOADING OVERLAY ========== */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 243, 255, 0.2);
+            border-top-color: #66fcf1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== ENHANCED USER INFO & WALLET BADGE ========== */
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .wallet-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(251, 146, 60, 0.1));
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .wallet-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+            border-color: #ffd700;
+        }
+
+        .wallet-icon {
+            font-size: 22px;
+            color: #ffd700;
+            animation: coin-spin 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px #ffd700);
+        }
+
+        @keyframes coin-spin {
+            0%, 100% { transform: rotateY(0deg); }
+            50% { transform: rotateY(180deg); }
+        }
+
+        .wallet-amount {
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .currency {
+            font-size: 14px;
+            color: #f59e0b;
+            font-weight: 700;
+            margin-left: 2px;
+        }
+
+        /* User Dropdown Enhanced */
+        .user-dropdown-container {
+            position: relative;
+        }
+
+        .user-trigger {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.1), rgba(168, 85, 247, 0.05));
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-trigger:hover {
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.15), rgba(168, 85, 247, 0.1));
+            border-color: #66fcf1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 252, 241, 0.3);
+        }
+
+        .username {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .user-avatar-glow {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 3px solid #66fcf1;
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .user-trigger:hover .user-avatar-glow {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 30px rgba(102, 252, 241, 0.8);
+        }
+
+        /* ========== ENHANCED LOGIN BUTTON ========== */
+
+        .btn-login-enhanced {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #1a9d94, #147a73);
+            border: 2px solid #45a29e;
+            color: #fff;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 800;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(26, 157, 148, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login-enhanced::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .btn-login-enhanced:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-login-enhanced:hover {
+            background: linear-gradient(135deg, #147a73, #0d5a54);
+            border-color: #66fcf1;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 252, 241, 0.6);
+            color: #66fcf1;
+        }
+
+        .btn-login-enhanced i {
+            font-size: 18px;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .carousel-item { height: 400px; }
+            .carousel-caption h2 { font-size: 1.5rem; }
+            .top1-card { padding: 20px; }
+            .crown-icon { font-size: 35px; }
+            .top1-avatar { width: 80px; height: 80px; }
+            .section-title { font-size: 1.5rem; }
+
+            .winner-ticker {
+                font-size: 11px;
+                padding: 10px 0;
+            }
+
+            .winner-item {
+                padding: 6px 14px;
+                margin-right: 40px;
+            }
+
+            .rank-tag {
+                font-size: 9px;
+                padding: 3px 8px;
+            }
+
+            .logo a {
+                font-size: 24px !important;
+            }
+
+            .nav-link {
+                font-size: 13px !important;
+                padding: 10px 16px !important;
+            }
+
+            .wallet-amount {
+                font-size: 16px;
+            }
+
+            .username {
+                font-size: 14px;
+            }
+
+            .user-avatar-glow {
+                width: 36px;
+                height: 36px;
+            }
+
+            .btn-login-enhanced {
+                padding: 12px 28px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay hidden" id="loadingOverlay" style="display: none;">
+    <div class="spinner"></div>
+</div>
+
+<!-- Header -->
+<header>
+    <div class="logo">
+        <a href="/" style="text-decoration:none; color:#66fcf1;"><i class="fas fa-gift"></i> Mystery Box</a>
+    </div>
+
+    <div class="search-bar">
+        <form th:action="@{/}" method="get">
+            <input type="text" name="keyword" placeholder="Bạn muốn tìm hộp gì..." th:value="${keyword}">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <div class="menu">
+        <a href="/" class="nav-link active">🏠 Trang Chủ</a>
+        <a href="/cart" class="nav-link">🛒 Giỏ Hàng</a>
+        <a href="/inventory" class="nav-link">🎒 Kho Đồ</a>
+        <a href="/deposit" class="nav-link deposit-btn">💎 Nạp Xu</a>
+        <a href="/admin" class="nav-link admin-btn" th:if="${nxvUser != null and nxvUser.isAdmin}">🛠️ Quản Trị</a>
+    </div>
+
+    <div class="user-info d-flex align-items-center" th:if="${nxvUser != null}">
+        <div class="wallet-badge me-3" title="Số Dư Hiện Tại">
+            <i class="fas fa-coins wallet-icon"></i>
+            <span id="wallet-balance" class="wallet-amount" th:text="${#numbers.formatDecimal(nxvUser.walletBalance, 0, 'COMMA', 0, 'POINT')}">0</span>
+            <small class="currency">đ</small>
+        </div>
+
+        <div class="user-dropdown-container">
+            <div class="user-trigger">
+                <span class="username d-none d-lg-inline me-2" th:text="${nxvUser.username}">User</span>
+                <img th:src="'https://ui-avatars.com/api/?background=random&color=fff&name=' + ${nxvUser.fullName}" class="user-avatar-glow">
+            </div>
+            <div class="dropdown-menu-custom">
+                <div class="dropdown-header-info">
+                    Xin chào, <b th:text="${nxvUser.fullName}" style="color: #fff;">Name</b>
+                </div>
+                <a href="/profile" class="dropdown-item-custom"><i class="fas fa-id-card"></i> Hồ Sơ Cá Nhân</a>
+                <a href="/inventory" class="dropdown-item-custom"><i class="fas fa-box-open"></i> Kho Đồ</a>
+                <a href="/shipment/history" class="dropdown-item-custom"><i class="fas fa-history"></i> Lịch Sử Giao Dịch</a>
+                <a href="/logout" class="dropdown-item-custom logout"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-info" th:if="${nxvUser == null}">
+        <a href="/login" class="btn-login-enhanced">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Đăng Nhập</span>
+        </a>
+    </div>
+</header>
+
+<!-- ✨ PREMIUM WINNER TICKER - ALWAYS RUNNING ✨ -->
+<div id="winner-bar" class="winner-ticker" style="display: none;">
+    <div class="ticker-wrapper">
+        <div class="ticker-content" id="ticker-content"></div>
+    </div>
+</div>
+
+<!-- Carousel Banner -->
+<div th:unless="${banners == null or banners.isEmpty()}" id="homeCarousel" class="carousel slide mb-5 animate__animated animate__fadeIn" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button th:each="b, iter : ${banners}" type="button" data-bs-target="#homeCarousel"
+                th:data-bs-slide-to="${iter.index}" th:classappend="${iter.index == 0} ? 'active'"></button>
+    </div>
+    <div class="carousel-inner">
+        <div th:each="b, iter : ${banners}" class="carousel-item" th:classappend="${iter.index == 0} ? 'active'">
+            <a th:href="${b.linkUrl}">
+                <img th:src="${b.imageUrl}" class="d-block w-100" alt="Banner">
+            </a>
+            <div class="carousel-caption d-none d-md-block">
+                <h2 th:text="${b.title}">Tiêu Đề</h2>
+                <button class="hero-btn mt-2" onclick="scrollToShop()">Xem Ngay</button>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+    <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+</div>
+
+<!-- Top Users Section -->
+<div class="container mb-5 animate__animated animate__fadeInUp" th:if="${topUsers != null and !topUsers.isEmpty()}">
+    <h3 class="section-title" style="color: #ffd700; text-shadow: 0 0 20px #ffd700;">
+        <i class="fas fa-crown"></i> BẢNG XẾP HẠNG ĐẠI GIA
+    </h3>
+    <div class="row align-items-center">
+        <div class="col-md-5 mb-4 mb-md-0" th:if="${topUsers.size() > 0}">
+            <div class="top1-card">
+                <div class="crown-icon"><i class="fas fa-crown"></i></div>
+                <img th:src="'https://ui-avatars.com/api/?size=200&background=random&color=fff&name=' + ${topUsers[0].user.fullName}" class="top1-avatar mb-3">
+                <h2 class="text-white fw-bold" th:text="${topUsers[0].user.username}">King</h2>
+                <div class="badge bg-warning text-dark fs-5 mt-2">TOP 1 SERVER</div>
+                <h3 class="mt-3" style="color: #ffd700; text-shadow: 0 0 10px #ffd700;">
+                    <span th:text="${#numbers.formatDecimal(topUsers[0].totalAmount, 0, 'COMMA', 0, 'POINT')}">0</span> đ
+                </h3>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="list-group">
+                <div th:each="top, iter : ${topUsers}" th:if="${iter.index > 0}" class="top-list-item">
+                    <div class="d-flex align-items-center">
+                        <div class="rank-number"
+                             th:classappend="${iter.index == 1} ? 'rank-2' : (${iter.index == 2} ? 'rank-3' : '')"
+                             th:text="${iter.count}">2</div>
+                        <img th:src="'https://ui-avatars.com/api/?background=random&color=fff&name=' + ${top.user.fullName}"
+                             class="rounded-circle me-3" width="40" height="40">
+                        <div>
+                            <div class="fw-bold text-light" th:text="${top.user.username}">User</div>
+                            <small class="text-muted">Đại gia ngầm</small>
+                        </div>
+                    </div>
+                    <div class="fw-bold text-info">
+                        <span th:text="${#numbers.formatDecimal(top.totalAmount, 0, 'COMMA', 0, 'POINT')}">0</span> đ
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Shop Section -->
+<div class="container animate__animated animate__fadeInUp" id="shop-section">
+    <h2 class="section-title">🔥 HỘP MÙ ĐANG HOT 🔥</h2>
+    <div class="box-grid">
+        <div class="box-card" th:each="box : ${boxes}">
+            <div class="box-image">
+                <a th:href="@{/box/{id}(id=${box.boxId})}">
+                    <img th:src="${box.imageUrl != null ? box.imageUrl : '/images/box-default.jpg'}" alt="Box Image">
+                </a>
+                <span class="hot-badge" th:if="${box.isActive}">HOT</span>
+            </div>
+            <div class="box-info">
+                <a th:href="@{/box/{id}(id=${box.boxId})}" style="text-decoration: none;">
+                    <h3 th:text="${box.boxName}">Tên Hộp</h3>
+                </a>
+                <div class="price-tag" th:text="${#numbers.formatDecimal(box.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">100.000 đ</div>
+                <div class="action-buttons">
+                    <button class="btn-buy" th:onclick="'openBox(' + ${box.boxId} + ')'"><i class="fas fa-magic"></i> MỞ NGAY</button>
+                    <button class="btn-cart" th:onclick="'addToCart(' + ${box.boxId} + ')'"><i class="fas fa-cart-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- News Section -->
+<div class="container mt-5 pt-5 animate__animated animate__fadeInUp" th:if="${newsList != null and !newsList.isEmpty()}">
+    <h2 class="section-title" style="color: #ff006e; text-shadow: 0 0 20px #ff006e;">📰 TIN TỨC & SỰ KIỆN</h2>
+    <div class="news-grid">
+        <div class="news-card" th:each="news : ${newsList}">
+            <img th:src="${news.thumbnail}" class="news-thumb">
+            <div class="news-body">
+                <div class="news-title" th:text="${news.title}">Tiêu đề tin tức</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto">
+                    <span class="news-date"><i class="far fa-clock"></i> <span th:text="${#temporals.format(news.publishedAt, 'dd/MM/yyyy')}"></span></span>
+                    <a th:href="@{/news/{id}(id=${news.newsId})}" style="color: #66fcf1; font-size: 13px; font-weight: bold;">Xem thêm &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Premium -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="row">
+            <!-- Company Info -->
+            <div class="col-lg-4 mb-4">
+                <h5 class="footer-heading">WEBSITE THUỘC QUYỀN</h5>
+                <p class="mb-2 text-white fw-bold" style="font-size: 15px;">Công Ty Cổ Phần Công Nghệ & Giải Trí NXV</p>
+                <p class="small mb-1" style="color: #9ca9b8;">Mã Số Thuế: 0317420xxx</p>
+                <p class="small mb-3" style="color: #9ca9b8;">Cấp ngày 05/08/2025 bởi Sở KH&ĐT TP. Hà Nội</p>
+
+                <div class="bct-badge">
+                    <i class="fas fa-check-circle" style="color: #66fcf1;"></i> ĐÃ THÔNG BÁO BỘ CÔNG THƯƠNG
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-lg-4 mb-4">
+                <h5 class="footer-heading">LIÊN HỆ</h5>
+                <ul class="list-unstyled contact-info">
+                    <li><i class="fas fa-map-marker-alt"></i> <span>25 Vũ Ngọc Phan, Láng Hạ, Đống Đa, Hà Nội</span></li>
+                    <li><i class="fas fa-phone"></i> <span>0357.335.092 (8:00 - 21:00)</span></li>
+                    <li><i class="fas fa-envelope"></i> <span>realsteelworld2k5@gmail.com</span></li>
+                </ul>
+
+                <h6 class="text-white text-uppercase fw-bold mt-4 mb-3" style="font-size: 13px; letter-spacing: 1.5px;">ĐĂNG KÝ NHẬN TIN</h6>
+                <div class="input-group newsletter-form">
+                    <input type="email" class="form-control" placeholder="Nhập email của bạn...">
+                    <button class="btn btn-submit" type="button">GỬI</button>
+                </div>
+            </div>
+
+            <!-- Policies -->
+            <div class="col-lg-2 mb-4">
+                <h5 class="footer-heading">CHÍNH SÁCH</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#"><i class="fas fa-angle-right me-1"></i> Điều khoản sử dụng</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right me-1"></i> Chính sách thanh toán</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right me-1"></i> Chính sách bảo mật</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right me-1"></i> Chính sách giao hàng</a></li>
+                    <li><a href="#"><i class="fas fa-angle-right me-1"></i> Chính sách đổi trả</a></li>
+                </ul>
+            </div>
+
+            <!-- Social Connect -->
+            <div class="col-lg-2 mb-4">
+                <h5 class="footer-heading">KẾT NỐI</h5>
+                <div class="bg-white p-3 rounded text-center mb-3" style="border: 2px solid #66fcf1; background: rgba(255,255,255,0.95) !important;">
+                    <a href="#" class="text-dark fw-bold text-decoration-none d-block">
+                        <i class="fab fa-facebook fa-2x text-primary mb-2"></i><br>
+                        <span style="font-size: 14px;">NXV BlindBox</span>
+                    </a>
+                    <small class="text-muted" style="font-size: 12px;">10k+ Người theo dõi</small>
+                </div>
+                <div class="d-flex justify-content-start gap-3">
+                    <a href="#" class="text-white fs-5 hover-neon"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-white fs-5 hover-neon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white fs-5 hover-neon"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="text-white fs-5 hover-neon"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border-color: rgba(0, 243, 255, 0.2); margin-top: 40px; margin-bottom: 25px;">
+        <div class="text-center pt-2 d-flex justify-content-between align-items-center flex-wrap">
+            <p class="small mb-0" style="color: #8a97a8;">&copy; 2025 Mystery Box Shop. All rights reserved.</p>
+            <p class="small mb-0" style="color: #8a97a8;">Design & Developed by <span style="color: #66fcf1; font-weight: bold;">Nguyễn Xuân Vinh</span>.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scroll to Top Button -->
+<div class="scroll-top-btn" id="scrollTopBtn">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script th:inline="javascript">
+
+    // === PAGE LOADING ===
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 300);
+        }
+    });
+
+    window.addEventListener('load', function() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) {
+            loadingOverlay.classList.add('hidden');
+        }
+    });
+
+    setTimeout(() => {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+        }
+    }, 2000);
+
+    // === ENHANCED NAVBAR SCROLL EFFECT ===
+    window.addEventListener('scroll', function() {
+        const header = document.querySelector('header');
+        if (window.pageYOffset > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.pageYOffset > 50) {
+            document.querySelector('header').classList.add('scrolled');
+        }
+    });
+
+    // === SCROLL TO TOP BUTTON ===
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollTopBtn.style.display = 'flex';
+        } else {
+            scrollTopBtn.style.display = 'none';
+        }
+    });
+
+    scrollTopBtn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // === SCROLL TO SHOP ===
+    function scrollToShop() {
+        document.getElementById('shop-section').scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+
+    // === PREMIUM WINNER TICKER (ALWAYS RUNNING - NO PAUSE) ===
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch('/api/public/winners')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                const bar = document.getElementById('winner-bar');
+                const content = document.getElementById('ticker-content');
+                if (data && data.length > 0) {
+                    bar.style.display = 'block';
+                    let html = '';
+                    // Triple the data for seamless loop
+                    const loopData = [...data, ...data, ...data];
+                    loopData.forEach(w => {
+                        html += `
+                            <span class="winner-item">
+                                <i class="fas fa-trophy winner-icon"></i>
+                                <span>Chúc mừng</span>
+                                <span class="winner-highlight">${w.user}</span>
+                                <span>đã mở ra</span>
+                                <span class="rank-tag">RANK S</span>
+                                <span class="winner-item-name">${w.item}</span>
+                                <span>trong hộp</span>
+                                <span class="winner-box-name">${w.box}</span>!
+                            </span>
+                        `;
+                    });
+                    content.innerHTML = html;
+                }
+            })
+            .catch(err => console.log("Không có dữ liệu winner"));
+    });
+
+    // === OPEN BOX ===
+    function openBox(boxId) {
+        const userId = [[${nxvUser != null ? nxvUser.userId : 'null'}]];
+        if (userId === 'null') { promptLogin(); return; }
+
+        Swal.fire({
+            title: '🎰 Đang mở hộp...',
+            html: 'Chờ xíu nhé, nhân phẩm đang được tính toán... 🙏',
+            timerProgressBar: true,
+            background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+            color: '#fff',
+            showConfirmButton: false,
+            didOpen: () => { Swal.showLoading() }
+        });
+
+        fetch(`/api/blindbox/open?userId=${userId}&boxId=${boxId}`, { method: 'POST' })
+        .then(res => {
+            if (!res.ok) throw new Error("Lỗi");
+            return res.json();
+        })
+        .then(data => { showResult(data, boxId); })
+        .catch(() => Swal.fire({
+            icon: 'error',
+            title: '❌ Thất Bại',
+            text: 'Số dư không đủ hoặc lỗi hệ thống!',
+            background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+            color: '#fff',
+            confirmButtonColor: '#ff006e'
+        }));
+    }
+
+    // === ADD TO CART ===
+    function addToCart(boxId) {
+        const userId = [[${nxvUser != null ? nxvUser.userId : 'null'}]];
+        if (userId === 'null') { promptLogin(); return; }
+
+        fetch(`/api/cart/add?userId=${userId}&boxId=${boxId}`, { method: 'POST' })
+        .then(res => {
+            if(res.ok) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+                    color: '#fff',
+                    iconColor: '#66fcf1'
+                });
+                Toast.fire({ icon: 'success', title: '✅ Đã thêm vào giỏ!' });
+            }
+        });
+    }
+
+    // === SHOW RESULT ===
+    function showResult(data, currentBoxId) {
+        if(data.currentBalance != null) {
+            const formattedBalance = new Intl.NumberFormat('en-US').format(data.currentBalance);
+            const walletEl = document.getElementById('wallet-balance');
+            if(walletEl) walletEl.innerText = formattedBalance;
+        }
+
+        let color = '#fff';
+        let emoji = '✨';
+        if (data.rarity === 'S') { color = '#ffd700'; emoji = '👑'; }
+        else if (data.rarity === 'A') { color = '#ff4757'; emoji = '💎'; }
+        else if (data.rarity === 'B') { color = '#9b59b6'; emoji = '🔮'; }
+        else if (data.rarity === 'C') { color = '#3498db'; emoji = '⭐'; }
+
+        let pityHtml = "";
+        if (data.rarity !== 'S') {
+            pityHtml = `<div style="margin-top: 20px; padding: 15px; background: rgba(0, 243, 255, 0.05); border-radius: 10px; border: 2px dashed ${color};">
+                            <i class="fas fa-shield-alt" style="color: #66fcf1;"></i>
+                            <span style="color: #b8c5d6; font-size: 14px;">Bảo hiểm S:</span>
+                            <b style="color: #66fcf1; font-size: 18px;"> ${data.spinsUntilPity} </b>
+                            <span style="color: #b8c5d6; font-size: 14px;">lần nữa</span>
+                        </div>`;
+        } else {
+            pityHtml = `<div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05)); border-radius: 10px; border: 2px solid ${color}; color: ${color}; font-weight: bold; text-transform: uppercase; animation: pulse 1s infinite; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);">
+                            <i class="fas fa-crown"></i> CHÚC MỪNG NỔ HŨ! <i class="fas fa-trophy"></i>
+                        </div>`;
+        }
+
+        Swal.fire({
+            title: `<span style="color:${color}; text-shadow: 0 0 20px ${color}; font-size: 1.8rem;">${emoji} BẠN TRÚNG: ${data.rarity} ${emoji}</span>`,
+            html: `
+                <div class="animate__animated animate__zoomIn">
+                    <img src="${data.itemImage}"
+                         style="width:180px; height:180px; object-fit:contain; margin:15px auto;
+                                border: 3px solid ${color}; border-radius: 20px;
+                                box-shadow: 0 0 30px ${color};
+                                background: linear-gradient(135deg, rgba(15, 20, 35, 0.95), rgba(10, 14, 39, 0.95));">
+                    <h3 style="color: #fff; text-transform: uppercase; margin: 15px 0 5px 0; font-weight: 800; letter-spacing: 1px;">${data.itemName}</h3>
+                    <div style="font-size: 14px; color: #b8c5d6; margin-top: 10px;">
+                        Số dư còn lại: <span style="color: #66fcf1; font-weight: bold; font-size: 16px;">${new Intl.NumberFormat('en-US').format(data.currentBalance)} đ</span>
+                    </div>
+                    ${pityHtml}
+                </div>
+            `,
+            background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+            showCancelButton: true,
+            confirmButtonText: '🎲 Mở Tiếp!',
+            cancelButtonText: '❌ Đóng',
+            confirmButtonColor: color,
+            cancelButtonColor: '#333',
+            customClass: {
+                popup: 'animate__animated animate__zoomIn'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                openBox(currentBoxId);
+            }
+        });
+    }
+
+    // === PROMPT LOGIN ===
+    function promptLogin() {
+        Swal.fire({
+            title: '🔐 Chưa Đăng Nhập!',
+            text: 'Vui lòng đăng nhập để sử dụng tính năng này',
+            icon: 'warning',
+            confirmButtonText: 'Đăng Nhập Ngay',
+            cancelButtonText: 'Để Sau',
+            showCancelButton: true,
+            background: 'linear-gradient(135deg, #0a0e27, #1a1f3a)',
+            color: '#fff',
+            confirmButtonColor: '#66fcf1',
+            cancelButtonColor: '#333'
+        }).then((res) => {
+            if(res.isConfirmed) window.location.href='/login';
+        });
+    }
+
+    // === SCROLL REVEAL ANIMATION ===
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate__fadeInUp');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.box-card, .news-card, .top-list-item').forEach(el => {
+        observer.observe(el);
+    });
+</script>
+
+</body>
+</html>

@@ -4,6 +4,9 @@ import K23CNT1.NguyenXuanVinh.nxventity.NxvAchievements;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface NxvAchievementsRepository extends JpaRepository<NxvAchievements, Integer> {
+    Optional<NxvAchievements> findByCode(String code);
 }

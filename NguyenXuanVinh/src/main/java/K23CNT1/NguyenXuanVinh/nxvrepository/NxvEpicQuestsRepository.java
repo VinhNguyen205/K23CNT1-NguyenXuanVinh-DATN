@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface NxvEpicQuestsRepository extends JpaRepository<NxvEpicQuests, Long> {
     List<NxvEpicQuests> findByUser_UserIdOrderByCreatedAtDesc(Long userId);
+    List<NxvEpicQuests> findByParty_PartyIdOrderByCreatedAtDesc(Long partyId);
 
     @Query(value = "EXEC NxvSp_CalculateGPA @EpicQuestID = :epicQuestId", nativeQuery = true)
     BigDecimal executeCalculateGpaSp(@Param("epicQuestId") Long epicQuestId);

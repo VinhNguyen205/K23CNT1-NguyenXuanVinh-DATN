@@ -10,4 +10,6 @@ import java.util.List;
 public interface NxvStatLogsRepository extends JpaRepository<NxvStatLogs, Long> {
     List<NxvStatLogs> findTop100ByUser_UserIdOrderByCreatedAtDesc(Long userId);
     List<NxvStatLogs> findTop100ByUser_UserIdAndLogTypeIgnoreCaseOrderByCreatedAtDesc(Long userId, String logType);
+    List<NxvStatLogs> findTop200ByOrderByCreatedAtDesc();
+    List<NxvStatLogs> findTop200ByLogTypeIgnoreCaseOrderByCreatedAtDesc(String logType);
 }

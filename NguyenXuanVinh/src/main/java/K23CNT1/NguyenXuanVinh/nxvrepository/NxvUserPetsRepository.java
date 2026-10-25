@@ -10,5 +10,7 @@ import java.util.Optional;
 @Repository
 public interface NxvUserPetsRepository extends JpaRepository<NxvUserPets, Long> {
     List<NxvUserPets> findByUser_UserIdOrderByCreatedAtDesc(Long userId);
+    Optional<NxvUserPets> findByUserPetIdAndUser_UserId(Long userPetId, Long userId);
+    Optional<NxvUserPets> findFirstByUser_UserIdAndIsActiveTrue(Long userId);
     Optional<NxvUserPets> findFirstByUser_UserIdAndIsActiveTrueAndIsHibernatingFalseAndStageGreaterThanEqual(Long userId, Integer minStage);
 }

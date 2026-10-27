@@ -1,4 +1,4 @@
-﻿package K23CNT1.NguyenXuanVinh.nxvservice;
+package K23CNT1.NguyenXuanVinh.nxvservice;
 
 import K23CNT1.NguyenXuanVinh.nxvdto.NxvTaskQuestDtos.*;
 import K23CNT1.NguyenXuanVinh.nxventity.*;
@@ -575,7 +575,7 @@ public class NxvTaskQuestService {
                 .isExcluded(false)
                 .build());
 
-        BigDecimal calculatedGpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId); if (calcGpa != null) calcGpa = calcGpa.setScale(2, java.math.RoundingMode.HALF_UP);
+        BigDecimal calculatedGpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId); if (calculatedGpa != null) calculatedGpa = calculatedGpa.setScale(2, java.math.RoundingMode.HALF_UP);
         return buildEpicQuestDetailDto(eq, calculatedGpa);
     }
 
@@ -599,7 +599,7 @@ public class NxvTaskQuestService {
 
         BigDecimal gpa = null;
         if (Boolean.TRUE.equals(eq.getIsGpaQuest())) {
-            gpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId); if (calcGpa != null) calcGpa = calcGpa.setScale(2, java.math.RoundingMode.HALF_UP);
+            gpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId); if (gpa != null) gpa = gpa.setScale(2, java.math.RoundingMode.HALF_UP);
             BigDecimal target = eq.getTargetGpa() != null ? eq.getTargetGpa() : new BigDecimal("3.20");
             if (gpa == null || gpa.compareTo(target) < 0) {
                 throw new AppException(ErrorCode.BAD_REQUEST,

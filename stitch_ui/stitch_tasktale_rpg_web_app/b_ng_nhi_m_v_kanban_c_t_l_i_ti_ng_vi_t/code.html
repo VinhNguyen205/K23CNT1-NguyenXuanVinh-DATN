@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&amp;family=Space+Grotesk:wght@700&amp;family=Space+Mono:wght@700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-primary": "#ffffff",
+          "primary": "#b61722",
+          "on-tertiary-fixed-variant": "#653e00",
+          "on-surface-variant": "#5b403e",
+          "tertiary-fixed-dim": "#ffb95f",
+          "secondary-fixed-dim": "#adc6ff",
+          "on-error": "#ffffff",
+          "error-container": "#ffdad6",
+          "background": "#fff8f5",
+          "inverse-on-surface": "#f7efeb",
+          "secondary-fixed": "#d8e2ff",
+          "inverse-surface": "#33302d",
+          "on-error-container": "#93000a",
+          "tertiary-container": "#a36700",
+          "on-secondary": "#ffffff",
+          "primary-container": "#da3437",
+          "primary-fixed": "#ffdad7",
+          "surface-container-high": "#eee7e3",
+          "tertiary-fixed": "#ffddb8",
+          "surface-dim": "#e0d8d5",
+          "on-secondary-fixed-variant": "#004395",
+          "on-secondary-container": "#fefcff",
+          "inverse-primary": "#ffb3ad",
+          "on-tertiary-container": "#fffbff",
+          "on-background": "#1e1b19",
+          "error": "#ba1a1a",
+          "surface-tint": "#b91a24",
+          "on-secondary-fixed": "#001a42",
+          "secondary-container": "#2170e4",
+          "on-tertiary-fixed": "#2a1700",
+          "outline-variant": "#e4beba",
+          "on-surface": "#1e1b19",
+          "surface-container-low": "#faf2ee",
+          "on-primary-container": "#fffbff",
+          "on-tertiary": "#ffffff",
+          "surface-container-lowest": "#ffffff",
+          "surface-bright": "#fff8f5",
+          "outline": "#8f6f6d",
+          "surface-container": "#f4ece8",
+          "on-primary-fixed": "#410004",
+          "primary-fixed-dim": "#ffb3ad",
+          "surface": "#fff8f5",
+          "secondary": "#0058be",
+          "surface-variant": "#e9e1dd",
+          "surface-container-highest": "#e9e1dd",
+          "on-primary-fixed-variant": "#930013",
+          "tertiary": "#825100"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-sm": "0.5rem",
+          "gutter-mobile": "1rem",
+          "margin": "2rem",
+          "space-xl": "2.5rem",
+          "space-md": "1rem",
+          "space-xs": "0.25rem",
+          "gutter": "1.5rem",
+          "margin-mobile": "1rem",
+          "space-lg": "1.5rem"
+        },
+        "fontFamily": {
+          "headline-xl": [
+            "Space Grotesk"
+          ],
+          "title-retro": [
+            "Space Mono"
+          ],
+          "headline-xl-mobile": [
+            "Space Grotesk"
+          ],
+          "label-sm": [
+            "Space Mono"
+          ],
+          "stat-counter": [
+            "Space Mono"
+          ],
+          "headline-md": [
+            "Space Grotesk"
+          ],
+          "body-md": [
+            "Plus Jakarta Sans"
+          ],
+          "headline-lg": [
+            "Space Grotesk"
+          ],
+          "headline-lg-mobile": [
+            "Space Grotesk"
+          ],
+          "headline-sm": [
+            "Space Grotesk"
+          ],
+          "label-md": [
+            "Space Mono"
+          ],
+          "body-sm": [
+            "Plus Jakarta Sans"
+          ],
+          "body-lg": [
+            "Plus Jakarta Sans"
+          ]
+        },
+        "fontSize": {
+          "headline-xl": [
+            "40px",
+            {
+              "lineHeight": "48px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "700"
+            }
+          ],
+          "title-retro": [
+            "16px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "0.08em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-xl-mobile": [
+            "28px",
+            {
+              "lineHeight": "36px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "700"
+            }
+          ],
+          "label-sm": [
+            "10px",
+            {
+              "lineHeight": "14px",
+              "letterSpacing": "0.08em",
+              "fontWeight": "700"
+            }
+          ],
+          "stat-counter": [
+            "18px",
+            {
+              "lineHeight": "20px",
+              "letterSpacing": "0.04em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-md": [
+            "24px",
+            {
+              "lineHeight": "32px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "700"
+            }
+          ],
+          "body-md": [
+            "16px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "0em",
+              "fontWeight": "500"
+            }
+          ],
+          "headline-lg": [
+            "32px",
+            {
+              "lineHeight": "40px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-lg-mobile": [
+            "24px",
+            {
+              "lineHeight": "32px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "700"
+            }
+          ],
+          "headline-sm": [
+            "20px",
+            {
+              "lineHeight": "28px",
+              "letterSpacing": "0em",
+              "fontWeight": "700"
+            }
+          ],
+          "label-md": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.06em",
+              "fontWeight": "700"
+            }
+          ],
+          "body-sm": [
+            "14px",
+            {
+              "lineHeight": "20px",
+              "letterSpacing": "0em",
+              "fontWeight": "500"
+            }
+          ],
+          "body-lg": [
+            "18px",
+            {
+              "lineHeight": "28px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "500"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased min-h-screen"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest border-r-2 border-black z-50 flex flex-col justify-between shadow-[4px_0px_0px_#000000]"><div class="flex flex-col"><div class="h-20 px-space-lg flex items-center gap-space-sm border-b-2 border-black bg-surface-container"><div class="w-9 h-9 border-2 border-black bg-primary flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-on-primary text-[20px]">swords</span></div><div class="flex flex-col"><span class="font-title-retro text-title-retro uppercase text-on-surface leading-none">TASKTALE</span><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">RPG V1.0 // MÙA 1</span></div></div><div class="px-space-md py-space-sm"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider px-space-xs">BẢNG ĐIỀU KHIỂN</span></div><nav class="flex flex-col gap-space-xs px-space-md" data-active-classes="bg-surface-container text-on-surface border-2 border-black shadow-[2px_2px_0px_#000000] translate-x-1"><a class="flex items-center gap-space-sm px-space-md py-space-sm border-2 border-transparent font-title-retro text-title-retro uppercase text-on-surface-variant hover:border-black hover:bg-surface-container-high hover:text-on-surface hover:shadow-[2px_2px_0px_#000000] transition-all" data-path="dashboard-tasks-kanban" href="#"><span class="material-symbols-outlined text-[18px]">view_kanban</span><span>BẢNG NHIỆM VỤ</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm border-2 border-transparent font-title-retro text-title-retro uppercase text-on-surface-variant hover:border-black hover:bg-surface-container-high hover:text-on-surface hover:shadow-[2px_2px_0px_#000000] transition-all" data-path="epic-quests-university-gpa" href="#"><span class="material-symbols-outlined text-[18px]">assignment</span><span>NHIỆM VỤ SỬ THI</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm border-2 border-transparent font-title-retro text-title-retro uppercase text-on-surface-variant hover:border-black hover:bg-surface-container-high hover:text-on-surface hover:shadow-[2px_2px_0px_#000000] transition-all" data-path="skill-tree-classes-nodes" href="#"><span class="material-symbols-outlined text-[18px]">account_tree</span><span>CÂY KỸ NĂNG</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm border-2 border-transparent font-title-retro text-title-retro uppercase text-on-surface-variant hover:border-black hover:bg-surface-container-high hover:text-on-surface hover:shadow-[2px_2px_0px_#000000] transition-all" data-path="inventory-market-gear-gacha" href="#"><span class="material-symbols-outlined text-[18px]">inventory_2</span><span>KHO ĐỒ &amp; CỬA HÀNG</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm border-2 border-transparent font-title-retro text-title-retro uppercase text-on-surface-variant hover:border-black hover:bg-surface-container-high hover:text-on-surface hover:shadow-[2px_2px_0px_#000000] transition-all" data-path="pet-system-familiars-chat" href="#"><span class="material-symbols-outlined text-[18px]">pets</span><span>LINH THÚ</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm border-2 border-transparent font-title-retro text-title-retro uppercase text-on-surface-variant hover:border-black hover:bg-surface-container-high hover:text-on-surface hover:shadow-[2px_2px_0px_#000000] transition-all" data-path="social-party-co-op-leaderboard" href="#"><span class="material-symbols-outlined text-[18px]">group</span><span>TỔ ĐỘI &amp; BANG HỘI</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm border-2 border-transparent font-title-retro text-title-retro uppercase text-on-surface-variant hover:border-black hover:bg-surface-container-high hover:text-on-surface hover:shadow-[2px_2px_0px_#000000] transition-all" data-path="admin-dashboard-system-config" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span><span>CẤU HÌNH HỆ THỐNG</span></a></nav></div><div class="p-space-md border-t-2 border-black bg-surface-container"><div class="p-space-sm border-2 border-black bg-surface-container-lowest shadow-[2px_2px_0px_#000000] flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">HẠT GIỐNG HẦM NGỤC</span><span class="font-label-sm text-label-sm font-bold text-primary">CHƯƠNG-III</span></div><div class="h-2 w-full bg-surface-variant border border-black overflow-hidden"><div class="h-full bg-primary w-2/3"></div></div></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-20 bg-surface border-b-2 border-black z-40 px-space-lg flex items-center justify-between shadow-[0_4px_0px_#000000]"><div class="flex items-center gap-space-md"><div class="relative w-12 h-12 border-2 border-black bg-surface-container-highest shadow-[2px_2px_0px_#000000] flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[28px]">military_tech</span><span class="absolute -bottom-2 -right-2 px-1 bg-tertiary-fixed text-on-tertiary-fixed border border-black font-label-sm text-label-sm font-bold">42</span></div><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-title-retro text-title-retro uppercase text-on-surface leading-none">THORIN</span><span class="px-1.5 py-0.5 border border-black bg-surface-container font-label-sm text-label-sm uppercase text-on-surface font-bold">ĐẠI PHÁP SƯ</span></div><span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-0.5">HIỆU ỨNG: HỐI HẢ TẬP TRUNG_II</span></div></div><div class="hidden xl:flex items-center gap-space-md"><div class="w-36 flex flex-col gap-1"><div class="flex justify-between items-center font-label-sm text-label-sm font-bold"><span class="text-primary">HP</span><span class="text-on-surface">100/100</span></div><div class="h-4 w-full bg-surface-container-high border-2 border-black relative overflow-hidden"><div class="h-full bg-primary w-full"></div></div></div><div class="w-36 flex flex-col gap-1"><div class="flex justify-between items-center font-label-sm text-label-sm font-bold"><span class="text-secondary">MP</span><span class="text-on-surface">85/100</span></div><div class="h-4 w-full bg-surface-container-high border-2 border-black relative overflow-hidden"><div class="h-full bg-secondary w-[85%]"></div></div></div><div class="w-40 flex flex-col gap-1"><div class="flex justify-between items-center font-label-sm text-label-sm font-bold"><span class="text-tertiary-container">EXP</span><span class="text-on-surface">2450/3000</span></div><div class="h-4 w-full bg-surface-container-high border-2 border-black relative overflow-hidden"><div class="h-full bg-tertiary-fixed-dim w-[81%]"></div></div></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-1.5 px-space-sm py-1.5 border-2 border-black bg-tertiary-fixed shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-on-tertiary-fixed text-[18px]">monetization_on</span><span class="font-stat-counter text-stat-counter text-on-tertiary-fixed">1,420 VÀNG</span></div><button class="flex items-center gap-1 px-space-sm py-1.5 border-2 border-black bg-primary text-on-primary font-label-md text-label-md uppercase tracking-wider shadow-[2px_2px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all" type="button"><span class="material-symbols-outlined text-[16px]">skull</span><span>HỒI SINH</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-20 w-full min-h-screen bg-background px-space-lg py-space-md"><div class="flex flex-col w-full gap-space-lg">
+<!-- TOP CONTROL DECK: SEARCH & MULTI-TIER FILTERS -->
+<section class="flex flex-col gap-space-md p-space-md bg-surface-container border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+<div class="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-space-md">
+<!-- Search Bar -->
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-surface-container-lowest border-2 border-black font-title-retro text-title-retro text-on-surface placeholder:text-outline shadow-[2px_2px_0px_0px_#000000] focus:outline-none focus:shadow-[4px_4px_0px_0px_#2170e4]" id="quest-search-input" placeholder="TÌM KIẾM NHIỆM VỤ..." type="text"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 font-label-sm text-label-sm px-1.5 py-0.5 bg-surface-container-high border border-black text-on-surface-variant">CMD+K</span>
+</div>
+<!-- Action & Quick Stats -->
+<div class="flex items-center gap-space-sm self-end xl:self-auto">
+<div class="hidden sm:flex items-center gap-2 px-space-sm py-2 bg-surface-container-lowest border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-secondary text-[18px]">hourglass_top</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">CHU KỲ KẾT THÚC:</span>
+<span class="font-stat-counter text-stat-counter text-primary font-bold">14:22:09</span>
+</div>
+<button class="flex items-center gap-2 px-space-md py-2.5 bg-primary text-on-primary border-2 border-black font-title-retro text-title-retro shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all" id="forge-quest-btn">
+<span class="material-symbols-outlined text-[20px]">add_box</span>
+<span>+ TẠO NHIỆM VỤ MỚI</span>
+</button>
+</div>
+</div>
+<!-- FILTER ROWS -->
+<div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-sm pt-space-xs border-t-2 border-black">
+<!-- Domain / Urgency Category Filters -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mr-1">LĨNH VỰC:</span>
+<button class="filter-realm px-2.5 py-1 bg-surface-container-lowest border-2 border-black text-on-surface font-label-md text-label-md shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-container-high active:translate-x-0.5 active:translate-y-0.5" data-filter="all">TẤT CẢ (8)</button>
+<button class="filter-realm px-2.5 py-1 bg-secondary-fixed border-2 border-black text-on-secondary-fixed font-label-md text-label-md shadow-[2px_2px_0px_0px_#000000] hover:bg-secondary-fixed-dim" data-filter="academic">
+<span class="inline-block w-2 h-2 bg-secondary mr-1"></span>HỌC THUẬT (3)
+        </button>
+<button class="filter-realm px-2.5 py-1 bg-primary-fixed border-2 border-black text-on-primary-fixed font-label-md text-label-md shadow-[2px_2px_0px_0px_#000000] hover:bg-primary-fixed-dim" data-filter="health">
+<span class="inline-block w-2 h-2 bg-primary mr-1"></span>SỨC KHỎE (2)
+        </button>
+<button class="filter-realm px-2.5 py-1 bg-tertiary-fixed border-2 border-black text-on-tertiary-fixed font-label-md text-label-md shadow-[2px_2px_0px_0px_#000000] hover:bg-tertiary-fixed-dim" data-filter="coding">
+<span class="inline-block w-2 h-2 bg-tertiary-container mr-1"></span>LẬP TRÌNH (2)
+        </button>
+<button class="filter-realm px-2.5 py-1 bg-surface-container-highest border-2 border-black text-on-surface font-label-md text-label-md shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-variant" data-filter="life">
+<span class="inline-block w-2 h-2 bg-inverse-surface mr-1"></span>ĐỜI SỐNG (1)
+        </button>
+</div>
+<!-- Difficulty Rank Chips -->
+<div class="flex items-center gap-1.5 self-stretch lg:self-auto overflow-x-auto pb-1 lg:pb-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mr-1">HẠNG:</span>
+<button class="rank-btn px-2 py-0.5 bg-black text-white border-2 border-black font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000]" data-rank="all">TẤT CẢ</button>
+<button class="rank-btn px-2 py-0.5 bg-surface-container-lowest text-on-surface border-2 border-black font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-container" data-rank="E">E</button>
+<button class="rank-btn px-2 py-0.5 bg-surface-container-lowest text-on-surface border-2 border-black font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-container" data-rank="D">D</button>
+<button class="rank-btn px-2 py-0.5 bg-surface-container-lowest text-on-surface border-2 border-black font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-container" data-rank="C">C</button>
+<button class="rank-btn px-2 py-0.5 bg-secondary-fixed border-2 border-black text-on-secondary-fixed font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000] hover:bg-secondary-fixed-dim" data-rank="B">B</button>
+<button class="rank-btn px-2 py-0.5 bg-tertiary-fixed border-2 border-black text-on-tertiary-fixed font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000] hover:bg-tertiary-fixed-dim" data-rank="A">A</button>
+<button class="rank-btn px-2 py-0.5 bg-primary-fixed border-2 border-black text-primary font-title-retro text-title-retro font-bold shadow-[2px_2px_0px_0px_#000000] hover:bg-primary-fixed-dim" data-rank="S">S</button>
+</div>
+</div>
+</section>
+<!-- KANBAN BOARD MATRIX (3-COLUMNS) -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg items-start">
+<!-- ==================== COLUMN 1: ACTIVE ROSTER (TODO) ==================== -->
+<div class="kanban-col flex flex-col gap-space-md bg-surface-container-low border-2 border-black p-space-md shadow-[4px_4px_0px_0px_#000000]" id="col-todo">
+<!-- Column Header -->
+<div class="flex items-center justify-between pb-space-sm border-b-2 border-black">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 bg-on-surface border border-black"></span>
+<h2 class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-tight">DANH SÁCH CHỜ</h2>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 bg-surface-container-lowest border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
+<span class="font-label-md text-label-md font-bold text-on-surface" id="count-todo">03 NHIỆM VỤ</span>
+</div>
+</div>
+<!-- Cards Container -->
+<div class="flex flex-col gap-space-md" id="cards-todo">
+<!-- CARD 1: S-Rank Raft Consensus -->
+<article class="quest-card flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000000] transition-all" data-category="academic" data-rank="S" id="quest-101">
+<!-- Card Top Bar: Urgency & Rank -->
+<div class="flex items-center justify-between px-space-md py-space-xs bg-surface-container border-b-2 border-black">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-primary text-on-primary font-label-sm text-label-sm uppercase font-bold border border-black">NGUY CẤP</span>
+<span class="px-1.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase border border-black">HỌC THUẬT</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-primary-fixed border border-black shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-primary text-[14px]">local_fire_department</span>
+<span class="font-title-retro text-title-retro text-primary font-bold">HẠNG S</span>
+</div>
+</div>
+<!-- Card Body -->
+<div class="p-space-md flex flex-col gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">CS402: Hệ phân tán Đồng thuận Raft</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Triển khai nhịp tim bầu chọn lãnh đạo, thử nghiệm sao chép nhật ký RPC và xử lý kịch bản phân vùng mạng biên.</p>
+<!-- Reward / Penalty Badges -->
+<div class="grid grid-cols-2 gap-1.5 pt-1">
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">stars</span>
+<span class="font-stat-counter text-stat-counter">+350 EXP</span>
+</div>
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed-dim border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">monetization_on</span>
+<span class="font-stat-counter text-stat-counter">+120 VÀNG</span>
+</div>
+<div class="col-span-2 flex items-center justify-between px-2 py-1 bg-error-container border border-black text-on-error-container shadow-[1px_1px_0px_0px_#000000]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-error text-[16px]">heart_broken</span>
+<span class="font-label-md text-label-md font-bold text-error">-30 HP PHẠT</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span class="font-stat-counter text-stat-counter text-primary font-bold">CÒN LẠI 04G 12P</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card Actions Footer -->
+<div class="p-space-sm bg-surface-container border-t-2 border-black grid grid-cols-3 gap-1.5">
+<button class="action-btn-slay flex items-center justify-center gap-1 py-1.5 bg-primary text-on-primary border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5" title="Diệt">
+<span class="material-symbols-outlined text-[16px]">swords</span>
+<span>DIỆT</span>
+</button>
+<button class="action-btn-freeze flex items-center justify-center gap-1 py-1.5 bg-secondary-fixed text-on-secondary-fixed border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5" title="Đóng băng đếm ngược phạt">
+<span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span>
+<span>ĐÓNG BĂNG</span>
+</button>
+<button class="action-btn-skip flex items-center justify-center gap-1 py-1.5 bg-surface-container-lowest text-on-surface border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] hover:bg-error-container hover:text-on-error-container active:translate-x-0.5 active:translate-y-0.5" title="Bỏ qua an toàn (-25 MP)">
+<span class="material-symbols-outlined text-[16px]">fast_forward</span>
+<span>BỎ QUA</span>
+</button>
+</div>
+</article>
+<!-- CARD 2: B-Rank Grocery Hunt -->
+<article class="quest-card flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000000] transition-all" data-category="life" data-rank="B" id="quest-102">
+<div class="flex items-center justify-between px-space-md py-space-xs bg-surface-container border-b-2 border-black">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-surface-container-highest text-on-surface font-label-sm text-label-sm uppercase font-bold border border-black">BÌNH THƯỜNG</span>
+<span class="px-1.5 py-0.5 bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase border border-black">ĐỜI SỐNG</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-secondary-fixed border border-black shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-secondary text-[14px]">shield</span>
+<span class="font-title-retro text-title-retro text-secondary font-bold">HẠNG B</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Đi săn nhu yếu phẩm tuần của Bang</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Trứng, ức gà, rau xanh đậm, sữa yến mạch và hạt cà phê pha mana năng lượng cao.</p>
+<div class="grid grid-cols-2 gap-1.5 pt-1">
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">stars</span>
+<span class="font-stat-counter text-stat-counter">+110 EXP</span>
+</div>
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed-dim border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">monetization_on</span>
+<span class="font-stat-counter text-stat-counter">+45 VÀNG</span>
+</div>
+<div class="col-span-2 flex items-center justify-between px-2 py-1 bg-surface-container-high border border-black text-on-surface-variant shadow-[1px_1px_0px_0px_#000000]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-outline text-[16px]">heart_broken</span>
+<span class="font-label-md text-label-md font-bold">-10 HP PHẠT</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span class="font-stat-counter text-stat-counter text-on-surface font-bold">HÔM NAY 21:00</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container border-t-2 border-black grid grid-cols-3 gap-1.5">
+<button class="action-btn-slay flex items-center justify-center gap-1 py-1.5 bg-primary text-on-primary border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">swords</span>
+<span>DIỆT</span>
+</button>
+<button class="action-btn-freeze flex items-center justify-center gap-1 py-1.5 bg-secondary-fixed text-on-secondary-fixed border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span>
+<span>ĐÓNG BĂNG</span>
+</button>
+<button class="action-btn-skip flex items-center justify-center gap-1 py-1.5 bg-surface-container-lowest text-on-surface border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] hover:bg-error-container hover:text-on-error-container active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">fast_forward</span>
+<span>BỎ QUA</span>
+</button>
+</div>
+</article>
+<!-- CARD 3: E-Rank Daily Anki Review -->
+<article class="quest-card flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000000] transition-all" data-category="academic" data-rank="E" id="quest-103">
+<div class="flex items-center justify-between px-space-md py-space-xs bg-surface-container border-b-2 border-black">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-surface-container-highest text-on-surface font-label-sm text-label-sm uppercase font-bold border border-black">THƯỜNG NHẬT</span>
+<span class="px-1.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase border border-black">HỌC THUẬT</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-surface-container-high border border-black shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-on-surface-variant text-[14px]">psychology</span>
+<span class="font-title-retro text-title-retro text-on-surface-variant font-bold">HẠNG E</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Lặp lại ngắt quãng: 60 Ký tự Vocab</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Hoàn thành bộ thẻ kanji buổi sáng trước khi buổi thảo luận phòng thí nghiệm chiều bắt đầu.</p>
+<div class="grid grid-cols-2 gap-1.5 pt-1">
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">stars</span>
+<span class="font-stat-counter text-stat-counter">+50 EXP</span>
+</div>
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed-dim border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">monetization_on</span>
+<span class="font-stat-counter text-stat-counter">+15 VÀNG</span>
+</div>
+<div class="col-span-2 flex items-center justify-between px-2 py-1 bg-surface-container-high border border-black text-on-surface-variant shadow-[1px_1px_0px_0px_#000000]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-outline text-[16px]">heart_broken</span>
+<span class="font-label-md text-label-md font-bold">-5 HP PHẠT</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span class="font-stat-counter text-stat-counter text-on-surface font-bold">NGÀY MAI</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container border-t-2 border-black grid grid-cols-3 gap-1.5">
+<button class="action-btn-slay flex items-center justify-center gap-1 py-1.5 bg-primary text-on-primary border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">swords</span>
+<span>DIỆT</span>
+</button>
+<button class="action-btn-freeze flex items-center justify-center gap-1 py-1.5 bg-secondary-fixed text-on-secondary-fixed border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span>
+<span>ĐÓNG BĂNG</span>
+</button>
+<button class="action-btn-skip flex items-center justify-center gap-1 py-1.5 bg-surface-container-lowest text-on-surface border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] hover:bg-error-container hover:text-on-error-container active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">fast_forward</span>
+<span>BỎ QUA</span>
+</button>
+</div>
+</article>
+</div>
+</div>
+<!-- ==================== COLUMN 2: ACTIVE CASTING (IN PROGRESS) ==================== -->
+<div class="kanban-col flex flex-col gap-space-md bg-secondary-fixed/30 border-2 border-black p-space-md shadow-[4px_4px_0px_0px_#000000]" id="col-in-progress">
+<!-- Column Header -->
+<div class="flex items-center justify-between pb-space-sm border-b-2 border-black">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 bg-secondary border border-black animate-pulse"></span>
+<h2 class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-tight">ĐANG THI TRIỂN / CHIẾN ĐẤU</h2>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 bg-surface-container-lowest border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
+<span class="font-label-md text-label-md font-bold text-secondary" id="count-progress">02 ĐANG LÀM</span>
+</div>
+</div>
+<!-- In-Battle Combat Banner -->
+<div class="flex items-center gap-2 px-space-sm py-2 bg-secondary text-on-secondary border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span class="font-title-retro text-title-retro uppercase">HÚT MANA HOẠT ĐỘNG: 1.5X TỶ LỆ EXP</span>
+</div>
+<div class="flex flex-col gap-space-md" id="cards-progress">
+<!-- CARD 4: Rank A Heavy Squat -->
+<article class="quest-card flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000000] transition-all" data-category="health" data-rank="A" id="quest-201">
+<div class="flex items-center justify-between px-space-md py-space-xs bg-surface-container border-b-2 border-black">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-primary-container text-on-primary font-label-sm text-label-sm uppercase font-bold border border-black">KHẨN CẤP</span>
+<span class="px-1.5 py-0.5 bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm uppercase border border-black">SỨC KHỎE</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-tertiary-fixed border border-black shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-tertiary text-[14px]">fitness_center</span>
+<span class="font-title-retro text-title-retro text-on-tertiary-fixed font-bold">HẠNG A</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Thành trì Thép: Giao thức Squat nặng 5x5</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Khởi động kim tự tháp đến hiệp chính 315lbs. Ghi lại dữ liệu chuyển động để huấn luyện viên xem xét.</p>
+<!-- Combat Progress Gauge -->
+<div class="flex flex-col gap-1 pt-1">
+<div class="flex justify-between items-center font-label-sm text-label-sm">
+<span class="text-on-surface-variant uppercase font-bold">TIẾN ĐỘ THI TRIỂN (HIỆP 3/5)</span>
+<span class="font-title-retro text-title-retro text-secondary">60%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-high border-2 border-black relative overflow-hidden">
+<div class="h-full bg-secondary w-3/5"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-1.5 pt-1">
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">stars</span>
+<span class="font-stat-counter text-stat-counter">+280 EXP</span>
+</div>
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed-dim border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">monetization_on</span>
+<span class="font-stat-counter text-stat-counter">+80 VÀNG</span>
+</div>
+<div class="col-span-2 flex items-center justify-between px-2 py-1 bg-error-container border border-black text-on-error-container shadow-[1px_1px_0px_0px_#000000]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-error text-[16px]">heart_broken</span>
+<span class="font-label-md text-label-md font-bold text-error">-20 HP PHẠT</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span class="font-stat-counter text-stat-counter text-primary font-bold">CÒN 01G 45P</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container border-t-2 border-black grid grid-cols-3 gap-1.5">
+<button class="action-btn-slay flex items-center justify-center gap-1 py-1.5 bg-primary text-on-primary border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">swords</span>
+<span>DIỆT</span>
+</button>
+<button class="action-btn-freeze flex items-center justify-center gap-1 py-1.5 bg-secondary-fixed text-on-secondary-fixed border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span>
+<span>ĐÓNG BĂNG</span>
+</button>
+<button class="action-btn-skip flex items-center justify-center gap-1 py-1.5 bg-surface-container-lowest text-on-surface border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] hover:bg-error-container hover:text-on-error-container active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">fast_forward</span>
+<span>BỎ QUA</span>
+</button>
+</div>
+</article>
+<!-- CARD 5: Rank S Chapter 3 Thesis -->
+<article class="quest-card flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000000] transition-all" data-category="academic" data-rank="S" id="quest-202">
+<div class="flex items-center justify-between px-space-md py-space-xs bg-surface-container border-b-2 border-black">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-primary text-on-primary font-label-sm text-label-sm uppercase font-bold border border-black">NGUY CẤP</span>
+<span class="px-1.5 py-0.5 bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase border border-black">HỌC THUẬT</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-primary-fixed border border-black shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-primary text-[14px]">auto_stories</span>
+<span class="font-title-retro text-title-retro text-primary font-bold">HẠNG S</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">Luận văn Chương 3 Mô hình dữ liệu</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Phác thảo phần phương pháp luận so sánh truy xuất véc-tơ với chỉ mục đồ thị quan hệ.</p>
+<div class="flex flex-col gap-1 pt-1">
+<div class="flex justify-between items-center font-label-sm text-label-sm">
+<span class="text-on-surface-variant uppercase font-bold">TIẾN ĐỘ THI TRIỂN (2,400 / 5,000 TỪ)</span>
+<span class="font-title-retro text-title-retro text-secondary">48%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-high border-2 border-black relative overflow-hidden">
+<div class="h-full bg-secondary w-[48%]"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-1.5 pt-1">
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">stars</span>
+<span class="font-stat-counter text-stat-counter">+420 EXP</span>
+</div>
+<div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed-dim border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+<span class="material-symbols-outlined text-[16px]">monetization_on</span>
+<span class="font-stat-counter text-stat-counter">+180 VÀNG</span>
+</div>
+<div class="col-span-2 flex items-center justify-between px-2 py-1 bg-error-container border border-black text-on-error-container shadow-[1px_1px_0px_0px_#000000]">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-error text-[16px]">heart_broken</span>
+<span class="font-label-md text-label-md font-bold text-error">-40 HP PHẠT</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span class="font-stat-counter text-stat-counter text-primary font-bold">CÒN 08G 50P</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container border-t-2 border-black grid grid-cols-3 gap-1.5">
+<button class="action-btn-slay flex items-center justify-center gap-1 py-1.5 bg-primary text-on-primary border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">swords</span>
+<span>DIỆT</span>
+</button>
+<button class="action-btn-freeze flex items-center justify-center gap-1 py-1.5 bg-secondary-fixed text-on-secondary-fixed border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span>
+<span>ĐÓNG BĂNG</span>
+</button>
+<button class="action-btn-skip flex items-center justify-center gap-1 py-1.5 bg-surface-container-lowest text-on-surface border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] hover:bg-error-container hover:text-on-error-container active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">fast_forward</span>
+<span>BỎ QUA</span>
+</button>
+</div>
+</article>
+</div>
+</div>
+<!-- ==================== COLUMN 3: VAULT ARCHIVE (DONE) ==================== -->
+<div class="kanban-col flex flex-col gap-space-md bg-tertiary-fixed/20 border-2 border-black p-space-md shadow-[4px_4px_0px_0px_#000000]" id="col-done">
+<!-- Column Header -->
+<div class="flex items-center justify-between pb-space-sm border-b-2 border-black">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 bg-tertiary-container border border-black"></span>
+<h2 class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-tight">KHO LƯU TRỮ</h2>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-0.5 bg-surface-container-lowest border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
+<span class="font-label-md text-label-md font-bold text-tertiary-container" id="count-done">03 ĐÃ HOÀN TẤT</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-md" id="cards-done">
+<!-- CARD 6: Slayed Rust Async Runtime -->
+<article class="quest-card opacity-90 flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:opacity-100 transition-all" data-category="coding" data-rank="A" id="quest-301">
+<div class="flex items-center justify-between px-space-md py-space-xs bg-tertiary-fixed/40 border-b-2 border-black">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-tertiary-container text-on-tertiary font-label-sm text-label-sm uppercase font-bold border border-black">ĐÃ DIỆT</span>
+<span class="px-1.5 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase border border-black">LẬP TRÌNH</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-surface-container-lowest border border-black">
+<span class="material-symbols-outlined text-tertiary text-[14px]">check_circle</span>
+<span class="font-title-retro text-title-retro text-on-surface font-bold">HẠNG A</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-through decoration-2 decoration-black leading-tight">Chẩn đoán Tokio Async Executor trong Rust</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Phân tích rò rỉ bộ nhớ ở các worker reactor Tokio. Không ghi nhận tiến trình rác.</p>
+<div class="flex items-center justify-between px-2 py-1.5 bg-tertiary-fixed border border-black text-on-tertiary-fixed">
+<span class="font-label-sm text-label-sm font-bold uppercase">PHẦN THƯỞNG ĐÃ NHẬN:</span>
+<span class="font-stat-counter text-stat-counter font-bold">+260 EXP / +90 VÀNG</span>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container border-t-2 border-black flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ĐÃ DIỆT LÚC 09:41 SA</span>
+<button class="action-btn-restore flex items-center gap-1 px-2.5 py-1 bg-surface-container-lowest border-2 border-black font-label-md text-label-md font-bold text-on-surface shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-container-high active:translate-x-0.5 active:translate-y-0.5" title="Chuyển lại về hoạt động">
+<span class="material-symbols-outlined text-[16px]">replay</span>
+<span>KHÔI PHỤC</span>
+</button>
+</div>
+</article>
+<!-- CARD 7: Slayed 5K Zone 2 Run -->
+<article class="quest-card opacity-90 flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:opacity-100 transition-all" data-category="health" data-rank="C" id="quest-302">
+<div class="flex items-center justify-between px-space-md py-space-xs bg-tertiary-fixed/40 border-b-2 border-black">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-tertiary-container text-on-tertiary font-label-sm text-label-sm uppercase font-bold border border-black">ĐÃ DIỆT</span>
+<span class="px-1.5 py-0.5 bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm uppercase border border-black">SỨC KHỎE</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-surface-container-lowest border border-black">
+<span class="material-symbols-outlined text-tertiary text-[14px]">check_circle</span>
+<span class="font-title-retro text-title-retro text-on-surface font-bold">HẠNG C</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-through decoration-2 decoration-black leading-tight">Cardio Siphon: Chạy 5K Zone 2</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Nhịp tim trung bình khóa ở 142 bpm. Tăng cường dự trữ thể lực.</p>
+<div class="flex items-center justify-between px-2 py-1.5 bg-tertiary-fixed border border-black text-on-tertiary-fixed">
+<span class="font-label-sm text-label-sm font-bold uppercase">PHẦN THƯỞNG ĐÃ NHẬN:</span>
+<span class="font-stat-counter text-stat-counter font-bold">+140 EXP / +30 VÀNG</span>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container border-t-2 border-black flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ĐÃ DIỆT HÔM QUA</span>
+<button class="action-btn-restore flex items-center gap-1 px-2.5 py-1 bg-surface-container-lowest border-2 border-black font-label-md text-label-md font-bold text-on-surface shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-container-high active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">replay</span>
+<span>KHÔI PHỤC</span>
+</button>
+</div>
+</article>
+<!-- CARD 8: Slayed Pull Request Review -->
+<article class="quest-card opacity-90 flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:opacity-100 transition-all" data-category="coding" data-rank="D" id="quest-303">
+<div class="flex items-center justify-between px-space-md py-space-xs bg-tertiary-fixed/40 border-b-2 border-black">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 bg-tertiary-container text-on-tertiary font-label-sm text-label-sm uppercase font-bold border border-black">ĐÃ DIỆT</span>
+<span class="px-1.5 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase border border-black">LẬP TRÌNH</span>
+</div>
+<div class="flex items-center gap-1 px-1.5 py-0.5 bg-surface-container-lowest border border-black">
+<span class="material-symbols-outlined text-tertiary text-[14px]">check_circle</span>
+<span class="font-title-retro text-title-retro text-on-surface font-bold">HẠNG D</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col gap-space-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-through decoration-2 decoration-black leading-tight">Đánh giá mã đồng nghiệp: PR #182</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Kiểm định thuật toán băm mã hóa và rà soát khóa di chuyển SQL.</p>
+<div class="flex items-center justify-between px-2 py-1.5 bg-tertiary-fixed border border-black text-on-tertiary-fixed">
+<span class="font-label-sm text-label-sm font-bold uppercase">PHẦN THƯỞNG ĐÃ NHẬN:</span>
+<span class="font-stat-counter text-stat-counter font-bold">+95 EXP / +20 VÀNG</span>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container border-t-2 border-black flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ĐÃ DIỆT HÔM QUA</span>
+<button class="action-btn-restore flex items-center gap-1 px-2.5 py-1 bg-surface-container-lowest border-2 border-black font-label-md text-label-md font-bold text-on-surface shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-container-high active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[16px]">replay</span>
+<span>KHÔI PHỤC</span>
+</button>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- BOTTOM RETRO HUD TICKER / INVENTORY TRAY -->
+<footer class="mt-space-md flex flex-col md:flex-row items-center justify-between gap-space-md p-space-md bg-surface-container border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
+<div class="flex flex-wrap items-center gap-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">shield_with_heart</span>
+<span class="font-title-retro text-title-retro text-on-surface uppercase">KHIÊN PHÒNG VỆ:</span>
+<span class="font-label-md text-label-md px-2 py-0.5 bg-surface-container-lowest border border-black text-on-surface">ĐÃ BẬT (1 LẦN)</span>
+</div>
+<div class="hidden lg:flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">magic_button</span>
+<span class="font-title-retro text-title-retro text-on-surface uppercase">CỔ TỰ ĐÓNG BĂNG:</span>
+<span class="font-stat-counter text-stat-counter text-secondary">CÒN 3/3 LƯỢT</span>
+</div>
+</div>
+<!-- Quick Manual Action -->
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">MẸO NHANH:</span>
+<span class="font-label-sm text-label-sm uppercase bg-surface-container-highest px-2 py-1 border border-black">BỎ QUA TỐN 25 MP NHƯNG BẢO VỆ HP</span>
+</div>
+</footer>
+<!-- FORGE QUEST MODAL DIALOGUE (Hidden by default, toggled via JS) -->
+<div class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4" id="forge-modal">
+<div class="w-full max-w-xl bg-surface-container-lowest border-4 border-black shadow-[8px_8px_0px_0px_#000000] flex flex-col">
+<!-- Modal Header Banner -->
+<div class="flex items-center justify-between px-space-md py-space-sm bg-primary text-on-primary border-b-2 border-black">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">auto_fix_high</span>
+<span class="font-title-retro text-title-retro uppercase font-bold">RÈN CỔ TỰ NHIỆM VỤ MỚI</span>
+</div>
+<button class="w-7 h-7 bg-black text-white flex items-center justify-center border border-white hover:bg-surface-container-highest hover:text-black" id="close-modal-btn">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Modal Form Body -->
+<form class="p-space-lg flex flex-col gap-space-md" id="forge-quest-form" onsubmit="event.preventDefault();">
+<div class="flex flex-col gap-1">
+<label class="font-title-retro text-title-retro uppercase text-on-surface font-bold">TÊN NHIỆM VỤ (TIÊU ĐỀ)</label>
+<input class="w-full px-3 py-2 bg-surface-container-lowest border-2 border-black font-body-md text-body-md shadow-[2px_2px_0px_0px_#000000] focus:outline-none focus:shadow-[4px_4px_0px_0px_#2170e4]" id="quest-title-input" placeholder="ví dụ: Đánh bại Trùm Quy hoạch Động LeetCode Hard" required="" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm uppercase text-on-surface font-bold">LĨNH VỰC</label>
+<select class="w-full px-3 py-2 bg-surface-container-lowest border-2 border-black font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000]">
+<option value="academic">HỌC THUẬT</option>
+<option value="health">SỨC KHỎE</option>
+<option value="coding">LẬP TRÌNH</option>
+<option value="life">ĐỜI SỐNG</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm uppercase text-on-surface font-bold">CẤP ĐỘ KHÓ</label>
+<select class="w-full px-3 py-2 bg-surface-container-lowest border-2 border-black font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000]">
+<option value="E">HẠNG E (+50 EXP)</option>
+<option value="D">HẠNG D (+100 EXP)</option>
+<option value="C">HẠNG C (+180 EXP)</option>
+<option value="B">HẠNG B (+250 EXP)</option>
+<option value="A">HẠNG A (+350 EXP)</option>
+<option value="S">HẠNG S (+500 EXP)</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm uppercase text-on-surface font-bold">THỜI HẠN ĐẾM NGƯỢC</label>
+<input class="w-full px-3 py-2 bg-surface-container-lowest border-2 border-black font-title-retro text-title-retro shadow-[2px_2px_0px_0px_#000000]" type="datetime-local"/>
+</div>
+<!-- Reward preview calc -->
+<div class="p-space-sm bg-surface-container border-2 border-black flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold">PHẦN THƯỞNG DỰ KIẾN:</span>
+<span class="font-stat-counter text-stat-counter text-tertiary-container">+250 EXP / +80 VÀNG</span>
+</div>
+<!-- Submit Button -->
+<div class="flex justify-end gap-space-sm pt-space-xs">
+<button class="px-space-md py-2 bg-surface-container-high border-2 border-black font-title-retro text-title-retro uppercase shadow-[2px_2px_0px_0px_#000000]" id="cancel-modal-btn" type="button">HỦY BỎ</button>
+<button class="px-space-md py-2 bg-primary text-on-primary border-2 border-black font-title-retro text-title-retro uppercase shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none" id="submit-forge-btn" type="button">KHẮC LÊN CUỘN GIẤY</button>
+</div>
+</form>
+</div>
+</div>
+<!-- INTERACTION LOGIC (VANILLA JS) -->
+<script>
+    (function initTaskDeck() {
+      // 1. Search Filtering
+      const searchInput = document.getElementById('quest-search-input');
+      const cards = document.querySelectorAll('.quest-card');
+      
+      searchInput.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase().trim();
+        cards.forEach(card => {
+          const text = card.innerText.toLowerCase();
+          card.style.display = text.includes(val) ? 'flex' : 'none';
+        });
+      });
+
+      // 2. Realm and Rank Filters
+      const realmButtons = document.querySelectorAll('.filter-realm');
+      const rankButtons = document.querySelectorAll('.rank-btn');
+      let activeRealm = 'all';
+      let activeRank = 'all';
+
+      function applyFilters() {
+        cards.forEach(card => {
+          const category = card.getAttribute('data-category');
+          const rank = card.getAttribute('data-rank');
+          const matchRealm = (activeRealm === 'all' || category === activeRealm);
+          const matchRank = (activeRank === 'all' || rank === activeRank);
+          card.style.display = (matchRealm && matchRank) ? 'flex' : 'none';
+        });
+      }
+
+      realmButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          realmButtons.forEach(b => b.classList.remove('ring-2', 'ring-black', 'scale-105'));
+          btn.classList.add('ring-2', 'ring-black', 'scale-105');
+          activeRealm = btn.getAttribute('data-filter');
+          applyFilters();
+        });
+      });
+
+      rankButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          rankButtons.forEach(b => {
+            b.classList.remove('bg-black', 'text-white');
+            b.classList.add('bg-surface-container-lowest', 'text-on-surface');
+          });
+          btn.classList.add('bg-black', 'text-white');
+          btn.classList.remove('bg-surface-container-lowest', 'text-on-surface');
+          activeRank = btn.getAttribute('data-rank');
+          applyFilters();
+        });
+      });
+
+      // 3. Card Actions: SLAY (Complete), FREEZE, SKIP, RESTORE
+      const cardsTodo = document.getElementById('cards-todo');
+      const cardsProgress = document.getElementById('cards-progress');
+      const cardsDone = document.getElementById('cards-done');
+
+      function updateCounts() {
+        const todoCount = cardsTodo.querySelectorAll('.quest-card').length;
+        const progCount = cardsProgress.querySelectorAll('.quest-card').length;
+        const doneCount = cardsDone.querySelectorAll('.quest-card').length;
+        
+        document.getElementById('count-todo').textContent = (todoCount < 10 ? '0' : '') + todoCount + ' NHIỆM VỤ';
+        document.getElementById('count-progress').textContent = (progCount < 10 ? '0' : '') + progCount + ' ĐANG LÀM';
+        document.getElementById('count-done').textContent = (doneCount < 10 ? '0' : '') + doneCount + ' ĐÃ HOÀN TẤT';
+      }
+
+      document.addEventListener('click', (e) => {
+        // Complete (Slay)
+        const slayBtn = e.target.closest('.action-btn-slay');
+        if (slayBtn) {
+          const card = slayBtn.closest('.quest-card');
+          card.classList.add('opacity-90');
+          const title = card.querySelector('h3');
+          if (title) title.classList.add('line-through', 'decoration-2', 'decoration-black');
+          
+          // Change footer to restored button
+          const footer = card.querySelector('div:last-child');
+          footer.className = 'p-space-sm bg-surface-container border-t-2 border-black flex items-center justify-between';
+          footer.innerHTML = `
+            <span class="font-label-sm text-label-sm text-on-surface-variant">ĐÃ DIỆT VỪA XONG</span>
+            <button class="action-btn-restore flex items-center gap-1 px-2.5 py-1 bg-surface-container-lowest border-2 border-black font-label-md text-label-md font-bold text-on-surface shadow-[2px_2px_0px_0px_#000000] hover:bg-surface-container-high active:translate-x-0.5 active:translate-y-0.5">
+              <span class="material-symbols-outlined text-[16px]">replay</span>
+              <span>KHÔI PHỤC</span>
+            </button>
+          `;
+          cardsDone.prepend(card);
+          updateCounts();
+          return;
+        }
+
+        // Restore
+        const restoreBtn = e.target.closest('.action-btn-restore');
+        if (restoreBtn) {
+          const card = restoreBtn.closest('.quest-card');
+          card.classList.remove('opacity-90');
+          const title = card.querySelector('h3');
+          if (title) title.classList.remove('line-through', 'decoration-2', 'decoration-black');
+          
+          const footer = card.querySelector('div:last-child');
+          footer.className = 'p-space-sm bg-surface-container border-t-2 border-black grid grid-cols-3 gap-1.5';
+          footer.innerHTML = `
+            <button class="action-btn-slay flex items-center justify-center gap-1 py-1.5 bg-primary text-on-primary border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+              <span class="material-symbols-outlined text-[16px]">swords</span>
+              <span>DIỆT</span>
+            </button>
+            <button class="action-btn-freeze flex items-center justify-center gap-1 py-1.5 bg-secondary-fixed text-on-secondary-fixed border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+              <span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span>
+              <span>ĐÓNG BĂNG</span>
+            </button>
+            <button class="action-btn-skip flex items-center justify-center gap-1 py-1.5 bg-surface-container-lowest text-on-surface border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] hover:bg-error-container hover:text-on-error-container active:translate-x-0.5 active:translate-y-0.5">
+              <span class="material-symbols-outlined text-[16px]">fast_forward</span>
+              <span>BỎ QUA</span>
+            </button>
+          `;
+          cardsTodo.prepend(card);
+          updateCounts();
+          return;
+        }
+
+        // Freeze Task
+        const freezeBtn = e.target.closest('.action-btn-freeze');
+        if (freezeBtn) {
+          const isFrozen = freezeBtn.classList.contains('bg-secondary');
+          if (!isFrozen) {
+            freezeBtn.classList.remove('bg-secondary-fixed', 'text-on-secondary-fixed');
+            freezeBtn.classList.add('bg-secondary', 'text-on-secondary');
+            freezeBtn.innerHTML = `<span class="material-symbols-outlined text-[16px]">lock</span><span>ĐÃ ĐÓNG BĂNG</span>`;
+          } else {
+            freezeBtn.classList.add('bg-secondary-fixed', 'text-on-secondary-fixed');
+            freezeBtn.classList.remove('bg-secondary', 'text-on-secondary');
+            freezeBtn.innerHTML = `<span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span><span>ĐÓNG BĂNG</span>`;
+          }
+          return;
+        }
+
+        // Skip Task (-25 MP penalty safeguard)
+        const skipBtn = e.target.closest('.action-btn-skip');
+        if (skipBtn) {
+          if (confirm("Dùng -25 MP để bỏ qua nhiệm vụ này an toàn mà không bị trừ máu?")) {
+            const card = skipBtn.closest('.quest-card');
+            card.remove();
+            updateCounts();
+          }
+          return;
+        }
+      });
+
+      // 4. Forge Modal Logic
+      const forgeBtn = document.getElementById('forge-quest-btn');
+      const forgeModal = document.getElementById('forge-modal');
+      const closeModalBtn = document.getElementById('close-modal-btn');
+      const cancelModalBtn = document.getElementById('cancel-modal-btn');
+      const submitForgeBtn = document.getElementById('submit-forge-btn');
+      const titleInput = document.getElementById('quest-title-input');
+
+      function openModal() {
+        forgeModal.classList.remove('hidden');
+        forgeModal.classList.add('flex');
+        titleInput.focus();
+      }
+
+      function closeModal() {
+        forgeModal.classList.add('hidden');
+        forgeModal.classList.remove('flex');
+      }
+
+      forgeBtn.addEventListener('click', openModal);
+      closeModalBtn.addEventListener('click', closeModal);
+      cancelModalBtn.addEventListener('click', closeModal);
+
+      submitForgeBtn.addEventListener('click', () => {
+        const titleVal = titleInput.value.trim();
+        if (!titleVal) {
+          titleInput.focus();
+          return;
+        }
+
+        // Dynamically instantiate new card into Active Roster
+        const newCard = document.createElement('article');
+        newCard.className = "quest-card flex flex-col bg-surface-container-lowest border-2 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000000] transition-all";
+        newCard.setAttribute('data-category', 'coding');
+        newCard.setAttribute('data-rank', 'B');
+        newCard.innerHTML = `
+          <div class="flex items-center justify-between px-space-md py-space-xs bg-surface-container border-b-2 border-black">
+            <div class="flex items-center gap-1.5">
+              <span class="px-1.5 py-0.5 bg-primary-container text-on-primary font-label-sm text-label-sm uppercase font-bold border border-black">MỚI</span>
+              <span class="px-1.5 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase border border-black">ĐÃ RÈN</span>
+            </div>
+            <div class="flex items-center gap-1 px-1.5 py-0.5 bg-secondary-fixed border border-black shadow-[1px_1px_0px_0px_#000000]">
+              <span class="material-symbols-outlined text-secondary text-[14px]">shield</span>
+              <span class="font-title-retro text-title-retro text-secondary font-bold">HẠNG B</span>
+            </div>
+          </div>
+          <div class="p-space-md flex flex-col gap-space-sm">
+            <h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">${titleVal}</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Nhiệm vụ tùy chỉnh do người chơi tạo qua Bàn Điều Khiển Đại Pháp Sư.</p>
+            <div class="grid grid-cols-2 gap-1.5 pt-1">
+              <div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+                <span class="material-symbols-outlined text-[16px]">stars</span>
+                <span class="font-stat-counter text-stat-counter">+250 EXP</span>
+              </div>
+              <div class="flex items-center gap-1 px-2 py-1 bg-tertiary-fixed-dim border border-black text-on-tertiary-fixed shadow-[1px_1px_0px_0px_#000000]">
+                <span class="material-symbols-outlined text-[16px]">monetization_on</span>
+                <span class="font-stat-counter text-stat-counter">+80 VÀNG</span>
+              </div>
+              <div class="col-span-2 flex items-center justify-between px-2 py-1 bg-error-container border border-black text-on-error-container shadow-[1px_1px_0px_0px_#000000]">
+                <div class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-error text-[16px]">heart_broken</span>
+                  <span class="font-label-md text-label-md font-bold text-error">-20 HP PHẠT</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">timer</span>
+                  <span class="font-stat-counter text-stat-counter text-primary font-bold">CÒN 24G 00P</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-space-sm bg-surface-container border-t-2 border-black grid grid-cols-3 gap-1.5">
+            <button class="action-btn-slay flex items-center justify-center gap-1 py-1.5 bg-primary text-on-primary border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+              <span class="material-symbols-outlined text-[16px]">swords</span>
+              <span>DIỆT</span>
+            </button>
+            <button class="action-btn-freeze flex items-center justify-center gap-1 py-1.5 bg-secondary-fixed text-on-secondary-fixed border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5">
+              <span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span>
+              <span>ĐÓNG BĂNG</span>
+            </button>
+            <button class="action-btn-skip flex items-center justify-center gap-1 py-1.5 bg-surface-container-lowest text-on-surface border-2 border-black font-label-md text-label-md font-bold shadow-[2px_2px_0px_0px_#000000] hover:bg-error-container hover:text-on-error-container active:translate-x-0.5 active:translate-y-0.5">
+              <span class="material-symbols-outlined text-[16px]">fast_forward</span>
+              <span>BỎ QUA</span>
+            </button>
+          </div>
+        `;
+        cardsTodo.prepend(newCard);
+        titleInput.value = '';
+        closeModal();
+        updateCounts();
+      });
+    })();
+  </script>
+</div></main></div></body></html>

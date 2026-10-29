@@ -79,15 +79,15 @@ public class NxvGachaMarketDtos {
     // --- MARKETPLACE DTOS ---
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateMarketListingRequest {
-        @NotNull(message = "itemId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "itemId không được để trống")
         private Integer itemId;
 
-        @NotNull(message = "Sá»‘ lÆ°á»£ng Ä‘Äƒng bÃ¡n khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Min(value = 1, message = "Sá»‘ lÆ°á»£ng Ä‘Äƒng bÃ¡n tá»‘i thiá»ƒu lÃ  1")
+        @NotNull(message = "Số lượng đăng bán không được để trống")
+        @Min(value = 1, message = "Số lượng đăng bán tối thiểu là 1")
         private Integer quantity;
 
-        @NotNull(message = "ÄÆ¡n giÃ¡ (pricePerUnit) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Min(value = 1, message = "ÄÆ¡n giÃ¡ tá»‘i thiá»ƒu lÃ  1 Gold")
+        @NotNull(message = "Đơn giá (pricePerUnit) không được để trống")
+        @Min(value = 1, message = "Đơn giá tối thiểu là 1 Gold")
         private Integer pricePerUnit;
     }
 

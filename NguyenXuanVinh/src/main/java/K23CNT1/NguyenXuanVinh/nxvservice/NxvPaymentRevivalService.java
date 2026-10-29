@@ -63,8 +63,8 @@ public class NxvPaymentRevivalService {
                         .packageName(p.getPackageName())
                         .amountVnd(p.getAmountVnd())
                         .benefitDescription(p.getAmountVnd() >= 50000
-                                ? "Há»“i sinh nhÃ¢n váº­t 100% HP & MP + Táº·ng kÃ¨m 500 Gold + Báº­t sáºµn KhiÃªn Cháº¯n báº£o vá»‡!"
-                                : "Há»“i sinh nhÃ¢n váº­t ngay láº­p tá»©c vá»›i 100% HP & MP, má»Ÿ khÃ³a toÃ n bá»™ tÃ­nh nÄƒng!")
+                                ? "Hồi sinh nhân vật 100% HP & MP + Tặng kèm 500 Gold + Bật sẵn Khiên Chắn bảo vệ!"
+                                : "Hồi sinh nhân vật ngay lập tức với 100% HP & MP, mở khóa toàn bộ tính năng!")
                         .build())
                 .collect(Collectors.toList());
     }
@@ -73,14 +73,14 @@ public class NxvPaymentRevivalService {
     @Transactional(readOnly = true)
     public DeathStateStatusDto getDeathStateStatus(Long userId) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         NxvCharacters c = charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y nhÃ¢n váº­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nhân vật!"));
 
         boolean dead = Boolean.TRUE.equals(u.getIsDead()) || c.getCurrentHp() <= 0;
         String msg = dead
-                ? "NHÃ‚N Váº¬T ÄÃƒ Tá»¬ VONG (HP = 0)! ToÃ n bá»™ tÃ­nh nÄƒng nháº­n Task, Ä‘iá»ƒm danh, Gacha vÃ  Buff Pet Ä‘Ã£ bá»‹ khÃ³a. Vui lÃ²ng quÃ©t mÃ£ QR mua VÃ© Há»“i Sinh Ä‘á»ƒ tiáº¿p tá»¥c!"
-                : "NhÃ¢n váº­t Ä‘ang sá»‘ng khá»e máº¡nh (" + c.getCurrentHp() + "/" + c.getMaxHp() + " HP). Má»i tÃ­nh nÄƒng hoáº¡t Ä‘á»™ng bÃ¬nh thÆ°á»ng.";
+                ? "NHÂN VẬT ĐÃ TỬ VONG (HP = 0)! Toàn bộ tính năng nhận Task, điểm danh, Gacha và Buff Pet đã bị khóa. Vui lòng quét mã QR mua Vé Hồi Sinh để tiếp tục!"
+                : "Nhân vật đang sống khỏe mạnh (" + c.getCurrentHp() + "/" + c.getMaxHp() + " HP). Mọi tính năng hoạt động bình thường.";
 
         return DeathStateStatusDto.builder()
                 .userId(u.getUserId())
@@ -101,9 +101,9 @@ public class NxvPaymentRevivalService {
     @Transactional
     public DeathStateStatusDto simulateCharacterDeathForDemo(Long userId) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         NxvCharacters c = charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y nhÃ¢n váº­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nhân vật!"));
 
         c.setCurrentHp(0);
         c.setUpdatedAt(LocalDateTime.now());
@@ -123,8 +123,8 @@ public class NxvPaymentRevivalService {
 
         notificationsRepository.save(NxvNotifications.builder()
                 .user(u)
-                .title("Cáº¢NH BÃO: NhÃ¢n váº­t Ä‘Ã£ gá»¥c ngÃ£ (HP = 0)!")
-                .content("NhÃ¢n váº­t " + c.getCharacterName() + " Ä‘Ã£ cáº¡n sáº¡ch mÃ¡u! Má»i tÆ°Æ¡ng tÃ¡c Ä‘Ã£ bá»‹ khÃ³a. HÃ£y mua VÃ© Há»“i Sinh qua VietQR/Momo Ä‘á»ƒ trá»Ÿ láº¡i cuá»™c chÆ¡i.")
+                .title("CẢNH BÁO: Nhân vật đã gục ngã (HP = 0)!")
+                .content("Nhân vật " + c.getCharacterName() + " đã cạn sạch máu! Mọi tương tác đã bị khóa. Hãy mua Vé Hồi Sinh qua VietQR/Momo để trở lại cuộc chơi.")
                 .notificationType("SYSTEM")
                 .isRead(false)
                 .createdAt(LocalDateTime.now())
@@ -141,9 +141,9 @@ public class NxvPaymentRevivalService {
     @Transactional
     public PaymentOrderQrResponse createRevivalPaymentOrder(Long userId, CreateRevivalOrderRequest req) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         NxvRevivalPackages pkg = revivalPackagesRepository.findById(req.getPackageId())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y GÃ³i VÃ© Há»“i Sinh ID: " + req.getPackageId()));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Gói Vé Hồi Sinh ID: " + req.getPackageId()));
 
         String orderCode = "TTREVIVEU" + userId + "T" + (System.currentTimeMillis() % 100000000L);
         NxvPaymentOrders order = paymentOrdersRepository.save(NxvPaymentOrders.builder()
@@ -160,7 +160,7 @@ public class NxvPaymentRevivalService {
     @Transactional(readOnly = true)
     public List<PaymentOrderQrResponse> getMyPaymentOrders(Long userId) {
         return paymentOrdersRepository.findByUser_UserIdOrderByCreatedAtDesc(userId).stream()
-                .map(o -> buildOrderQrResponse(o, o.getAmountVnd() >= 50000 ? "VÃ© Há»“i Sinh HoÃ ng Kim" : "VÃ© Há»“i Sinh CÆ¡ Báº£n", "VIETQR"))
+                .map(o -> buildOrderQrResponse(o, o.getAmountVnd() >= 50000 ? "Vé Hồi Sinh Hoàng Kim" : "Vé Hồi Sinh Cơ Bản", "VIETQR"))
                 .collect(Collectors.toList());
     }
 
@@ -184,7 +184,7 @@ public class NxvPaymentRevivalService {
             }
             return hexString.toString();
         } catch (Exception e) {
-            throw new AppException(ErrorCode.INTERNAL_ERROR, "Lá»—i tÃ­nh toÃ¡n chá»¯ kÃ½ báº£o máº­t HMAC-SHA256: " + e.getMessage());
+            throw new AppException(ErrorCode.INTERNAL_ERROR, "Lỗi tính toán chữ ký bảo mật HMAC-SHA256: " + e.getMessage());
         }
     }
 
@@ -213,18 +213,18 @@ public class NxvPaymentRevivalService {
 
         if (!signatureValid) {
             throw new AppException(ErrorCode.FORBIDDEN,
-                    "Cáº¢NH BÃO Báº¢O Máº¬T: Chá»¯ kÃ½ Checksum/Signature cá»§a Webhook khÃ´ng há»£p lá»‡! Giao dá»‹ch bá»‹ tá»« chá»‘i.");
+                    "CẢNH BÁO BẢO MẬT: Chữ ký Checksum/Signature của Webhook không hợp lệ! Giao dịch bị từ chối.");
         }
 
         NxvPaymentOrders order = paymentOrdersRepository.findByOrderCode(orderCode)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Ä‘Æ¡n thanh toÃ¡n vá»›i mÃ£: " + orderCode));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy đơn thanh toán với mã: " + orderCode));
 
         if (order.getStatus() == 1) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "ÄÆ¡n hÃ ng nÃ y Ä‘Ã£ Ä‘Æ°á»£c thanh toÃ¡n vÃ  há»“i sinh nhÃ¢n váº­t trÆ°á»›c Ä‘Ã³ rá»“i!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Đơn hàng này đã được thanh toán và hồi sinh nhân vật trước đó rồi!");
         }
         if (payload.getAmountVnd() < order.getAmountVnd()) {
             throw new AppException(ErrorCode.BAD_REQUEST,
-                    "Sá»‘ tiá»n chuyá»ƒn khoáº£n (" + payload.getAmountVnd() + "Ä‘) nhá» hÆ¡n giÃ¡ trá»‹ Ä‘Æ¡n hÃ ng (" + order.getAmountVnd() + "Ä‘)!");
+                    "Số tiền chuyển khoản (" + payload.getAmountVnd() + "đ) nhỏ hơn giá trị đơn hàng (" + order.getAmountVnd() + "đ)!");
         }
 
         // 1. Cap nhat don hang sang PAID (Status = 1)
@@ -247,7 +247,7 @@ public class NxvPaymentRevivalService {
         usersRepository.save(user);
 
         NxvCharacters c = charactersRepository.findByUser_UserId(user.getUserId())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y nhÃ¢n váº­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nhân vật!"));
 
         c.setCurrentHp(c.getMaxHp());
         c.setCurrentMp(c.getMaxMp());
@@ -296,7 +296,7 @@ public class NxvPaymentRevivalService {
         res.put("restoredMp", c.getCurrentMp());
         res.put("bonusGoldGranted", bonusGold);
         res.put("emailReceiptSent", emailSent);
-        res.put("message", "Thanh toÃ¡n thÃ nh cÃ´ng! NhÃ¢n váº­t [" + c.getCharacterName() + "] Ä‘Ã£ Ä‘Æ°á»£c há»“i sinh 100% HP/MP!");
+        res.put("message", "Thanh toán thành công! Nhân vật [" + c.getCharacterName() + "] đã được hồi sinh 100% HP/MP!");
         return res;
     }
 
@@ -304,7 +304,7 @@ public class NxvPaymentRevivalService {
     @Transactional
     public Map<String, Object> simulateInstantWebhookSuccessForOrder(String orderCode) {
         NxvPaymentOrders order = paymentOrdersRepository.findByOrderCode(orderCode.trim())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Ä‘Æ¡n hÃ ng vá»›i mÃ£: " + orderCode));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy đơn hàng với mã: " + orderCode));
 
         String validSig = computeHmacSha256Signature(order.getOrderCode(), order.getAmountVnd());
         BankWebhookPayload simulatedPayload = BankWebhookPayload.builder()
@@ -344,9 +344,9 @@ public class NxvPaymentRevivalService {
         );
 
         String stLabel = switch (order.getStatus() != null ? order.getStatus() : 0) {
-            case 1 -> "PAID (ÄÃ£ thanh toÃ¡n & Há»“i sinh)";
-            case 2 -> "CANCELLED (ÄÃ£ há»§y)";
-            default -> "PENDING (Äang chá» quÃ©t mÃ£ QR)";
+            case 1 -> "PAID (Đã thanh toán & Hồi sinh)";
+            case 2 -> "CANCELLED (Đã hủy)";
+            default -> "PENDING (Đang chờ quét mã QR)";
         };
 
         String sig = computeHmacSha256Signature(order.getOrderCode(), order.getAmountVnd());
@@ -377,18 +377,18 @@ public class NxvPaymentRevivalService {
                                             NxvPaymentOrders order,
                                             NxvBillingTransactions tx,
                                             long bonusGold) {
-        String subject = "[TaskTale LifeRPG] BiÃªn lai Há»“i sinh NhÃ¢n váº­t - MÃ£ HÄ #" + tx.getBillingTxId();
-        String body = "Xin chÃ o " + user.getUsername() + ",\n\n"
-                + "Há»‡ thá»‘ng TaskTale / LifeRPG xÃ¡c nháº­n Ä‘Ã£ nháº­n thanh toÃ¡n mua VÃ© Há»“i Sinh thÃ nh cÃ´ng!\n"
+        String subject = "[TaskTale LifeRPG] Biên lai Hồi sinh Nhân vật - Mã HĐ #" + tx.getBillingTxId();
+        String body = "Xin chào " + user.getUsername() + ",\n\n"
+                + "Hệ thống TaskTale / LifeRPG xác nhận đã nhận thanh toán mua Vé Hồi Sinh thành công!\n"
                 + "--------------------------------------------------\n"
-                + "- MÃ£ HÃ³a Ä‘Æ¡n (Billing ID): #" + tx.getBillingTxId() + "\n"
-                + "- MÃ£ ÄÆ¡n hÃ ng (Order Code): " + order.getOrderCode() + "\n"
-                + "- Sá»‘ tiá»n thanh toÃ¡n: " + String.format("%,d", tx.getAmountVnd()) + " VNÄ\n"
-                + "- NhÃ¢n váº­t Ä‘Æ°á»£c há»“i sinh: " + c.getCharacterName() + " (HP: " + c.getCurrentHp() + "/" + c.getMaxHp() + ")\n"
-                + (bonusGold > 0 ? "- QuÃ  táº·ng GÃ³i HoÃ ng Kim: +" + bonusGold + " Gold & Báº­t KhiÃªn Cháº¯n\n" : "")
-                + "- Thá»i gian xÃ¡c nháº­n: " + tx.getConfirmedAt() + "\n"
+                + "- Mã Hóa đơn (Billing ID): #" + tx.getBillingTxId() + "\n"
+                + "- Mã Đơn hàng (Order Code): " + order.getOrderCode() + "\n"
+                + "- Số tiền thanh toán: " + String.format("%,d", tx.getAmountVnd()) + " VNĐ\n"
+                + "- Nhân vật được hồi sinh: " + c.getCharacterName() + " (HP: " + c.getCurrentHp() + "/" + c.getMaxHp() + ")\n"
+                + (bonusGold > 0 ? "- Quà tặng Gói Hoàng Kim: +" + bonusGold + " Gold & Bật Khiên Chắn\n" : "")
+                + "- Thời gian xác nhận: " + tx.getConfirmedAt() + "\n"
                 + "--------------------------------------------------\n"
-                + "ChÃºc báº¡n giá»¯ vá»¯ng ká»· luáº­t vÃ  khÃ´ng bao giá» Ä‘á»ƒ nhÃ¢n váº­t gá»¥c ngÃ£ ná»¯a nhÃ©!";
+                + "Chúc bạn giữ vững kỷ luật và không bao giờ để nhân vật gục ngã nữa nhé!";
 
         notificationsRepository.save(NxvNotifications.builder()
                 .user(user)
@@ -429,8 +429,8 @@ public class NxvPaymentRevivalService {
                 .characterName(charName)
                 .amountVnd(tx.getAmountVnd())
                 .confirmedAt(tx.getConfirmedAt())
-                .electronicReceiptSummary("HÄ #" + tx.getBillingTxId() + " | ÄÆ¡n " + tx.getOrder().getOrderCode()
-                        + " | " + String.format("%,d", tx.getAmountVnd()) + " VNÄ | Há»“i sinh nhÃ¢n váº­t: " + charName)
+                .electronicReceiptSummary("HĐ #" + tx.getBillingTxId() + " | Đơn " + tx.getOrder().getOrderCode()
+                        + " | " + String.format("%,d", tx.getAmountVnd()) + " VNĐ | Hồi sinh nhân vật: " + charName)
                 .build();
     }
 }

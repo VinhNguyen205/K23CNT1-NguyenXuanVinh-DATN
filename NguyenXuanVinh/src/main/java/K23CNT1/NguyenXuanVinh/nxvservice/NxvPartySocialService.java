@@ -83,9 +83,9 @@ public class NxvPartySocialService {
             Users u = pm.getUser();
             NxvCharacters c = charactersRepository.findByUser_UserId(u.getUserId()).orElse(null);
             String rLabel = switch (pm.getRole() != null ? pm.getRole() : 0) {
-                case 1 -> "Leader (Äá»™i trÆ°á»Ÿng)";
-                case 2 -> "PendingInvite (Äang chá» pháº£n há»“i)";
-                default -> "Member (ThÃ nh viÃªn)";
+                case 1 -> "Leader (Đội trưởng)";
+                case 2 -> "PendingInvite (Đang chờ phản hồi)";
+                default -> "Member (Thành viên)";
             };
             return PartyMemberDto.builder()
                     .partyMemberId(pm.getPartyMemberId())
@@ -131,12 +131,12 @@ public class NxvPartySocialService {
 
         long currentActiveCount = partyMembersRepository.countByParty_PartyIdAndRoleIn(partyId, List.of(0, 1));
         if (currentActiveCount >= party.getMaxMembers()) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Party Ä‘Ã£ Ä‘áº¡t sá»‘ lÆ°á»£ng thÃ nh viÃªn tá»‘i Ä‘a (" + party.getMaxMembers() + " ngÆ°á»i)!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Party đã đạt số lượng thành viên tối đa (" + party.getMaxMembers() + " người)!");
         }
 
         Users targetUser = resolveTargetUser(req.getTargetUserId(), req.getTargetUsername());
         if (partyMembersRepository.findByParty_PartyIdAndUser_UserId(partyId, targetUser.getUserId()).isPresent()) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "NgÆ°á»i chÆ¡i nÃ y Ä‘Ã£ cÃ³ trong Party hoáº·c Ä‘ang cÃ³ lá»i má»i chá» duyá»‡t!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Người chơi này đã có trong Party hoặc đang có lời mời chờ duyệt!");
         }
 
         partyMembersRepository.save(NxvPartyMembers.builder()
@@ -148,8 +148,8 @@ public class NxvPartySocialService {
 
         notificationsRepository.save(NxvNotifications.builder()
                 .user(targetUser)
-                .title("Lá»i má»i gia nháº­p Tá»• Ä‘á»™i: " + party.getPartyName())
-                .content(inviter.getUsername() + " Ä‘Ã£ má»i báº¡n gia nháº­p Party [" + party.getPartyName() + "] (PartyID: " + partyId + ").")
+                .title("Lời mời gia nhập Tổ đội: " + party.getPartyName())
+                .content(inviter.getUsername() + " đã mời bạn gia nhập Party [" + party.getPartyName() + "] (PartyID: " + partyId + ").")
                 .notificationType("PARTY")
                 .isRead(false)
                 .createdAt(LocalDateTime.now())
@@ -164,16 +164,16 @@ public class NxvPartySocialService {
         getUserAlive(userId);
         NxvParties party = getActiveParty(partyId);
         NxvPartyMembers membership = partyMembersRepository.findByParty_PartyIdAndUser_UserId(partyId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Báº¡n khÃ´ng cÃ³ lá»i má»i nÃ o tá»« Party nÃ y!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Bạn không có lời mời nào từ Party này!"));
 
         if (membership.getRole() != 2) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Báº¡n Ä‘Ã£ lÃ  thÃ nh viÃªn chÃ­nh thá»©c cá»§a Party nÃ y rá»“i!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Bạn đã là thành viên chính thức của Party này rồi!");
         }
 
         if (accept) {
             long currentActiveCount = partyMembersRepository.countByParty_PartyIdAndRoleIn(partyId, List.of(0, 1));
             if (currentActiveCount >= party.getMaxMembers()) {
-                throw new AppException(ErrorCode.BAD_REQUEST, "Party vá»«a Ä‘áº§y (" + party.getMaxMembers() + " thÃ nh viÃªn), khÃ´ng thá»ƒ tham gia!");
+                throw new AppException(ErrorCode.BAD_REQUEST, "Party vừa đầy (" + party.getMaxMembers() + " thành viên), không thể tham gia!");
             }
             membership.setRole(0); // 0 = Member chinh thuc
             membership.setJoinedAt(LocalDateTime.now());
@@ -190,24 +190,24 @@ public class NxvPartySocialService {
     public PartyDetailDto kickMember(Long leaderUserId, Long partyId, Long targetUserId) {
         NxvParties party = getActiveParty(partyId);
         if (!Objects.equals(party.getLeaderUser().getUserId(), leaderUserId)) {
-            throw new AppException(ErrorCode.FORBIDDEN, "Chá»‰ Äá»™i trÆ°á»Ÿng (Leader) má»›i cÃ³ quyá»n kÃ­ch thÃ nh viÃªn khá»i Party!");
+            throw new AppException(ErrorCode.FORBIDDEN, "Chỉ Đội trưởng (Leader) mới có quyền kích thành viên khỏi Party!");
         }
         if (Objects.equals(leaderUserId, targetUserId)) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "KhÃ´ng thá»ƒ tá»± kÃ­ch chÃ­nh mÃ¬nh! HÃ£y dÃ¹ng chá»©c nÄƒng Rá»i Party.");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Không thể tự kích chính mình! Hãy dùng chức năng Rời Party.");
         }
 
         NxvPartyMembers targetMem = partyMembersRepository.findByParty_PartyIdAndUser_UserId(partyId, targetUserId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "NgÆ°á»i chÆ¡i nÃ y khÃ´ng thuá»™c Party!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Người chơi này không thuộc Party!"));
         partyMembersRepository.delete(targetMem);
         return getPartyDetail(partyId);
     }
 
-    // Chuc nang #94B: Roi khoi Party (Neu Leader roi thi nhÆ°á»ng Leader hoac giai tan)
+    // Chuc nang #94B: Roi khoi Party (Neu Leader roi thi nhường Leader hoac giai tan)
     @Transactional
     public Map<String, Object> leaveParty(Long userId, Long partyId) {
         NxvParties party = getActiveParty(partyId);
         NxvPartyMembers myMem = partyMembersRepository.findByParty_PartyIdAndUser_UserId(partyId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Báº¡n khÃ´ng thuá»™c Party nÃ y!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Bạn không thuộc Party này!"));
 
         partyMembersRepository.delete(myMem);
 
@@ -219,7 +219,7 @@ public class NxvPartySocialService {
         if (remainingActive.isEmpty()) {
             party.setIsActive(false);
             partiesRepository.save(party);
-            return Map.of("partyId", partyId, "message", "Báº¡n Ä‘Ã£ rá»i Party. Party khÃ´ng cÃ²n thÃ nh viÃªn nÃªn Ä‘Ã£ Ä‘Æ°á»£c giáº£i tÃ¡n!");
+            return Map.of("partyId", partyId, "message", "Bạn đã rời Party. Party không còn thành viên nên đã được giải tán!");
         } else if (Objects.equals(party.getLeaderUser().getUserId(), userId)) {
             NxvPartyMembers nextLeader = remainingActive.get(0);
             nextLeader.setRole(1);
@@ -228,7 +228,7 @@ public class NxvPartySocialService {
             partiesRepository.save(party);
         }
 
-        return Map.of("partyId", partyId, "message", "ÄÃ£ rá»i khá»i Party thÃ nh cÃ´ng!");
+        return Map.of("partyId", partyId, "message", "Đã rời khỏi Party thành công!");
     }
 
     // =========================================================================
@@ -310,8 +310,8 @@ public class NxvPartySocialService {
 
             notificationsRepository.save(NxvNotifications.builder()
                     .user(memUser)
-                    .title("Nhiá»‡m vá»¥ Tá»• Ä‘á»™i má»›i: " + party.getPartyName())
-                    .content("Party vá»«a nháº­n nhiá»‡m vá»¥ chung: \"" + req.getTitle().trim() + "\". Cáº£nh bÃ¡o: Náº¿u 1 ngÆ°á»i trá»… háº¡n, cáº£ Ä‘á»™i sáº½ cÃ¹ng bá»‹ trá»« mÃ¡u!")
+                    .title("Nhiệm vụ Tổ đội mới: " + party.getPartyName())
+                    .content("Party vừa nhận nhiệm vụ chung: \"" + req.getTitle().trim() + "\". Cảnh báo: Nếu 1 người trễ hạn, cả đội sẽ cùng bị trừ máu!")
                     .notificationType("PARTY")
                     .isRead(false)
                     .createdAt(LocalDateTime.now())
@@ -331,7 +331,7 @@ public class NxvPartySocialService {
     public Map<String, Object> triggerSharedTaskTeamPenalty(Long partyId, Long failedTaskId) {
         NxvParties party = getActiveParty(partyId);
         NxvTasks failedTask = tasksRepository.findById(failedTaskId)
-                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Task ID: " + failedTaskId));
+                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND, "Không tìm thấy Task ID: " + failedTaskId));
 
         failedTask.setStatus(NxvConstants.TASK_FAILED);
         failedTask.setUpdatedAt(LocalDateTime.now());
@@ -417,8 +417,8 @@ public class NxvPartySocialService {
 
             notificationsRepository.save(NxvNotifications.builder()
                     .user(memUser)
-                    .title("Pháº¡t sÃ¡t thÆ°Æ¡ng liÃªn Ä‘á»›i Tá»• Ä‘á»™i [" + party.getPartyName() + "]")
-                    .content("ThÃ nh viÃªn " + failedTask.getUser().getUsername() + " Ä‘Ã£ trá»… háº¡n Task chung \"" + failedTask.getTitle() + "\". Cáº£ Ä‘á»™i bá»‹ pháº¡t sÃ¡t thÆ°Æ¡ng HP!")
+                    .title("Phạt sát thương liên đới Tổ đội [" + party.getPartyName() + "]")
+                    .content("Thành viên " + failedTask.getUser().getUsername() + " đã trễ hạn Task chung \"" + failedTask.getTitle() + "\". Cả đội bị phạt sát thương HP!")
                     .notificationType("PARTY")
                     .isRead(false)
                     .createdAt(LocalDateTime.now())
@@ -463,10 +463,10 @@ public class NxvPartySocialService {
 
         NxvEpicQuests bossQuest = epicQuestsRepository.findById(epicQuestId)
                 .filter(eq -> eq.getParty() != null && Objects.equals(eq.getParty().getPartyId(), partyId))
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Boss / Epic Quest chung cá»§a Party nÃ y!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Boss / Epic Quest chung của Party này!"));
 
         if (bossQuest.getStatus() != 0) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Boss / Epic Quest chung nÃ y Ä‘Ã£ Ä‘Æ°á»£c tiÃªu diá»‡t vÃ  chia thÆ°á»Ÿng rá»“i!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Boss / Epic Quest chung này đã được tiêu diệt và chia thưởng rồi!");
         }
 
         bossQuest.setStatus(1);
@@ -702,7 +702,7 @@ public class NxvPartySocialService {
         Users target = resolveTargetUser(req.getTargetUserId(), req.getTargetUsername());
 
         if (Objects.equals(requesterId, target.getUserId())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "KhÃ´ng thá»ƒ tá»± gá»­i lá»i má»i káº¿t báº¡n cho chÃ­nh mÃ¬nh!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Không thể tự gửi lời mời kết bạn cho chính mình!");
         }
 
         Optional<NxvFriendships> existing = friendshipsRepository
@@ -712,9 +712,9 @@ public class NxvPartySocialService {
         if (existing.isPresent()) {
             NxvFriendships f = existing.get();
             if (f.getStatus() == 1) {
-                throw new AppException(ErrorCode.BAD_REQUEST, "Hai báº¡n Ä‘Ã£ lÃ  báº¡n bÃ¨ cá»§a nhau rá»“i!");
+                throw new AppException(ErrorCode.BAD_REQUEST, "Hai bạn đã là bạn bè của nhau rồi!");
             } else if (f.getStatus() == 0) {
-                throw new AppException(ErrorCode.BAD_REQUEST, "ÄÃ£ cÃ³ lá»i má»i káº¿t báº¡n Ä‘ang chá» pháº£n há»“i giá»¯a hai báº¡n!");
+                throw new AppException(ErrorCode.BAD_REQUEST, "Đã có lời mời kết bạn đang chờ phản hồi giữa hai bạn!");
             }
             f.setRequester(requester);
             f.setAddressee(target);
@@ -732,8 +732,8 @@ public class NxvPartySocialService {
 
         notificationsRepository.save(NxvNotifications.builder()
                 .user(target)
-                .title("Lá»i má»i káº¿t báº¡n má»›i")
-                .content(requester.getUsername() + " Ä‘Ã£ gá»­i cho báº¡n lá»i má»i káº¿t báº¡n!")
+                .title("Lời mời kết bạn mới")
+                .content(requester.getUsername() + " đã gửi cho bạn lời mời kết bạn!")
                 .notificationType("SYSTEM")
                 .isRead(false)
                 .createdAt(LocalDateTime.now())
@@ -746,13 +746,13 @@ public class NxvPartySocialService {
     public FriendshipDto respondToFriendRequest(Long userId, Long friendshipId, boolean accept) {
         getUserAlive(userId);
         NxvFriendships f = friendshipsRepository.findById(friendshipId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y lá»i má»i káº¿t báº¡n ID: " + friendshipId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy lời mời kết bạn ID: " + friendshipId));
 
         if (!Objects.equals(f.getAddressee().getUserId(), userId)) {
-            throw new AppException(ErrorCode.FORBIDDEN, "Báº¡n khÃ´ng pháº£i lÃ  ngÆ°á»i nháº­n lá»i má»i káº¿t báº¡n nÃ y!");
+            throw new AppException(ErrorCode.FORBIDDEN, "Bạn không phải là người nhận lời mời kết bạn này!");
         }
         if (f.getStatus() != 0) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Lá»i má»i káº¿t báº¡n nÃ y Ä‘Ã£ Ä‘Æ°á»£c xá»­ lÃ½ trÆ°á»›c Ä‘Ã³!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Lời mời kết bạn này đã được xử lý trước đó!");
         }
 
         f.setStatus(accept ? 1 : 2);
@@ -775,9 +775,9 @@ public class NxvPartySocialService {
         NxvCharacters c = charactersRepository.findByUser_UserId(friendUser.getUserId()).orElse(null);
 
         String stLabel = switch (f.getStatus() != null ? f.getStatus() : 0) {
-            case 1 -> "ACCEPTED (ÄÃ£ káº¿t báº¡n)";
-            case 2 -> "DECLINED (ÄÃ£ tá»« chá»‘i)";
-            default -> "PENDING (Äang chá» xÃ¡c nháº­n)";
+            case 1 -> "ACCEPTED (Đã kết bạn)";
+            case 2 -> "DECLINED (Đã từ chối)";
+            default -> "PENDING (Đang chờ xác nhận)";
         };
 
         return FriendshipDto.builder()
@@ -797,32 +797,32 @@ public class NxvPartySocialService {
     private Users resolveTargetUser(Long targetUserId, String targetUsername) {
         if (targetUserId != null) {
             return usersRepository.findById(targetUserId)
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i chÆ¡i vá»›i ID: " + targetUserId));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người chơi với ID: " + targetUserId));
         }
         if (targetUsername != null && !targetUsername.isBlank()) {
             return usersRepository.findByUsername(targetUsername.trim())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i chÆ¡i vá»›i Username: " + targetUsername));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người chơi với Username: " + targetUsername));
         }
-        throw new AppException(ErrorCode.BAD_REQUEST, "Vui lÃ²ng truyá»n targetUserId hoáº·c targetUsername!");
+        throw new AppException(ErrorCode.BAD_REQUEST, "Vui lòng truyền targetUserId hoặc targetUsername!");
     }
 
     private void assertUserIsActiveMember(Long partyId, Long userId) {
         NxvPartyMembers pm = partyMembersRepository.findByParty_PartyIdAndUser_UserId(partyId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.FORBIDDEN, "Báº¡n khÃ´ng pháº£i lÃ  thÃ nh viÃªn cá»§a Party nÃ y!"));
+                .orElseThrow(() -> new AppException(ErrorCode.FORBIDDEN, "Bạn không phải là thành viên của Party này!"));
         if (pm.getRole() == null || (pm.getRole() != 0 && pm.getRole() != 1)) {
-            throw new AppException(ErrorCode.FORBIDDEN, "Báº¡n cáº§n cháº¥p nháº­n lá»i má»i gia nháº­p Party trÆ°á»›c khi thá»±c hiá»‡n thao tÃ¡c nÃ y!");
+            throw new AppException(ErrorCode.FORBIDDEN, "Bạn cần chấp nhận lời mời gia nhập Party trước khi thực hiện thao tác này!");
         }
     }
 
     private NxvParties getActiveParty(Long partyId) {
         return partiesRepository.findById(partyId)
                 .filter(p -> Boolean.TRUE.equals(p.getIsActive()))
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Party Ä‘ang hoáº¡t Ä‘á»™ng vá»›i ID: " + partyId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Party đang hoạt động với ID: " + partyId));
     }
 
     private Users getUserAlive(Long userId) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         if (Boolean.TRUE.equals(u.getIsDead())) {
             throw new AppException(ErrorCode.CHARACTER_DEAD);
         }

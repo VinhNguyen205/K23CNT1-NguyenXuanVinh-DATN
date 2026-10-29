@@ -108,15 +108,15 @@ public class NxvCharacterService {
         if (req.getItemId() != null) {
             NxvInventory inv = inventoryRepository.findByUser_UserIdAndItem_ItemId(userId, req.getItemId())
                     .filter(i -> i.getQuantity() > 0)
-                    .orElseThrow(() -> new AppException(ErrorCode.ITEM_NOT_OWNED, "Báº¡n chÆ°a sá»Ÿ há»¯u váº­t pháº©m Avatar nÃ y trong tÃºi Ä‘á»“!"));
+                    .orElseThrow(() -> new AppException(ErrorCode.ITEM_NOT_OWNED, "Bạn chưa sở hữu vật phẩm Avatar này trong túi đồ!"));
             if (inv.getItem().getItemType() != NxvConstants.ITEM_AVATAR) {
-                throw new AppException(ErrorCode.BAD_REQUEST, "Váº­t pháº©m nÃ y khÃ´ng pháº£i lÃ  áº¢nh Ä‘áº¡i diá»‡n (Avatar 2D tÄ©nh)!");
+                throw new AppException(ErrorCode.BAD_REQUEST, "Vật phẩm này không phải là Ảnh đại diện (Avatar 2D tĩnh)!");
             }
             c.setAvatarUrl(inv.getItem().getImageUrl());
         } else if (req.getAvatarUrl() != null && !req.getAvatarUrl().isBlank()) {
             c.setAvatarUrl(req.getAvatarUrl().trim());
         } else {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Vui lÃ²ng truyá»n itemId hoáº·c avatarUrl há»£p lá»‡!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Vui lòng truyền itemId hoặc avatarUrl hợp lệ!");
         }
         c.setUpdatedAt(LocalDateTime.now());
         charactersRepository.save(c);
@@ -130,9 +130,9 @@ public class NxvCharacterService {
         if (req.getItemId() != null) {
             NxvInventory inv = inventoryRepository.findByUser_UserIdAndItem_ItemId(userId, req.getItemId())
                     .filter(i -> i.getQuantity() > 0)
-                    .orElseThrow(() -> new AppException(ErrorCode.ITEM_NOT_OWNED, "Báº¡n chÆ°a sá»Ÿ há»¯u Khung Avatar nÃ y trong tÃºi Ä‘á»“!"));
+                    .orElseThrow(() -> new AppException(ErrorCode.ITEM_NOT_OWNED, "Bạn chưa sở hữu Khung Avatar này trong túi đồ!"));
             if (inv.getItem().getItemType() != NxvConstants.ITEM_AVATAR_FRAME) {
-                throw new AppException(ErrorCode.BAD_REQUEST, "Váº­t pháº©m nÃ y khÃ´ng pháº£i lÃ  Khung Avatar!");
+                throw new AppException(ErrorCode.BAD_REQUEST, "Vật phẩm này không phải là Khung Avatar!");
             }
             c.setAvatarFrameUrl(inv.getItem().getImageUrl());
         } else {
@@ -178,10 +178,10 @@ public class NxvCharacterService {
             c.setCurrentTitle(null);
         } else {
             if (!userTitlesRepository.existsByUser_UserIdAndTitle_TitleId(userId, req.getTitleId())) {
-                throw new AppException(ErrorCode.FORBIDDEN, "Báº¡n chÆ°a má»Ÿ khÃ³a Danh hiá»‡u nÃ y!");
+                throw new AppException(ErrorCode.FORBIDDEN, "Bạn chưa mở khóa Danh hiệu này!");
             }
             NxvTitles title = titlesRepository.findById(req.getTitleId())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Danh hiá»‡u khÃ´ng tá»“n táº¡i!"));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Danh hiệu không tồn tại!"));
             c.setCurrentTitle(title);
         }
         c.setUpdatedAt(LocalDateTime.now());
@@ -309,7 +309,7 @@ public class NxvCharacterService {
 
         LocalDate today = LocalDate.now();
         if (today.equals(c.getLastCheckInDate())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "HÃ´m nay báº¡n Ä‘Ã£ Ä‘iá»ƒm danh rá»“i! HÃ£y quay láº¡i vÃ o ngÃ y mai nhÃ©.");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Hôm nay bạn đã điểm danh rồi! Hãy quay lại vào ngày mai nhé.");
         }
 
         if (c.getLastCheckInDate() != null && c.getLastCheckInDate().plusDays(1).equals(today)) {
@@ -490,7 +490,7 @@ public class NxvCharacterService {
                 .totalTasksDone(c.getTotalTasksDone())
                 .streakDays(c.getStreakDays())
                 .className(c.getCurrentClass() != null ? c.getCurrentClass().getClassName() : "Novice Adventurer")
-                .titleName(c.getCurrentTitle() != null ? c.getCurrentTitle().getTitleName() : "TÃ¢n Binh")
+                .titleName(c.getCurrentTitle() != null ? c.getCurrentTitle().getTitleName() : "Tân Binh")
                 .titleIcon(c.getCurrentTitle() != null ? c.getCurrentTitle().getTitleIcon() : null)
                 .unlockedAchievementsCount(userAchs.size())
                 .equippedItemNames(equippedNames)
@@ -500,6 +500,6 @@ public class NxvCharacterService {
 
     private NxvCharacters getCharacterByUserId(Long userId) {
         return charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y NhÃ¢n váº­t cá»§a ngÆ°á»i dÃ¹ng ID: " + userId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Nhân vật của người dùng ID: " + userId));
     }
 }

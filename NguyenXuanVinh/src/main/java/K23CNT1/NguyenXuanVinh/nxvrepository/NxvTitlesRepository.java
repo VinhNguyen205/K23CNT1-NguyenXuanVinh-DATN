@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NxvTitlesRepository extends JpaRepository<NxvTitles, Integer> {
+    java.util.Optional<NxvTitles> findFirstByTitleName(String titleName);
 }

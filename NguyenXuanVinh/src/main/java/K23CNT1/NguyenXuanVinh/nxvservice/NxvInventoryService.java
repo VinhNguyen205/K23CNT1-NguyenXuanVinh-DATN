@@ -109,7 +109,7 @@ public class NxvInventoryService {
     @Transactional(readOnly = true)
     public ItemDetailDto getItemDetail(Integer itemId) {
         NxvItems item = itemsRepository.findById(itemId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y váº­t pháº©m ID: " + itemId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy vật phẩm ID: " + itemId));
         return toItemDetailDto(item);
     }
 
@@ -148,7 +148,7 @@ public class NxvInventoryService {
         NxvCharacters c = getCharacter(userId);
         if (c.getGold() < totalCost) {
             throw new AppException(ErrorCode.INSUFFICIENT_GOLD,
-                    "KhÃ´ng Ä‘á»§ VÃ ng! Cáº§n " + totalCost + " Gold Ä‘á»ƒ má»Ÿ rá»™ng thÃªm " + addedSlots + " Ã´ tÃºi Ä‘á»“.");
+                    "Không đủ Vàng! Cần " + totalCost + " Gold để mở rộng thêm " + addedSlots + " ô túi đồ.");
         }
 
         c.setGold(c.getGold() - totalCost);
@@ -176,12 +176,12 @@ public class NxvInventoryService {
         assertUserAlive(userId);
         NxvInventory inv = inventoryRepository.findByUser_UserIdAndItem_ItemId(userId, req.getItemId())
                 .filter(i -> i.getQuantity() >= req.getQuantity())
-                .orElseThrow(() -> new AppException(ErrorCode.INSUFFICIENT_ITEM_QTY, "Sá»‘ lÆ°á»£ng váº­t pháº©m trong tÃºi Ä‘á»“ khÃ´ng Ä‘á»§ Ä‘á»ƒ bÃ¡n!"));
+                .orElseThrow(() -> new AppException(ErrorCode.INSUFFICIENT_ITEM_QTY, "Số lượng vật phẩm trong túi đồ không đủ để bán!"));
 
         boolean isEquipped = equippedItemsRepository.existsByUser_UserIdAndItem_ItemId(userId, req.getItemId());
         int remaining = inv.getQuantity() - req.getQuantity();
         if (isEquipped && remaining < 1) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Váº­t pháº©m nÃ y Ä‘ang Ä‘Æ°á»£c máº·c trÃªn ngÆ°á»i! Vui lÃ²ng thÃ¡o trang bá»‹ trÆ°á»›c khi bÃ¡n chiáº¿c cuá»‘i cÃ¹ng.");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Vật phẩm này đang được mặc trên người! Vui lòng tháo trang bị trước khi bán chiếc cuối cùng.");
         }
 
         int unitPrice = (inv.getItem().getSellPrice() != null && inv.getItem().getSellPrice() > 0)
@@ -219,22 +219,22 @@ public class NxvInventoryService {
     public Map<String, Object> giftItemToPlayer(Long senderUserId, GiftItemRequest req) {
         assertUserAlive(senderUserId);
         if (Objects.equals(senderUserId, req.getReceiverUserId())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "KhÃ´ng thá»ƒ tá»± gá»­i táº·ng váº­t pháº©m cho chÃ­nh mÃ¬nh!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Không thể tự gửi tặng vật phẩm cho chính mình!");
         }
 
         Users sender = usersRepository.findById(senderUserId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i gá»­i!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người gửi!"));
         Users receiver = usersRepository.findById(req.getReceiverUserId())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i chÆ¡i nháº­n quÃ !"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người chơi nhận quà!"));
 
         NxvInventory senderInv = inventoryRepository.findByUser_UserIdAndItem_ItemId(senderUserId, req.getItemId())
                 .filter(i -> i.getQuantity() >= req.getQuantity())
-                .orElseThrow(() -> new AppException(ErrorCode.INSUFFICIENT_ITEM_QTY, "Báº¡n khÃ´ng cÃ³ Ä‘á»§ sá»‘ lÆ°á»£ng váº­t pháº©m nÃ y Ä‘á»ƒ táº·ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.INSUFFICIENT_ITEM_QTY, "Bạn không có đủ số lượng vật phẩm này để tặng!"));
 
         boolean isEquipped = equippedItemsRepository.existsByUser_UserIdAndItem_ItemId(senderUserId, req.getItemId());
         int senderRemaining = senderInv.getQuantity() - req.getQuantity();
         if (isEquipped && senderRemaining < 1) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Váº­t pháº©m nÃ y Ä‘ang Ä‘Æ°á»£c trang bá»‹! Vui lÃ²ng thÃ¡o ra trÆ°á»›c khi táº·ng chiáº¿c cuá»‘i cÃ¹ng.");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Vật phẩm này đang được trang bị! Vui lòng tháo ra trước khi tặng chiếc cuối cùng.");
         }
 
         // Kiem tra tui do cua nguoi nhan
@@ -243,7 +243,7 @@ public class NxvInventoryService {
             NxvUserInventoryConfig receiverCfg = getOrCreateInventoryConfig(receiver.getUserId());
             long receiverUsedSlots = inventoryRepository.countByUser_UserIdAndQuantityGreaterThan(receiver.getUserId(), 0);
             if (receiverUsedSlots >= receiverCfg.getMaxSlots()) {
-                throw new AppException(ErrorCode.BAD_REQUEST, "TÃºi Ä‘á»“ cá»§a ngÆ°á»i nháº­n Ä‘Ã£ Ä‘áº§y (" + receiverCfg.getMaxSlots() + " Ã´)!");
+                throw new AppException(ErrorCode.BAD_REQUEST, "Túi đồ của người nhận đã đầy (" + receiverCfg.getMaxSlots() + " ô)!");
             }
         }
 
@@ -262,11 +262,11 @@ public class NxvInventoryService {
 
         // Gui thong bao cho nguoi nhan
         String noteMsg = (req.getMessage() != null && !req.getMessage().isBlank())
-                ? " Lá»i nháº¯n: \"" + req.getMessage().trim() + "\"" : "";
+                ? " Lời nhắn: \"" + req.getMessage().trim() + "\"" : "";
         notificationsRepository.save(NxvNotifications.builder()
                 .user(receiver)
-                .title("QuÃ  táº·ng váº­t pháº©m tá»« " + sender.getUsername())
-                .content("Báº¡n vá»«a nháº­n Ä‘Æ°á»£c " + req.getQuantity() + "x [" + senderInv.getItem().getItemName() + "] tá»« " + sender.getUsername() + "." + noteMsg)
+                .title("Quà tặng vật phẩm từ " + sender.getUsername())
+                .content("Bạn vừa nhận được " + req.getQuantity() + "x [" + senderInv.getItem().getItemName() + "] từ " + sender.getUsername() + "." + noteMsg)
                 .notificationType("SYSTEM")
                 .isRead(false)
                 .createdAt(LocalDateTime.now())
@@ -297,7 +297,7 @@ public class NxvInventoryService {
 
     private void assertUserAlive(Long userId) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         if (Boolean.TRUE.equals(u.getIsDead())) {
             throw new AppException(ErrorCode.CHARACTER_DEAD);
         }
@@ -305,7 +305,7 @@ public class NxvInventoryService {
 
     private NxvCharacters getCharacter(Long userId) {
         return charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y nhÃ¢n váº­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nhân vật!"));
     }
 
     private NxvUserInventoryConfig getOrCreateInventoryConfig(Long userId) {
@@ -319,13 +319,13 @@ public class NxvInventoryService {
 
     public ItemDetailDto toItemDetailDto(NxvItems i) {
         String typeLabel = switch (i.getItemType() != null ? i.getItemType() : -1) {
-            case NxvConstants.ITEM_EQUIPMENT -> "Trang bá»‹ (Equipment)";
-            case NxvConstants.ITEM_CONSUMABLE -> "Váº­t pháº©m tiÃªu hao (Consumable)";
-            case NxvConstants.ITEM_AVATAR -> "áº¢nh Ä‘áº¡i diá»‡n 2D tÄ©nh (Avatar)";
-            case NxvConstants.ITEM_AVATAR_FRAME -> "Khung Avatar 2D tÄ©nh (Avatar Frame)";
-            case NxvConstants.ITEM_PET_EGG -> "Trá»©ng thÃº cÆ°ng (Pet Egg)";
-            case NxvConstants.ITEM_TITLE -> "Danh hiá»‡u (Title)";
-            default -> "Váº­t pháº©m khÃ¡c";
+            case NxvConstants.ITEM_EQUIPMENT -> "Trang bị (Equipment)";
+            case NxvConstants.ITEM_CONSUMABLE -> "Vật phẩm tiêu hao (Consumable)";
+            case NxvConstants.ITEM_AVATAR -> "Ảnh đại diện 2D tĩnh (Avatar)";
+            case NxvConstants.ITEM_AVATAR_FRAME -> "Khung Avatar 2D tĩnh (Avatar Frame)";
+            case NxvConstants.ITEM_PET_EGG -> "Trứng thú cưng (Pet Egg)";
+            case NxvConstants.ITEM_TITLE -> "Danh hiệu (Title)";
+            default -> "Vật phẩm khác";
         };
 
         return ItemDetailDto.builder()

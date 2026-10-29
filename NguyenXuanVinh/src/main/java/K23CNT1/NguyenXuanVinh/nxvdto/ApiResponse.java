@@ -21,7 +21,7 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> ok(T data) {
         return ApiResponse.<T>builder()
                 .code(200)
-                .message("ThÃ nh cÃ´ng")
+                .message("Thành công")
                 .data(data)
                 .timestamp(LocalDateTime.now())
                 .build();

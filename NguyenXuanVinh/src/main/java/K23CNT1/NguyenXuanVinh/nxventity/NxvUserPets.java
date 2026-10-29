@@ -29,7 +29,7 @@ public class NxvUserPets {
 
     @Builder.Default
     @Column(name = "PetName", nullable = false, length = 100)
-    private String petName = "ThÃº CÆ°ng";
+    private String petName = "Thú Cưng";
 
     @Column(name = "ElementType", length = 50)
     private String elementType;

@@ -3,6 +3,7 @@ package K23CNT1.NguyenXuanVinh.nxvdto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -12,19 +13,20 @@ public class NxvAuthDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class RegisterRequest {
-        @NotBlank(message = "Username khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Size(min = 3, max = 50, message = "Username tá»« 3 Ä‘áº¿n 50 kÃ½ tá»±")
+        @NotBlank(message = "Username không được để trống")
+        @Size(min = 3, max = 50, message = "Username từ 3 đến 50 ký tự")
+        @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username chỉ gồm chữ cái, số và dấu gạch dưới")
         private String username;
 
-        @NotBlank(message = "Email khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Email(message = "Email khÃ´ng Ä‘Ãºng Ä‘á»‹nh dáº¡ng")
+        @NotBlank(message = "Email không được để trống")
+        @Email(message = "Email không đúng định dạng")
         private String email;
 
-        @NotBlank(message = "Máº­t kháº©u khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Size(min = 6, message = "Máº­t kháº©u tá»‘i thiá»ƒu 6 kÃ½ tá»±")
+        @NotBlank(message = "Mật khẩu không được để trống")
+        @Size(min = 8, max = 72, message = "Mật khẩu từ 8 đến 72 ký tự")
         private String password;
 
-        @NotNull(message = "Giá»›i tÃ­nh (0=Nam, 1=Ná»¯) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "Giới tính (0=Nam, 1=Nữ) không được để trống")
         private Integer gender;
 
         private String characterName;
@@ -33,10 +35,10 @@ public class NxvAuthDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class LoginRequest {
-        @NotBlank(message = "Username hoáº·c Email khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Username hoặc Email không được để trống")
         private String usernameOrEmail;
 
-        @NotBlank(message = "Máº­t kháº©u khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Mật khẩu không được để trống")
         private String password;
 
         private String deviceName;
@@ -44,56 +46,54 @@ public class NxvAuthDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class GoogleOAuthRequest {
-        @NotBlank(message = "Google ProviderUserID khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        private String providerUserId;
+        /** ID Token (JWT) mà Google Identity Services trả về cho frontend. Backend tự xác thực với Google. */
+        @NotBlank(message = "Google ID Token không được để trống")
+        private String idToken;
 
-        @NotBlank(message = "Email Google khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Email
-        private String email;
-
-        private String displayName;
         private Integer gender;
         private String deviceName;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class SendOtpRequest {
-        @NotBlank(message = "Email khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Email không được để trống")
         @Email
         private String email;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class VerifyEmailOtpRequest {
-        @NotBlank(message = "Email khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Email không được để trống")
         @Email
         private String email;
 
-        @NotBlank(message = "MÃ£ OTP khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Mã OTP không được để trống")
+        @Pattern(regexp = "^\\d{6}$", message = "Mã OTP gồm đúng 6 chữ số")
         private String otpCode;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class ResetPasswordRequest {
-        @NotBlank(message = "Email khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Email không được để trống")
         @Email
         private String email;
 
-        @NotBlank(message = "MÃ£ OTP khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Mã OTP không được để trống")
+        @Pattern(regexp = "^\\d{6}$", message = "Mã OTP gồm đúng 6 chữ số")
         private String otpCode;
 
-        @NotBlank(message = "Máº­t kháº©u má»›i khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Size(min = 6, message = "Máº­t kháº©u má»›i tá»‘i thiá»ƒu 6 kÃ½ tá»±")
+        @NotBlank(message = "Mật khẩu mới không được để trống")
+        @Size(min = 8, max = 72, message = "Mật khẩu mới từ 8 đến 72 ký tự")
         private String newPassword;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class ChangePasswordRequest {
-        @NotBlank(message = "Máº­t kháº©u hiá»‡n táº¡i khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Mật khẩu hiện tại không được để trống")
         private String oldPassword;
 
-        @NotBlank(message = "Máº­t kháº©u má»›i khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Size(min = 6, message = "Máº­t kháº©u má»›i tá»‘i thiá»ƒu 6 kÃ½ tá»±")
+        @NotBlank(message = "Mật khẩu mới không được để trống")
+        @Size(min = 8, max = 72, message = "Mật khẩu mới từ 8 đến 72 ký tự")
         private String newPassword;
     }
 

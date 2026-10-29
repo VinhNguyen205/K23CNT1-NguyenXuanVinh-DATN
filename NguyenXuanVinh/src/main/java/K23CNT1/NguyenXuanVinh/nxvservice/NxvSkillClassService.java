@@ -68,10 +68,10 @@ public class NxvSkillClassService {
             String tName = m.getTag().getTagName().toLowerCase();
             if (tName.contains("code") || tName.contains("backend") || tName.contains("frontend")
                     || tName.contains("java") || tName.contains("react") || tName.contains("sql")
-                    || tName.contains("há»c") || tName.contains("it")) {
+                    || tName.contains("học") || tName.contains("it")) {
                 techScore += m.getTaskCount();
-            } else if (tName.contains("thá»ƒ thao") || tName.contains("gym") || tName.contains("calisthenics")
-                    || tName.contains("cháº¡y") || tName.contains("váº­n Ä‘á»™ng") || tName.contains("sá»©c khá»e")) {
+            } else if (tName.contains("thể thao") || tName.contains("gym") || tName.contains("calisthenics")
+                    || tName.contains("chạy") || tName.contains("vận động") || tName.contains("sức khỏe")) {
                 physicalScore += m.getTaskCount();
             }
         }
@@ -83,15 +83,15 @@ public class NxvSkillClassService {
                 recommendedClass = allClasses.stream()
                         .filter(cl -> cl.getClassName().toLowerCase().contains("knight") || cl.getClassId() == 2)
                         .findFirst().orElse(allClasses.get(0));
-                reason = "Báº¡n cÃ³ Ä‘iá»ƒm chuyÃªn mÃ´n nhÃ³m Thá»ƒ cháº¥t/Váº­n Ä‘á»™ng cao (" + physicalScore + " tasks) -> PhÃ¹ há»£p vá»›i " + recommendedClass.getClassName();
+                reason = "Bạn có điểm chuyên môn nhóm Thể chất/Vận động cao (" + physicalScore + " tasks) -> Phù hợp với " + recommendedClass.getClassName();
             } else {
                 recommendedClass = allClasses.stream()
                         .filter(cl -> cl.getClassName().toLowerCase().contains("mage") || cl.getClassId() == 1)
                         .findFirst().orElse(allClasses.get(0));
-                reason = "Dá»±a trÃªn táº§n suáº¥t lÃ m viá»‡c nhÃ³m CÃ´ng nghá»‡/Há»c táº­p (" + techScore + " tasks) -> Äá» xuáº¥t chuyá»ƒn chá»©c thÃ nh " + recommendedClass.getClassName();
+                reason = "Dựa trên tần suất làm việc nhóm Công nghệ/Học tập (" + techScore + " tasks) -> Đề xuất chuyển chức thành " + recommendedClass.getClassName();
             }
         } else {
-            reason = "ChÆ°a cÃ³ dá»¯ liá»‡u Class trong há»‡ thá»‘ng.";
+            reason = "Chưa có dữ liệu Class trong hệ thống.";
         }
 
         Integer currentClassId = c.getCurrentClass() != null ? c.getCurrentClass().getClassId() : null;
@@ -113,7 +113,7 @@ public class NxvSkillClassService {
         return ClassOverviewDto.builder()
                 .userId(userId)
                 .currentClassId(currentClassId)
-                .currentClassName(c.getCurrentClass() != null ? c.getCurrentClass().getClassName() : "Novice Adventurer (ChÆ°a chuyá»ƒn chá»©c)")
+                .currentClassName(c.getCurrentClass() != null ? c.getCurrentClass().getClassName() : "Novice Adventurer (Chưa chuyển chức)")
                 .currentPassiveExpBonus(c.getCurrentClass() != null ? c.getCurrentClass().getPassiveExpBonus() : BigDecimal.ZERO)
                 .currentPassiveGoldBonus(c.getCurrentClass() != null ? c.getCurrentClass().getPassiveGoldBonus() : BigDecimal.ZERO)
                 .recommendedClassId(recClassId)
@@ -132,18 +132,18 @@ public class NxvSkillClassService {
         assertUserAlive(userId);
         NxvCharacters c = getCharacter(userId);
         NxvClasses targetClass = classesRepository.findById(req.getClassId())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Class ID: " + req.getClassId()));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Class ID: " + req.getClassId()));
 
         NxvClasses oldClass = c.getCurrentClass();
         if (oldClass != null && Objects.equals(oldClass.getClassId(), targetClass.getClassId())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "NhÃ¢n váº­t cá»§a báº¡n Ä‘ang á»Ÿ Class [" + targetClass.getClassName() + "] rá»“i!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Nhân vật của bạn đang ở Class [" + targetClass.getClassName() + "] rồi!");
         }
 
         // Neu da co Class truoc do thi ton CHANGE_CLASS_COST_GOLD (200 Gold)
         if (oldClass != null) {
             if (c.getGold() < CHANGE_CLASS_COST_GOLD) {
                 throw new AppException(ErrorCode.INSUFFICIENT_GOLD,
-                        "KhÃ´ng Ä‘á»§ VÃ ng! Cáº§n " + CHANGE_CLASS_COST_GOLD + " Gold Ä‘á»ƒ chuyá»ƒn Ä‘á»•i Class.");
+                        "Không đủ Vàng! Cần " + CHANGE_CLASS_COST_GOLD + " Gold để chuyển đổi Class.");
             }
             c.setGold(c.getGold() - CHANGE_CLASS_COST_GOLD);
             statLogsRepository.save(NxvStatLogs.builder()
@@ -184,7 +184,7 @@ public class NxvSkillClassService {
                 .map(l -> ClassChangeLogDto.builder()
                         .logId(l.getLogId())
                         .fromClassId(l.getFromClass() != null ? l.getFromClass().getClassId() : null)
-                        .fromClassName(l.getFromClass() != null ? l.getFromClass().getClassName() : "ChÆ°a cÃ³ Class")
+                        .fromClassName(l.getFromClass() != null ? l.getFromClass().getClassName() : "Chưa có Class")
                         .toClassId(l.getToClass().getClassId())
                         .toClassName(l.getToClass().getClassName())
                         .changedAt(l.getChangedAt())
@@ -255,7 +255,7 @@ public class NxvSkillClassService {
                             .skillId(def.getSkillId())
                             .skillName(def.getSkillName())
                             .skillType(def.getSkillType())
-                            .skillTypeLabel(def.getSkillType() == 0 ? "Ká»¹ nÄƒng Chá»§ Ä‘á»™ng (Active)" : "Ká»¹ nÄƒng Thá»¥ Ä‘á»™ng (Passive)")
+                            .skillTypeLabel(def.getSkillType() == 0 ? "Kỹ năng Chủ động (Active)" : "Kỹ năng Thụ động (Passive)")
                             .mpCost(def.getMpCost())
                             .baseCooldownSeconds(def.getCooldownSeconds())
                             .effectiveCooldownSeconds(effectiveCd)
@@ -294,11 +294,11 @@ public class NxvSkillClassService {
         assertUserAlive(userId);
         NxvCharacters c = getCharacter(userId);
         NxvSkillDefinitions def = skillDefinitionsRepository.findById(skillId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Ká»¹ nÄƒng ID: " + skillId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Kỹ năng ID: " + skillId));
 
         if (c.getCurrentLevel() < def.getRequiredLevel()) {
             throw new AppException(ErrorCode.BAD_REQUEST,
-                    "NhÃ¢n váº­t cáº§n Ä‘áº¡t Cáº¥p Ä‘á»™ " + def.getRequiredLevel() + " Ä‘á»ƒ má»Ÿ khÃ³a ká»¹ nÄƒng [" + def.getSkillName() + "]!");
+                    "Nhân vật cần đạt Cấp độ " + def.getRequiredLevel() + " để mở khóa kỹ năng [" + def.getSkillName() + "]!");
         }
 
         if (def.getParentSkill() != null) {
@@ -308,7 +308,7 @@ public class NxvSkillClassService {
                     .orElse(false);
             if (!parentUnlocked) {
                 throw new AppException(ErrorCode.BAD_REQUEST,
-                        "Cáº§n má»Ÿ khÃ³a ká»¹ nÄƒng nhÃ¡nh cha [" + def.getParentSkill().getSkillName() + "] trÆ°á»›c!");
+                        "Cần mở khóa kỹ năng nhánh cha [" + def.getParentSkill().getSkillName() + "] trước!");
             }
         }
 
@@ -321,10 +321,10 @@ public class NxvSkillClassService {
                         .build());
 
         if (Boolean.TRUE.equals(userSkill.getIsUnlocked())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Ká»¹ nÄƒng nÃ y Ä‘Ã£ Ä‘Æ°á»£c má»Ÿ khÃ³a rá»“i!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Kỹ năng này đã được mở khóa rồi!");
         }
         if (c.getSkillPoints() < 1) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "KhÃ´ng Ä‘á»§ Äiá»ƒm ká»¹ nÄƒng (Skill Points)! HÃ£y lÃªn cáº¥p Ä‘á»ƒ nháº­n thÃªm Ä‘iá»ƒm.");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Không đủ Điểm kỹ năng (Skill Points)! Hãy lên cấp để nhận thêm điểm.");
         }
 
         c.setSkillPoints(c.getSkillPoints() - 1);
@@ -345,14 +345,14 @@ public class NxvSkillClassService {
         NxvCharacters c = getCharacter(userId);
         NxvUserSkills userSkill = userSkillsRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId)
                 .filter(us -> Boolean.TRUE.equals(us.getIsUnlocked()))
-                .orElseThrow(() -> new AppException(ErrorCode.BAD_REQUEST, "Báº¡n pháº£i má»Ÿ khÃ³a ká»¹ nÄƒng nÃ y trÆ°á»›c khi nÃ¢ng cáº¥p!"));
+                .orElseThrow(() -> new AppException(ErrorCode.BAD_REQUEST, "Bạn phải mở khóa kỹ năng này trước khi nâng cấp!"));
 
         NxvSkillDefinitions def = userSkill.getSkill();
         if (userSkill.getSkillLevel() >= def.getMaxSkillLevel()) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Ká»¹ nÄƒng [" + def.getSkillName() + "] Ä‘Ã£ Ä‘áº¡t cáº¥p Ä‘á»™ tá»‘i Ä‘a (" + def.getMaxSkillLevel() + ")!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Kỹ năng [" + def.getSkillName() + "] đã đạt cấp độ tối đa (" + def.getMaxSkillLevel() + ")!");
         }
         if (c.getSkillPoints() < 1) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "KhÃ´ng Ä‘á»§ Äiá»ƒm ká»¹ nÄƒng (Skill Points) Ä‘á»ƒ nÃ¢ng cáº¥p!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Không đủ Điểm kỹ năng (Skill Points) để nâng cấp!");
         }
 
         c.setSkillPoints(c.getSkillPoints() - 1);
@@ -372,23 +372,23 @@ public class NxvSkillClassService {
         NxvCharacters c = getCharacter(userId);
         NxvUserSkills userSkill = userSkillsRepository.findByUser_UserIdAndSkill_SkillId(userId, skillId)
                 .filter(us -> Boolean.TRUE.equals(us.getIsUnlocked()))
-                .orElseThrow(() -> new AppException(ErrorCode.BAD_REQUEST, "Báº¡n chÆ°a má»Ÿ khÃ³a ká»¹ nÄƒng nÃ y!"));
+                .orElseThrow(() -> new AppException(ErrorCode.BAD_REQUEST, "Bạn chưa mở khóa kỹ năng này!"));
 
         NxvSkillDefinitions def = userSkill.getSkill();
         if (def.getSkillType() != 0) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "ÄÃ¢y lÃ  Ká»¹ nÄƒng Thá»¥ Ä‘á»™ng (Passive), khÃ´ng thá»ƒ kÃ­ch hoáº¡t thá»§ cÃ´ng!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Đây là Kỹ năng Thụ động (Passive), không thể kích hoạt thủ công!");
         }
 
         LocalDateTime now = LocalDateTime.now();
         if (userSkill.getCooldownEndsAt() != null && userSkill.getCooldownEndsAt().isAfter(now)) {
             long rem = Duration.between(now, userSkill.getCooldownEndsAt()).getSeconds();
             throw new AppException(ErrorCode.BAD_REQUEST,
-                    "Ká»¹ nÄƒng [" + def.getSkillName() + "] Ä‘ang há»“i chiÃªu! CÃ²n láº¡i " + rem + " giÃ¢y.");
+                    "Kỹ năng [" + def.getSkillName() + "] đang hồi chiêu! Còn lại " + rem + " giây.");
         }
 
         if (c.getCurrentMp() < def.getMpCost()) {
             throw new AppException(ErrorCode.INSUFFICIENT_MP,
-                    "KhÃ´ng Ä‘á»§ Mana (MP)! Cáº§n " + def.getMpCost() + " MP (Hiá»‡n cÃ³: " + c.getCurrentMp() + " MP).");
+                    "Không đủ Mana (MP)! Cần " + def.getMpCost() + " MP (Hiện có: " + c.getCurrentMp() + " MP).");
         }
 
         Long targetTaskId = (req != null) ? req.getTargetTaskId() : null;
@@ -399,14 +399,14 @@ public class NxvSkillClassService {
         if ("DASH_24H".equals(effectCode)) {
             // Chuc nang #51: Chieu Luot (Dash) - Gia han Deadline them 24h cho 1 Task
             if (targetTaskId == null) {
-                throw new AppException(ErrorCode.BAD_REQUEST, "ChiÃªu LÆ°á»›t (DASH_24H) báº¯t buá»™c pháº£i truyá»n targetTaskId cáº§n gia háº¡n!");
+                throw new AppException(ErrorCode.BAD_REQUEST, "Chiêu Lướt (DASH_24H) bắt buộc phải truyền targetTaskId cần gia hạn!");
             }
             targetTask = tasksRepository.findById(targetTaskId)
                     .filter(t -> Objects.equals(t.getUser().getUserId(), userId))
-                    .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Task cá»§a báº¡n vá»›i ID: " + targetTaskId));
+                    .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND, "Không tìm thấy Task của bạn với ID: " + targetTaskId));
 
             if (targetTask.getStatus() != 0) {
-                throw new AppException(ErrorCode.TASK_ALREADY_PROCESSED, "Chá»‰ cÃ³ thá»ƒ gia háº¡n cho Task Ä‘ang á»Ÿ tráº¡ng thÃ¡i Chá» thá»±c hiá»‡n (Pending)!");
+                throw new AppException(ErrorCode.TASK_ALREADY_PROCESSED, "Chỉ có thể gia hạn cho Task đang ở trạng thái Chờ thực hiện (Pending)!");
             }
 
             LocalDateTime baseDeadline = (targetTask.getDeadlineAt() != null && targetTask.getDeadlineAt().isAfter(now))
@@ -423,14 +423,14 @@ public class NxvSkillClassService {
                     .actionAt(now)
                     .build());
 
-            effectDescription = "ÄÃ£ kÃ­ch hoáº¡t [" + def.getSkillName() + "]! Task \"" + targetTask.getTitle() + "\" Ä‘Æ°á»£c gia háº¡n thÃªm 24 giá» (Deadline má»›i: " + newDeadline + ").";
+            effectDescription = "Đã kích hoạt [" + def.getSkillName() + "]! Task \"" + targetTask.getTitle() + "\" được gia hạn thêm 24 giờ (Deadline mới: " + newDeadline + ").";
         } else if ("SHIELD_TASK".equals(effectCode)) {
             // Chuc nang #50: Khien Chan (Shield) - Bao ve Task & Nhan vat khong bi tru mau khi tre han
             c.setIsShieldActive(true);
             if (targetTaskId != null) {
                 targetTask = tasksRepository.findById(targetTaskId)
                         .filter(t -> Objects.equals(t.getUser().getUserId(), userId))
-                        .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Task cá»§a báº¡n vá»›i ID: " + targetTaskId));
+                        .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND, "Không tìm thấy Task của bạn với ID: " + targetTaskId));
                 targetTask.setIsShielded(true);
                 targetTask.setUpdatedAt(now);
                 tasksRepository.save(targetTask);
@@ -442,12 +442,12 @@ public class NxvSkillClassService {
                         .actionAt(now)
                         .build());
 
-                effectDescription = "ÄÃ£ báº­t [" + def.getSkillName() + "] báº£o vá»‡ Task \"" + targetTask.getTitle() + "\" vÃ  NhÃ¢n váº­t khá»i bá»‹ trá»« mÃ¡u khi trá»… háº¡n!";
+                effectDescription = "Đã bật [" + def.getSkillName() + "] bảo vệ Task \"" + targetTask.getTitle() + "\" và Nhân vật khỏi bị trừ máu khi trễ hạn!";
             } else {
-                effectDescription = "ÄÃ£ báº­t [" + def.getSkillName() + "] trÃªn ngÆ°á»i NhÃ¢n váº­t! Tá»± Ä‘á»™ng cháº·n sÃ¡t thÆ°Æ¡ng cho láº§n trá»… háº¡n tiáº¿p theo.";
+                effectDescription = "Đã bật [" + def.getSkillName() + "] trên người Nhân vật! Tự động chặn sát thương cho lần trễ hạn tiếp theo.";
             }
         } else {
-            effectDescription = "ÄÃ£ kÃ­ch hoáº¡t ká»¹ nÄƒng [" + def.getSkillName() + "] thÃ nh cÃ´ng!";
+            effectDescription = "Đã kích hoạt kỹ năng [" + def.getSkillName() + "] thành công!";
         }
 
         // Tru MP & Tinh Cooldown (#48, #49)
@@ -481,7 +481,7 @@ public class NxvSkillClassService {
 
         notificationsRepository.save(NxvNotifications.builder()
                 .user(c.getUser())
-                .title("KÃ­ch hoáº¡t ká»¹ nÄƒng: " + def.getSkillName())
+                .title("Kích hoạt kỹ năng: " + def.getSkillName())
                 .content(effectDescription)
                 .notificationType("SYSTEM")
                 .isRead(false)
@@ -509,11 +509,11 @@ public class NxvSkillClassService {
                 .collect(Collectors.toList());
 
         if (unlockedSkills.isEmpty()) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Báº¡n chÆ°a cá»™ng Ä‘iá»ƒm vÃ o ká»¹ nÄƒng nÃ o Ä‘á»ƒ Reset!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Bạn chưa cộng điểm vào kỹ năng nào để Reset!");
         }
         if (c.getGold() < RESET_SKILL_TREE_COST_GOLD) {
             throw new AppException(ErrorCode.INSUFFICIENT_GOLD,
-                    "KhÃ´ng Ä‘á»§ VÃ ng! Cáº§n " + RESET_SKILL_TREE_COST_GOLD + " Gold Ä‘á»ƒ Reset toÃ n bá»™ CÃ¢y ká»¹ nÄƒng.");
+                    "Không đủ Vàng! Cần " + RESET_SKILL_TREE_COST_GOLD + " Gold để Reset toàn bộ Cây kỹ năng.");
         }
 
         int refundedPoints = 0;
@@ -565,7 +565,7 @@ public class NxvSkillClassService {
 
     private void assertUserAlive(Long userId) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         if (Boolean.TRUE.equals(u.getIsDead())) {
             throw new AppException(ErrorCode.CHARACTER_DEAD);
         }
@@ -573,6 +573,6 @@ public class NxvSkillClassService {
 
     private NxvCharacters getCharacter(Long userId) {
         return charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y nhÃ¢n váº­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nhân vật!"));
     }
 }

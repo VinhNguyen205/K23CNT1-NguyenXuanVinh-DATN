@@ -19,14 +19,14 @@ public class NxvTaskQuestDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateTagRequest {
-        @NotBlank(message = "TÃªn Tag khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tên Tag không được để trống")
         private String tagName;
         private String colorHex;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateTaskRequest {
-        @NotBlank(message = "TiÃªu Ä‘á» Task khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tiêu đề Task không được để trống")
         private String title;
 
         private String descriptionMarkdown;
@@ -98,7 +98,7 @@ public class NxvTaskQuestDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class ReorderKanbanRequest {
-        @NotNull(message = "Danh sÃ¡ch thá»© tá»± task khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "Danh sách thứ tự task không được để trống")
         private List<KanbanOrderItem> items;
     }
 
@@ -113,10 +113,10 @@ public class NxvTaskQuestDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateTemplateRequest {
-        @NotBlank(message = "TiÃªu Ä‘á» máº«u thÃ³i quen khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tiêu đề mẫu thói quen không được để trống")
         private String title;
         private Integer difficulty;
-        @NotBlank(message = "Quy táº¯c láº·p láº¡i (DAILY, WEEKLY, MONTHLY) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Quy tắc lặp lại (DAILY, WEEKLY, MONTHLY) không được để trống")
         private String recurringRule;
     }
 
@@ -132,7 +132,7 @@ public class NxvTaskQuestDtos {
     // --- EPIC QUEST & GPA DTOS ---
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateEpicQuestRequest {
-        @NotBlank(message = "TiÃªu Ä‘á» Epic Quest khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tiêu đề Epic Quest không được để trống")
         private String title;
         private Boolean isGpaQuest;
         private BigDecimal targetGpa;
@@ -152,7 +152,7 @@ public class NxvTaskQuestDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateSubTaskRequest {
-        @NotBlank(message = "TiÃªu Ä‘á» Sub-task khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tiêu đề Sub-task không được để trống")
         private String title;
     }
 
@@ -171,10 +171,10 @@ public class NxvTaskQuestDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class AddGpaSubjectRequest {
-        @NotBlank(message = "TÃªn mÃ´n há»c khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tên môn học không được để trống")
         private String subjectName;
         private Integer credits;
-        @NotNull(message = "Äiá»ƒm tá»•ng káº¿t há»‡ 10 khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "Điểm tổng kết hệ 10 không được để trống")
         private BigDecimal score;
     }
 

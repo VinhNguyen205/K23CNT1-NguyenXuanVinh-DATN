@@ -62,7 +62,7 @@ public class NxvCharacterDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class UpdateCharacterNameRequest {
-        @NotBlank(message = "TÃªn nhÃ¢n váº­t khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tên nhân vật không được để trống")
         private String characterName;
     }
 

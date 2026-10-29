@@ -70,49 +70,49 @@ public class NxvInventoryDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class EquipItemRequest {
-        @NotNull(message = "itemId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "itemId không được để trống")
         private Integer itemId;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class UnequipSlotRequest {
-        @NotNull(message = "slotId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "slotId không được để trống")
         private Integer slotId;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class UseConsumableRequest {
-        @NotNull(message = "itemId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "itemId không được để trống")
         private Integer itemId;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class ExpandInventoryRequest {
         @Builder.Default
-        @Min(value = 1, message = "Sá»‘ láº§n má»Ÿ rá»™ng tá»‘i thiá»ƒu lÃ  1")
+        @Min(value = 1, message = "Số lần mở rộng tối thiểu là 1")
         private Integer packs = 1; // Moi pack = +10 slots voi gia 200 Gold
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class SellItemRequest {
-        @NotNull(message = "itemId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "itemId không được để trống")
         private Integer itemId;
 
-        @NotNull(message = "Sá»‘ lÆ°á»£ng bÃ¡n khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Min(value = 1, message = "Sá»‘ lÆ°á»£ng bÃ¡n tá»‘i thiá»ƒu lÃ  1")
+        @NotNull(message = "Số lượng bán không được để trống")
+        @Min(value = 1, message = "Số lượng bán tối thiểu là 1")
         private Integer quantity;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class GiftItemRequest {
-        @NotNull(message = "ID ngÆ°á»i nháº­n (receiverUserId) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "ID người nhận (receiverUserId) không được để trống")
         private Long receiverUserId;
 
-        @NotNull(message = "itemId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "itemId không được để trống")
         private Integer itemId;
 
-        @NotNull(message = "Sá»‘ lÆ°á»£ng táº·ng khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Min(value = 1, message = "Sá»‘ lÆ°á»£ng táº·ng tá»‘i thiá»ƒu lÃ  1")
+        @NotNull(message = "Số lượng tặng không được để trống")
+        @Min(value = 1, message = "Số lượng tặng tối thiểu là 1")
         private Integer quantity;
 
         private String message;

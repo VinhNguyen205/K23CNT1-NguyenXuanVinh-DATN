@@ -21,7 +21,7 @@ public class NxvGachaBanners {
 
     @Builder.Default
     @Column(name = "BannerName", nullable = false, length = 150)
-    private String bannerName = "Há»™p MÃ¹ BÃ­ áº¨n";
+    private String bannerName = "Hộp Mù Bí Ẩn";
 
     @Column(name = "BannerImageUrl", length = 500)
     private String bannerImageUrl;

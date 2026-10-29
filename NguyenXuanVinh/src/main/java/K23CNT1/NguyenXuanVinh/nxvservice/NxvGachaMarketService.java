@@ -94,7 +94,7 @@ public class NxvGachaMarketService {
     @Transactional
     public GachaPullResponse pullGacha(Long userId, Integer bannerId, int pullTimes) {
         if (pullTimes != 1 && pullTimes != 10) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Há»‡ thá»‘ng chá»‰ há»— trá»£ Má»Ÿ 1 láº§n (x1) hoáº·c Má»Ÿ 10 láº§n (x10)!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Hệ thống chỉ hỗ trợ Mở 1 lần (x1) hoặc Mở 10 lần (x10)!");
         }
 
         Users user = getUserAlive(userId);
@@ -103,11 +103,11 @@ public class NxvGachaMarketService {
 
         NxvGachaBanners banner = gachaBannersRepository.findById(bannerId)
                 .filter(b -> Boolean.TRUE.equals(b.getIsActive()))
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Banner Há»™p mÃ¹ Ä‘ang má»Ÿ bÃ¡n vá»›i ID: " + bannerId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Banner Hộp mù đang mở bán với ID: " + bannerId));
 
         List<NxvGachaDropRates> dropRates = gachaDropRatesRepository.findByBanner_BannerIdOrderByDropRateAsc(bannerId);
         if (dropRates.isEmpty()) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Banner nÃ y chÆ°a Ä‘Æ°á»£c cáº¥u hÃ¬nh danh sÃ¡ch váº­t pháº©m rá»›t (Drop Rates)!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Banner này chưa được cấu hình danh sách vật phẩm rớt (Drop Rates)!");
         }
 
         long costPerPull = (banner.getCostPerPull() != null && banner.getCostPerPull() > 0) ? banner.getCostPerPull() : 100L;
@@ -115,7 +115,7 @@ public class NxvGachaMarketService {
 
         if (character.getGold() < totalCost) {
             throw new AppException(ErrorCode.INSUFFICIENT_GOLD,
-                    "KhÃ´ng Ä‘á»§ VÃ ng Ä‘á»ƒ má»Ÿ Há»™p mÃ¹! Cáº§n " + totalCost + " Gold (Hiá»‡n cÃ³: " + character.getGold() + " Gold).");
+                    "Không đủ Vàng để mở Hộp mù! Cần " + totalCost + " Gold (Hiện có: " + character.getGold() + " Gold).");
         }
 
         // Tru Vang & Ghi StatLog
@@ -256,13 +256,13 @@ public class NxvGachaMarketService {
         NxvInventory inv = inventoryRepository.findByUser_UserIdAndItem_ItemId(sellerUserId, req.getItemId())
                 .filter(i -> i.getQuantity() >= req.getQuantity())
                 .orElseThrow(() -> new AppException(ErrorCode.INSUFFICIENT_ITEM_QTY,
-                        "Báº¡n khÃ´ng cÃ³ Ä‘á»§ sá»‘ lÆ°á»£ng váº­t pháº©m nÃ y trong tÃºi Ä‘á»“ Ä‘á»ƒ Ä‘Äƒng bÃ¡n!"));
+                        "Bạn không có đủ số lượng vật phẩm này trong túi đồ để đăng bán!"));
 
         boolean isEquipped = equippedItemsRepository.existsByUser_UserIdAndItem_ItemId(sellerUserId, req.getItemId());
         int remainingQty = inv.getQuantity() - req.getQuantity();
         if (isEquipped && remainingQty < 1) {
             throw new AppException(ErrorCode.BAD_REQUEST,
-                    "Váº­t pháº©m nÃ y Ä‘ang Ä‘Æ°á»£c trang bá»‹ trÃªn ngÆ°á»i! Vui lÃ²ng thÃ¡o trang bá»‹ trÆ°á»›c khi Ä‘Äƒng bÃ¡n chiáº¿c cuá»‘i cÃ¹ng.");
+                    "Vật phẩm này đang được trang bị trên người! Vui lòng tháo trang bị trước khi đăng bán chiếc cuối cùng.");
         }
 
         // Tam giu vat pham (tru khoi tui do khi dang rao ban tren cho)
@@ -305,10 +305,10 @@ public class NxvGachaMarketService {
     public MarketListingDto cancelMarketListing(Long sellerUserId, Long listingId) {
         Users seller = getUserAlive(sellerUserId);
         NxvMarketListings listing = marketListingsRepository.findByListingIdAndSellerUser_UserId(listingId, sellerUserId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y bÃ i Ä‘Äƒng bÃ¡n cá»§a báº¡n vá»›i ID: " + listingId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy bài đăng bán của bạn với ID: " + listingId));
 
         if (listing.getStatus() != 0) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "BÃ i Ä‘Äƒng bÃ¡n nÃ y Ä‘Ã£ Ä‘Æ°á»£c mua hoáº·c Ä‘Ã£ há»§y trÆ°á»›c Ä‘Ã³!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Bài đăng bán này đã được mua hoặc đã hủy trước đó!");
         }
 
         listing.setStatus(2); // 2 = Cancelled
@@ -323,22 +323,22 @@ public class NxvGachaMarketService {
     public MarketTransactionDto buyMarketListing(Long buyerUserId, Long listingId) {
         Users buyer = getUserAlive(buyerUserId);
         NxvMarketListings listing = marketListingsRepository.findById(listingId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y bÃ i Ä‘Äƒng bÃ¡n ID: " + listingId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy bài đăng bán ID: " + listingId));
 
         if (listing.getStatus() != 0) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Váº­t pháº©m nÃ y Ä‘Ã£ Ä‘Æ°á»£c ngÆ°á»i khÃ¡c mua hoáº·c Ä‘Ã£ bá»‹ gá»¡ khá»i chá»£!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Vật phẩm này đã được người khác mua hoặc đã bị gỡ khỏi chợ!");
         }
 
         Users seller = listing.getSellerUser();
         if (Objects.equals(seller.getUserId(), buyerUserId)) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "KhÃ´ng thá»ƒ tá»± mua váº­t pháº©m do chÃ­nh mÃ¬nh Ä‘Äƒng bÃ¡n! HÃ£y dÃ¹ng nÃºt Há»§y bÃ¡n Ä‘á»ƒ láº¥y láº¡i Ä‘á»“.");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Không thể tự mua vật phẩm do chính mình đăng bán! Hãy dùng nút Hủy bán để lấy lại đồ.");
         }
 
         long totalPrice = (long) listing.getPricePerUnit() * listing.getQuantity();
         NxvCharacters buyerChar = getCharacter(buyerUserId);
         if (buyerChar.getGold() < totalPrice) {
             throw new AppException(ErrorCode.INSUFFICIENT_GOLD,
-                    "KhÃ´ng Ä‘á»§ VÃ ng Ä‘á»ƒ mua! Cáº§n " + totalPrice + " Gold (Hiá»‡n cÃ³: " + buyerChar.getGold() + " Gold).");
+                    "Không đủ Vàng để mua! Cần " + totalPrice + " Gold (Hiện có: " + buyerChar.getGold() + " Gold).");
         }
 
         // Chuc nang #88: Tinh thue giao dich (TaxRate = 5%) thu hoi ve server
@@ -397,9 +397,9 @@ public class NxvGachaMarketService {
         // 5. Gui thong bao cho nguoi ban
         notificationsRepository.save(NxvNotifications.builder()
                 .user(seller)
-                .title("ÄÃ£ bÃ¡n váº­t pháº©m trÃªn Marketplace!")
-                .content(buyer.getUsername() + " vá»«a mua " + listing.getQuantity() + "x [" + listing.getItem().getItemName()
-                        + "] vá»›i tá»•ng giÃ¡ " + totalPrice + " Gold (Thuáº¿ sÃ n 5%: -" + taxGold + " Gold, Thá»±c nháº­n: +" + sellerNetGold + " Gold).")
+                .title("Đã bán vật phẩm trên Marketplace!")
+                .content(buyer.getUsername() + " vừa mua " + listing.getQuantity() + "x [" + listing.getItem().getItemName()
+                        + "] với tổng giá " + totalPrice + " Gold (Thuế sàn 5%: -" + taxGold + " Gold, Thực nhận: +" + sellerNetGold + " Gold).")
                 .notificationType("SYSTEM")
                 .isRead(false)
                 .createdAt(now)
@@ -454,7 +454,7 @@ public class NxvGachaMarketService {
         if (gachaBannersRepository.count() > 0) return;
 
         NxvGachaBanners defaultBanner = gachaBannersRepository.save(NxvGachaBanners.builder()
-                .bannerName("Há»™p MÃ¹ Khá»Ÿi NguyÃªn Pixel")
+                .bannerName("Hộp Mù Khởi Nguyên Pixel")
                 .bannerImageUrl("/images/banners/starter_blindbox.png")
                 .costPerPull(100)
                 .pityLimit(50)
@@ -488,9 +488,9 @@ public class NxvGachaMarketService {
         NxvCharacters c = charactersRepository.findByUser_UserId(seller.getUserId()).orElse(null);
 
         String stLabel = switch (l.getStatus() != null ? l.getStatus() : 0) {
-            case 1 -> "SOLD (ÄÃ£ bÃ¡n)";
-            case 2 -> "CANCELLED (ÄÃ£ há»§y)";
-            default -> "ACTIVE (Äang rao bÃ¡n)";
+            case 1 -> "SOLD (Đã bán)";
+            case 2 -> "CANCELLED (Đã hủy)";
+            default -> "ACTIVE (Đang rao bán)";
         };
 
         return MarketListingDto.builder()
@@ -540,7 +540,7 @@ public class NxvGachaMarketService {
 
     private Users getUserAlive(Long userId) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         if (Boolean.TRUE.equals(u.getIsDead())) {
             throw new AppException(ErrorCode.CHARACTER_DEAD);
         }
@@ -549,6 +549,6 @@ public class NxvGachaMarketService {
 
     private NxvCharacters getCharacter(Long userId) {
         return charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y nhÃ¢n váº­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nhân vật!"));
     }
 }

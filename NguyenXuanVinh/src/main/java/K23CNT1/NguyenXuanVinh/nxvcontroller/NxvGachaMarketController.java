@@ -15,13 +15,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/gacha-market")
 @RequiredArgsConstructor
-@Tag(name = "Module 6B: Há»™p mÃ¹ Gacha, Pity 50 láº§n & Chá»£ Marketplace (Chá»©c nÄƒng #72 - #77, #85 - #88)", description = "Banner Gacha, Má»Ÿ há»™p mÃ¹ x1/x10, Báº£o hiá»ƒm Pity 50 láº§n, Lá»‹ch sá»­ Gacha & SÃ n giao dá»‹ch Marketplace thuáº¿ 5%")
+@Tag(name = "Module 6B: Hộp mù Gacha, Pity 50 lần & Chợ Marketplace (Chức năng #72 - #77, #85 - #88)", description = "Banner Gacha, Mở hộp mù x1/x10, Bảo hiểm Pity 50 lần, Lịch sử Gacha & Sàn giao dịch Marketplace thuế 5%")
 public class NxvGachaMarketController {
 
     private final NxvGachaMarketService gachaMarketService;
 
     // --- HE THONG HOP MU (GACHA & PITY SYSTEM) (#72 -> #77) ---
-    @Operation(summary = "[#72, #76, #77] Xem danh sÃ¡ch cÃ¡c Banner/Há»™p mÃ¹ Ä‘ang má»Ÿ bÃ¡n, Báº£ng tá»· lá»‡ rá»›t Ä‘á»“ (Drop Rate) vÃ  Bá»™ Ä‘áº¿m Pity hiá»‡n táº¡i")
+    @Operation(summary = "[#72, #76, #77] Xem danh sách các Banner/Hộp mù đang mở bán, Bảng tỷ lệ rớt đồ (Drop Rate) và Bộ đếm Pity hiện tại")
     @GetMapping("/banners")
     public ApiResponse<List<GachaBannerDto>> getActiveBanners() {
         Long userId = null;
@@ -31,35 +31,35 @@ public class NxvGachaMarketController {
         return ApiResponse.ok(gachaMarketService.getActiveBanners(userId));
     }
 
-    @Operation(summary = "[#73, #76, #77] Mua / Má»Ÿ Há»™p mÃ¹ 1 láº§n (x1 - Trá»« VÃ ng, tÃ­ch lÅ©y Pity 50 láº§n)")
+    @Operation(summary = "[#73, #76, #77] Mua / Mở Hộp mù 1 lần (x1 - Trừ Vàng, tích lũy Pity 50 lần)")
     @PostMapping("/banners/{bannerId}/pull-x1")
     public ApiResponse<GachaPullResponse> pullOne(@PathVariable Integer bannerId) {
         Long userId = NxvSecurityUtils.getCurrentUserId();
-        return ApiResponse.ok("Má»Ÿ Há»™p mÃ¹ x1 thÃ nh cÃ´ng!", gachaMarketService.pullGacha(userId, bannerId, 1));
+        return ApiResponse.ok("Mở Hộp mù x1 thành công!", gachaMarketService.pullGacha(userId, bannerId, 1));
     }
 
-    @Operation(summary = "[#74, #76, #77] Mua / Má»Ÿ Há»™p mÃ¹ 10 láº§n liÃªn tiáº¿p (x10 - Trá»« VÃ ng, tÃ­ch lÅ©y & kÃ­ch hoáº¡t báº£o hiá»ƒm Pity)")
+    @Operation(summary = "[#74, #76, #77] Mua / Mở Hộp mù 10 lần liên tiếp (x10 - Trừ Vàng, tích lũy & kích hoạt bảo hiểm Pity)")
     @PostMapping("/banners/{bannerId}/pull-x10")
     public ApiResponse<GachaPullResponse> pullTen(@PathVariable Integer bannerId) {
         Long userId = NxvSecurityUtils.getCurrentUserId();
-        return ApiResponse.ok("Má»Ÿ Há»™p mÃ¹ x10 thÃ nh cÃ´ng!", gachaMarketService.pullGacha(userId, bannerId, 10));
+        return ApiResponse.ok("Mở Hộp mù x10 thành công!", gachaMarketService.pullGacha(userId, bannerId, 10));
     }
 
-    @Operation(summary = "[#75A] Xem lá»‹ch sá»­ Má»Ÿ há»™p mÃ¹ cá»§a báº£n thÃ¢n")
+    @Operation(summary = "[#75A] Xem lịch sử Mở hộp mù của bản thân")
     @GetMapping("/gacha/history/me")
     public ApiResponse<List<GachaHistoryDto>> getMyGachaHistory() {
         Long userId = NxvSecurityUtils.getCurrentUserId();
         return ApiResponse.ok(gachaMarketService.getGachaHistory(userId, false));
     }
 
-    @Operation(summary = "[#75B] Xem lá»‹ch sá»­ Má»Ÿ há»™p mÃ¹ toÃ n Server (Ai quay ra Ä‘á»“ gÃ¬, vÃ o lÃºc nÃ o)")
+    @Operation(summary = "[#75B] Xem lịch sử Mở hộp mù toàn Server (Ai quay ra đồ gì, vào lúc nào)")
     @GetMapping("/gacha/history/global")
     public ApiResponse<List<GachaHistoryDto>> getGlobalGachaHistory() {
         return ApiResponse.ok(gachaMarketService.getGachaHistory(null, true));
     }
 
     // --- THI TRUONG GIAO DICH (MARKETPLACE & 5% TAX) (#85 -> #88) ---
-    @Operation(summary = "[#85A] Xem danh sÃ¡ch váº­t pháº©m Ä‘ang rao bÃ¡n trÃªn Chá»£ giao dá»‹ch (Marketplace)")
+    @Operation(summary = "[#85A] Xem danh sách vật phẩm đang rao bán trên Chợ giao dịch (Marketplace)")
     @GetMapping("/marketplace/listings")
     public ApiResponse<List<MarketListingDto>> getActiveListings(
             @RequestParam(required = false) Integer itemType,
@@ -67,35 +67,35 @@ public class NxvGachaMarketController {
         return ApiResponse.ok(gachaMarketService.getActiveMarketListings(itemType, keyword));
     }
 
-    @Operation(summary = "[#85B] Xem danh sÃ¡ch cÃ¡c máº·t hÃ ng do chÃ­nh tÃ´i Ä‘Äƒng bÃ¡n")
+    @Operation(summary = "[#85B] Xem danh sách các mặt hàng do chính tôi đăng bán")
     @GetMapping("/marketplace/listings/me")
     public ApiResponse<List<MarketListingDto>> getMyListings() {
         Long userId = NxvSecurityUtils.getCurrentUserId();
         return ApiResponse.ok(gachaMarketService.getMyMarketListings(userId));
     }
 
-    @Operation(summary = "[#85C] ÄÄƒng bÃ¡n váº­t pháº©m áº£o lÃªn Chá»£ giao dá»‹ch (Marketplace)")
+    @Operation(summary = "[#85C] Đăng bán vật phẩm ảo lên Chợ giao dịch (Marketplace)")
     @PostMapping("/marketplace/listings")
     public ApiResponse<MarketListingDto> createListing(@Valid @RequestBody CreateMarketListingRequest request) {
         Long userId = NxvSecurityUtils.getCurrentUserId();
-        return ApiResponse.ok("ÄÄƒng bÃ¡n váº­t pháº©m lÃªn Marketplace thÃ nh cÃ´ng!", gachaMarketService.createMarketListing(userId, request));
+        return ApiResponse.ok("Đăng bán vật phẩm lên Marketplace thành công!", gachaMarketService.createMarketListing(userId, request));
     }
 
-    @Operation(summary = "[#85D] Há»§y / Gá»¡ bÃ i Ä‘Äƒng bÃ¡n trÃªn Chá»£ vÃ  nháº­n láº¡i váº­t pháº©m vá» TÃºi Ä‘á»“")
+    @Operation(summary = "[#85D] Hủy / Gỡ bài đăng bán trên Chợ và nhận lại vật phẩm về Túi đồ")
     @PostMapping("/marketplace/listings/{listingId}/cancel")
     public ApiResponse<MarketListingDto> cancelListing(@PathVariable Long listingId) {
         Long userId = NxvSecurityUtils.getCurrentUserId();
-        return ApiResponse.ok("ÄÃ£ gá»¡ váº­t pháº©m khá»i chá»£ vÃ  hoÃ n vá» tÃºi Ä‘á»“!", gachaMarketService.cancelMarketListing(userId, listingId));
+        return ApiResponse.ok("Đã gỡ vật phẩm khỏi chợ và hoàn về túi đồ!", gachaMarketService.cancelMarketListing(userId, listingId));
     }
 
-    @Operation(summary = "[#86, #88] Mua váº­t pháº©m tá»« ngÆ°á»i chÆ¡i khÃ¡c báº±ng Gold (Há»‡ thá»‘ng tá»± Ä‘á»™ng kháº¥u trá»« 5% thuáº¿ giao dá»‹ch vá» Server)")
+    @Operation(summary = "[#86, #88] Mua vật phẩm từ người chơi khác bằng Gold (Hệ thống tự động khấu trừ 5% thuế giao dịch về Server)")
     @PostMapping("/marketplace/listings/{listingId}/buy")
     public ApiResponse<MarketTransactionDto> buyListing(@PathVariable Long listingId) {
         Long userId = NxvSecurityUtils.getCurrentUserId();
-        return ApiResponse.ok("Mua váº­t pháº©m trÃªn Marketplace thÃ nh cÃ´ng!", gachaMarketService.buyMarketListing(userId, listingId));
+        return ApiResponse.ok("Mua vật phẩm trên Marketplace thành công!", gachaMarketService.buyMarketListing(userId, listingId));
     }
 
-    @Operation(summary = "[#87] Xem lá»‹ch sá»­ giao dá»‹ch trÃªn Marketplace (mode = ALL / BOUGHT / SOLD)")
+    @Operation(summary = "[#87] Xem lịch sử giao dịch trên Marketplace (mode = ALL / BOUGHT / SOLD)")
     @GetMapping("/marketplace/transactions")
     public ApiResponse<List<MarketTransactionDto>> getMarketTransactions(@RequestParam(defaultValue = "ALL") String mode) {
         Long userId = null;

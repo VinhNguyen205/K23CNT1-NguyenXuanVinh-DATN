@@ -1,0 +1,14 @@
+# Copy file nay thanh application-local.properties roi dien gia tri that.
+spring.datasource.password=DOI_MAT_KHAU_SQL_SERVER
+# Toi thieu 32 ky tu, sinh ngau nhien (vd: openssl rand -base64 48)
+nxv.jwt.secret=DOI_CHUOI_BI_MAT_DAI_IT_NHAT_32_KY_TU
+# nxv.google.client-id=xxxxxxxx.apps.googleusercontent.com
+# Bi mat ky webhook ngan hang (HMAC-SHA256). BAT BUOC doi khac gia tri mac dinh trong code.
+# nxv.payment.webhook-secret=DOI_CHUOI_BI_MAT_KHAC
+# SMTP de gui OTP va bien lai (neu khong cau hinh thi bo qua gui mail):
+# spring.mail.host=smtp.gmail.com
+# spring.mail.port=587
+# spring.mail.username=ban@gmail.com
+# spring.mail.password=MAT_KHAU_UNG_DUNG
+# spring.mail.properties.mail.smtp.auth=true
+# spring.mail.properties.mail.smtp.starttls.enable=true

@@ -106,9 +106,9 @@ public class NxvSystemAdminService {
         return usersRepository.findAll().stream().map(u -> {
             NxvCharacters c = charactersRepository.findByUser_UserId(u.getUserId()).orElse(null);
             String rLabel = switch (u.getRole() != null ? u.getRole() : 0) {
-                case 2 -> "SUPER_ADMIN (Quáº£n trá»‹ tá»‘i cao)";
-                case 1 -> "MODERATOR (Äiá»u hÃ nh viÃªn)";
-                default -> "USER (NgÆ°á»i chÆ¡i)";
+                case 2 -> "SUPER_ADMIN (Quản trị tối cao)";
+                case 1 -> "MODERATOR (Điều hành viên)";
+                default -> "USER (Người chơi)";
             };
             return AdminUserRowDto.builder()
                     .userId(u.getUserId())
@@ -135,7 +135,7 @@ public class NxvSystemAdminService {
     @Transactional
     public AdminUserRowDto toggleBanUser(Long targetUserId, boolean lock) {
         Users u = usersRepository.findById(targetUserId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng ID: " + targetUserId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng ID: " + targetUserId));
         u.setIsLocked(lock);
         if (!lock) {
             u.setLoginFailCount(0);
@@ -151,10 +151,10 @@ public class NxvSystemAdminService {
     @Transactional
     public AdminUserRowDto changeUserRole(Long targetUserId, ChangeUserRoleRequest req) {
         if (req.getRole() < 0 || req.getRole() > 2) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Role chá»‰ nháº­n giÃ¡ trá»‹: 0 (User), 1 (Moderator), 2 (SuperAdmin)!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Role chỉ nhận giá trị: 0 (User), 1 (Moderator), 2 (SuperAdmin)!");
         }
         Users u = usersRepository.findById(targetUserId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng ID: " + targetUserId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng ID: " + targetUserId));
         u.setRole(req.getRole());
         u.setUpdatedAt(LocalDateTime.now());
         usersRepository.save(u);
@@ -173,7 +173,7 @@ public class NxvSystemAdminService {
         NxvEquipmentSlots slot = null;
         if (req.getEquipSlotId() != null) {
             slot = equipmentSlotsRepository.findById(req.getEquipSlotId())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Slot trang bá»‹ ID: " + req.getEquipSlotId()));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Slot trang bị ID: " + req.getEquipSlotId()));
         }
 
         NxvItems item = itemsRepository.save(NxvItems.builder()
@@ -196,14 +196,14 @@ public class NxvSystemAdminService {
     @Transactional
     public ItemDetailDto updateCatalogItem(Integer itemId, UpsertItemRequest req) {
         NxvItems item = itemsRepository.findById(itemId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y váº­t pháº©m ID: " + itemId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy vật phẩm ID: " + itemId));
 
         if (req.getItemName() != null && !req.getItemName().isBlank()) item.setItemName(req.getItemName().trim());
         if (req.getItemType() != null) item.setItemType(req.getItemType());
         if (req.getImageUrl() != null) item.setImageUrl(req.getImageUrl().trim());
         if (req.getEquipSlotId() != null) {
             NxvEquipmentSlots slot = equipmentSlotsRepository.findById(req.getEquipSlotId())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Slot trang bá»‹ ID: " + req.getEquipSlotId()));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Slot trang bị ID: " + req.getEquipSlotId()));
             item.setEquipSlot(slot);
         }
         if (req.getBuffMaxHp() != null) item.setBuffMaxHp(req.getBuffMaxHp());
@@ -232,7 +232,7 @@ public class NxvSystemAdminService {
     @Transactional
     public NxvGachaBanners updateGachaBanner(Integer bannerId, UpsertGachaBannerRequest req) {
         NxvGachaBanners banner = gachaBannersRepository.findById(bannerId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Banner ID: " + bannerId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Banner ID: " + bannerId));
         if (req.getBannerName() != null && !req.getBannerName().isBlank()) banner.setBannerName(req.getBannerName().trim());
         if (req.getBannerImageUrl() != null) banner.setBannerImageUrl(req.getBannerImageUrl().trim());
         if (req.getCostPerPull() != null) banner.setCostPerPull(req.getCostPerPull());
@@ -245,9 +245,9 @@ public class NxvSystemAdminService {
     @Transactional
     public Map<String, Object> upsertGachaDropRate(UpsertDropRateRequest req) {
         NxvGachaBanners banner = gachaBannersRepository.findById(req.getBannerId())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Banner ID: " + req.getBannerId()));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Banner ID: " + req.getBannerId()));
         NxvItems item = itemsRepository.findById(req.getItemId())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Váº­t pháº©m ID: " + req.getItemId()));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Vật phẩm ID: " + req.getItemId()));
 
         NxvGachaDropRates rateEntry = gachaDropRatesRepository.findByBanner_BannerIdOrderByDropRateAsc(req.getBannerId())
                 .stream()
@@ -328,7 +328,7 @@ public class NxvSystemAdminService {
         Users target = null;
         if (req.getTargetUserId() != null) {
             target = usersRepository.findById(req.getTargetUserId())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i nháº­n ID: " + req.getTargetUserId()));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người nhận ID: " + req.getTargetUserId()));
         }
 
         NxvNotifications n = notificationsRepository.save(NxvNotifications.builder()
@@ -353,7 +353,7 @@ public class NxvSystemAdminService {
     @Transactional
     public NotificationDto markNotificationRead(Long notificationId) {
         NxvNotifications n = notificationsRepository.findById(notificationId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y thÃ´ng bÃ¡o ID: " + notificationId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy thông báo ID: " + notificationId));
         n.setIsRead(true);
         return toNotificationDto(notificationsRepository.save(n));
     }
@@ -388,7 +388,7 @@ public class NxvSystemAdminService {
     @Transactional
     public NxvTags updateSystemTag(Integer tagId, String tagName, String colorHex) {
         NxvTags tag = tagsRepository.findById(tagId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y Tag ID: " + tagId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Tag ID: " + tagId));
         if (tagName != null && !tagName.isBlank()) tag.setTagName(tagName.trim());
         if (colorHex != null && !colorHex.isBlank()) tag.setColorHex(colorHex.trim());
         return tagsRepository.save(tag);
@@ -403,7 +403,7 @@ public class NxvSystemAdminService {
     @Transactional
     public UserReportDto submitUserReport(Long reporterUserId, CreateUserReportRequest req) {
         Users reporter = usersRepository.findById(reporterUserId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i gá»­i bÃ¡o cÃ¡o!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người gửi báo cáo!"));
         Users target = null;
         if (req.getTargetUserId() != null) {
             target = usersRepository.findById(req.getTargetUserId()).orElse(null);
@@ -432,16 +432,16 @@ public class NxvSystemAdminService {
     @Transactional
     public UserReportDto resolveUserReport(Long reportId, ResolveReportRequest req) {
         NxvUserReports r = userReportsRepository.findById(reportId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y bÃ¡o cÃ¡o/khiáº¿u náº¡i ID: " + reportId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy báo cáo/khiếu nại ID: " + reportId));
         r.setStatus(req.getStatus());
         r = userReportsRepository.save(r);
 
         notificationsRepository.save(NxvNotifications.builder()
                 .user(r.getReporterUser())
-                .title("BÃ¡o cÃ¡o #" + reportId + " Ä‘Ã£ Ä‘Æ°á»£c Admin xá»­ lÃ½")
-                .content("Khiáº¿u náº¡i [" + r.getReportType() + "] cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c cáº­p nháº­t tráº¡ng thÃ¡i: "
-                        + (req.getStatus() == 1 ? "ÄÃƒ GIáº¢I QUYáº¾T" : "Tá»ª CHá»I")
-                        + (req.getAdminNote() != null ? ". Ghi chÃº Admin: " + req.getAdminNote() : ""))
+                .title("Báo cáo #" + reportId + " đã được Admin xử lý")
+                .content("Khiếu nại [" + r.getReportType() + "] của bạn đã được cập nhật trạng thái: "
+                        + (req.getStatus() == 1 ? "ĐÃ GIẢI QUYẾT" : "TỪ CHỐI")
+                        + (req.getAdminNote() != null ? ". Ghi chú Admin: " + req.getAdminNote() : ""))
                 .notificationType("SYSTEM")
                 .isRead(false)
                 .createdAt(LocalDateTime.now())
@@ -501,9 +501,9 @@ public class NxvSystemAdminService {
 
     private UserReportDto toUserReportDto(NxvUserReports r) {
         String stLabel = switch (r.getStatus() != null ? r.getStatus() : 0) {
-            case 1 -> "RESOLVED (ÄÃ£ giáº£i quyáº¿t)";
-            case 2 -> "REJECTED (ÄÃ£ tá»« chá»‘i)";
-            default -> "PENDING (Äang chá» xá»­ lÃ½)";
+            case 1 -> "RESOLVED (Đã giải quyết)";
+            case 2 -> "REJECTED (Đã từ chối)";
+            default -> "PENDING (Đang chờ xử lý)";
         };
         return UserReportDto.builder()
                 .reportId(r.getReportId())

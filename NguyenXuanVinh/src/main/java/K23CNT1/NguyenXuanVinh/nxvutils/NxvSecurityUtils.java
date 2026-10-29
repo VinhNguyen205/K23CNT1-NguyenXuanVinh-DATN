@@ -18,6 +18,6 @@ public final class NxvSecurityUtils {
                 return Long.parseLong(auth.getName());
             } catch (NumberFormatException ignored) {}
         }
-        throw new AppException(ErrorCode.UNAUTHORIZED, "Vui lÃ²ng Ä‘Äƒng nháº­p (nháº­p Bearer Token) Ä‘á»ƒ thá»±c hiá»‡n thao tÃ¡c nÃ y!");
+        throw new AppException(ErrorCode.UNAUTHORIZED, "Vui lòng đăng nhập (nhập Bearer Token) để thực hiện thao tác này!");
     }
 }

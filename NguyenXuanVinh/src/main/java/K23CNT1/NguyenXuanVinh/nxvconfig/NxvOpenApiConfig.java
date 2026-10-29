@@ -16,9 +16,9 @@ public class NxvOpenApiConfig {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()
-                        .title("TaskTale / LifeRPG API - Äá»“ Ãn Tá»‘t Nghiá»‡p")
+                        .title("TaskTale / LifeRPG API - Đồ Án Tốt Nghiệp")
                         .version("2.2")
-                        .description("Há»‡ thá»‘ng API Gamification Quáº£n LÃ½ Ká»· Luáº­t & NÄƒng Suáº¥t (122 Chá»©c nÄƒng - 9 Modules)"))
+                        .description("Hệ thống API Gamification Quản Lý Kỷ Luật & Năng Suất (122 Chức năng - 9 Modules)"))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName, new SecurityScheme()

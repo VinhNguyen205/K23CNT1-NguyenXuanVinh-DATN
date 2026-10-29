@@ -36,6 +36,6 @@ public class NxvSystemHealthController {
         stats.put("seedPetSpeciesCount", petSpeciesRepository.count());
         stats.put("seedTitlesCount", titlesRepository.count());
         stats.put("seedAchievementsCount", achievementsRepository.count());
-        return ApiResponse.ok("Kiá»ƒm tra káº¿t ná»‘i 54 báº£ng NxvTaskTaleDB v2.2 thÃ nh cÃ´ng!", stats);
+        return ApiResponse.ok("Kiểm tra kết nối 54 bảng NxvTaskTaleDB v2.2 thành công!", stats);
     }
 }

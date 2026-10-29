@@ -24,7 +24,7 @@ public class NxvPetSpecies {
 
     @Builder.Default
     @Column(name = "ElementType", nullable = false, length = 50)
-    private String elementType = "Tá»± nhiÃªn";
+    private String elementType = "Tự nhiên";
 
     @Column(name = "EggImageUrl", length = 500)
     private String eggImageUrl;

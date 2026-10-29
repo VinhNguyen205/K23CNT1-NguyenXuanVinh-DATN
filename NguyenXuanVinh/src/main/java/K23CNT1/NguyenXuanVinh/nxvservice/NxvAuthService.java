@@ -8,6 +8,7 @@ import K23CNT1.NguyenXuanVinh.nxvexception.AppException;
 import K23CNT1.NguyenXuanVinh.nxvrepository.*;
 import K23CNT1.NguyenXuanVinh.nxvutils.NxvJwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,19 +36,30 @@ public class NxvAuthService {
     private final NxvLoginAttemptService loginAttemptService;
     private final PasswordEncoder passwordEncoder;
     private final NxvJwtUtils jwtUtils;
+    private final NxvGoogleTokenVerifier googleTokenVerifier;
+
+    /** true = trả mã OTP trong response (chỉ để dev/test trên Swagger khi chưa cấu hình SMTP). PHẢI tắt khi deploy. */
+    @Value("${nxv.otp.debug-enabled:false}")
+    private boolean otpDebugEnabled;
 
     private static final String DEFAULT_MALE_AVATAR = "/images/avatars/static_male_hero.png";
     private static final String DEFAULT_FEMALE_AVATAR = "/images/avatars/static_female_heroine.png";
     private static final SecureRandom RANDOM = new SecureRandom();
+    private static final String STARTER_TITLE_NAME = "Tân Binh";
+    private static final int OTP_MAX_ATTEMPTS = 5;
+    private static final int OTP_RESEND_COOLDOWN_SECONDS = 60;
+
+    /** Đếm số lần nhập sai OTP theo TokenID (trong bộ nhớ, đủ cho 1 instance; muốn scale nhiều server thì chuyển sang cột DB/Redis). */
+    private final Map<Long, Integer> otpFailedAttempts = new ConcurrentHashMap<>();
 
     // Chuc nang #1, #2 & #12: Dang ky + Map Gioi tinh voi Avatar 2D tinh + Khoi tao Character & Inventory
     @Transactional
     public AuthResponse register(RegisterRequest req) {
         if (usersRepository.existsByUsername(req.getUsername().trim())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Username Ä‘Ã£ tá»“n táº¡i trong há»‡ thá»‘ng!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Username đã tồn tại trong hệ thống!");
         }
         if (usersRepository.existsByEmail(req.getEmail().trim().toLowerCase())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Email Ä‘Ã£ Ä‘Æ°á»£c sá»­ dá»¥ng!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Email đã được sử dụng!");
         }
 
         int gender = (req.getGender() != null && req.getGender() == NxvConstants.GENDER_FEMALE)
@@ -70,48 +83,7 @@ public class NxvAuthService {
                 .build();
         newUser = usersRepository.save(newUser);
 
-        // Tang danh hieu khoi dau 'Tan Binh' (TitleID = 1) neu co
-        NxvTitles starterTitle = titlesRepository.findById(1).orElse(null);
-        if (starterTitle != null) {
-            userTitlesRepository.save(NxvUserTitles.builder()
-                    .user(newUser)
-                    .title(starterTitle)
-                    .unlockedAt(LocalDateTime.now())
-                    .build());
-        }
-
-        // Khoi tao NxvCharacters (Chuc nang #12 - Schema v2.2 BaseMaxHP/MaxHP)
-        String charName = (req.getCharacterName() != null && !req.getCharacterName().isBlank())
-                ? req.getCharacterName().trim() : newUser.getUsername();
-
-        NxvCharacters character = NxvCharacters.builder()
-                .user(newUser)
-                .characterName(charName)
-                .avatarUrl(defaultAvatar)
-                .currentLevel(1)
-                .currentExp(0L)
-                .expToNextLevel(100L)
-                .baseMaxHp(100)
-                .baseMaxMp(50)
-                .maxHp(100)
-                .currentHp(100)
-                .maxMp(50)
-                .currentMp(50)
-                .gold(100L) // Tang 100 Gold khoi nghiep
-                .skillPoints(0)
-                .isShieldActive(false)
-                .totalTasksDone(0)
-                .currentTitle(starterTitle)
-                .streakDays(0)
-                .updatedAt(LocalDateTime.now())
-                .build();
-        character = charactersRepository.save(character);
-
-        // Khoi tao NxvUserInventoryConfig (50 o tui do mac dinh)
-        inventoryConfigRepository.save(NxvUserInventoryConfig.builder()
-                .userId(newUser.getUserId())
-                .maxSlots(50)
-                .build());
+        NxvCharacters character = initNewPlayer(newUser, req.getCharacterName());
 
         return createSessionAndBuildResponse(newUser, character, req.getDeviceName());
     }
@@ -122,19 +94,19 @@ public class NxvAuthService {
         String key = req.getUsernameOrEmail().trim();
         Users user = usersRepository.findByUsername(key)
                 .or(() -> usersRepository.findByEmail(key.toLowerCase()))
-                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED, "TÃ i khoáº£n hoáº·c máº­t kháº©u khÃ´ng chÃ­nh xÃ¡c!"));
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED, "Tài khoản hoặc mật khẩu không chính xác!"));
 
         if (Boolean.TRUE.equals(user.getIsLocked())) {
-            throw new AppException(ErrorCode.FORBIDDEN, "TÃ i khoáº£n Ä‘Ã£ bá»‹ khÃ³a do nháº­p sai máº­t kháº©u quÃ¡ 5 láº§n! Vui lÃ²ng dÃ¹ng tÃ­nh nÄƒng QuÃªn máº­t kháº©u Ä‘á»ƒ má»Ÿ khÃ³a.");
+            throw new AppException(ErrorCode.FORBIDDEN, "Tài khoản đã bị khóa do nhập sai mật khẩu quá 5 lần! Vui lòng dùng tính năng Quên mật khẩu để mở khóa.");
         }
 
         if (user.getPasswordHash() == null || !passwordEncoder.matches(req.getPassword(), user.getPasswordHash())) {
             int fails = loginAttemptService.recordFailedLogin(user.getUserId());
             int remaining = Math.max(0, NxvLoginAttemptService.MAX_FAIL_ATTEMPTS - fails);
             if (remaining == 0) {
-                throw new AppException(ErrorCode.FORBIDDEN, "Báº¡n Ä‘Ã£ nháº­p sai 5 láº§n liÃªn tiáº¿p. TÃ i khoáº£n Ä‘Ã£ bá»‹ khÃ³a tá»± Ä‘á»™ng!");
+                throw new AppException(ErrorCode.FORBIDDEN, "Bạn đã nhập sai 5 lần liên tiếp. Tài khoản đã bị khóa tự động!");
             }
-            throw new AppException(ErrorCode.UNAUTHORIZED, "Máº­t kháº©u khÃ´ng chÃ­nh xÃ¡c! CÃ²n " + remaining + " láº§n thá»­ trÆ°á»›c khi bá»‹ khÃ³a.");
+            throw new AppException(ErrorCode.UNAUTHORIZED, "Mật khẩu không chính xác! Còn " + remaining + " lần thử trước khi bị khóa.");
         }
 
         loginAttemptService.resetFailedLogin(user.getUserId());
@@ -142,51 +114,55 @@ public class NxvAuthService {
         return createSessionAndBuildResponse(user, character, req.getDeviceName());
     }
 
-    // Chuc nang #4: Dang nhap qua Google (OAuth2)
+    // Chuc nang #4: Dang nhap qua Google (OAuth2) - ID Token duoc xac thuc voi Google, khong tin du lieu client tu khai
     @Transactional
     public AuthResponse googleOAuthLogin(GoogleOAuthRequest req) {
-        var oauthOpt = oauthProvidersRepository.findByProviderAndProviderUserId("GOOGLE", req.getProviderUserId());
+        var identity = googleTokenVerifier.verify(req.getIdToken());
+        boolean isNewUser = false;
         Users user;
 
+        var oauthOpt = oauthProvidersRepository.findByProviderAndProviderUserId("GOOGLE", identity.subject());
         if (oauthOpt.isPresent()) {
             user = oauthOpt.get().getUser();
         } else {
-            String email = req.getEmail().trim().toLowerCase();
-            user = usersRepository.findByEmail(email).orElseGet(() -> {
-                int gender = (req.getGender() != null && req.getGender() == 1) ? 1 : 0;
-                String avatar = (gender == 1) ? DEFAULT_FEMALE_AVATAR : DEFAULT_MALE_AVATAR;
-                String baseUsername = email.split("@")[0].replaceAll("[^a-zA-Z0-9_]", "");
-                String finalUsername = usersRepository.existsByUsername(baseUsername)
-                        ? baseUsername + "_" + (1000 + RANDOM.nextInt(9000)) : baseUsername;
-
-                Users created = Users.builder()
-                        .username(finalUsername)
-                        .email(email)
+            var existing = usersRepository.findByEmail(identity.email());
+            if (existing.isPresent()) {
+                user = existing.get(); // Email Google da xac minh -> lien ket vao tai khoan cung email
+            } else {
+                int gender = (req.getGender() != null && req.getGender() == NxvConstants.GENDER_FEMALE)
+                        ? NxvConstants.GENDER_FEMALE : NxvConstants.GENDER_MALE;
+                String avatar = (gender == NxvConstants.GENDER_FEMALE) ? DEFAULT_FEMALE_AVATAR : DEFAULT_MALE_AVATAR;
+                user = usersRepository.save(Users.builder()
+                        .username(generateUniqueUsername(identity.email()))
+                        .email(identity.email())
                         .gender(gender)
                         .defaultAvatarUrl(avatar)
                         .role(NxvConstants.ROLE_USER)
                         .isEmailVerified(true)
-                        .isLocked(false)
-                        .isDead(false)
-                        .loginFailCount(0)
-                        .lastLoginAt(LocalDateTime.now())
-                        .build();
-                return usersRepository.save(created);
-            });
-
+                        .build());
+                isNewUser = true;
+            }
             oauthProvidersRepository.save(NxvOAuthProviders.builder()
                     .user(user)
                     .provider("GOOGLE")
-                    .providerUserId(req.getProviderUserId())
+                    .providerUserId(identity.subject())
                     .createdAt(LocalDateTime.now())
                     .build());
         }
 
         if (Boolean.TRUE.equals(user.getIsLocked())) {
-            throw new AppException(ErrorCode.FORBIDDEN, "TÃ i khoáº£n nÃ y Ä‘ang bá»‹ khÃ³a!");
+            throw new AppException(ErrorCode.FORBIDDEN, "Tài khoản này đang bị khóa!");
         }
+        if (!Boolean.TRUE.equals(user.getIsEmailVerified())) {
+            user.setIsEmailVerified(true); // Google da xac minh email nay
+        }
+        user.setLastLoginAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        usersRepository.save(user);
 
-        NxvCharacters character = getOrCreateCharacter(user);
+        NxvCharacters character = isNewUser
+                ? initNewPlayer(user, identity.name())
+                : getOrCreateCharacter(user);
         return createSessionAndBuildResponse(user, character,
                 req.getDeviceName() != null ? req.getDeviceName() : "Google OAuth2 Web");
     }
@@ -194,15 +170,15 @@ public class NxvAuthService {
     // Chuc nang #5: Gui OTP & Xac thuc Email (TokenType = 0)
     @Transactional
     public Map<String, Object> sendEmailVerificationOtp(SendOtpRequest req) {
-        Users user = usersRepository.findByEmail(req.getEmail().trim().toLowerCase())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y tÃ i khoáº£n vá»›i Email nÃ y!"));
-        return generateAndSaveOtp(user, 0, "MÃ£ OTP xÃ¡c thá»±c tÃ i khoáº£n Ä‘Ã£ Ä‘Æ°á»£c khá»Ÿi táº¡o!");
+        return usersRepository.findByEmail(req.getEmail().trim().toLowerCase())
+                .map(user -> generateAndSaveOtp(user, 0, "Nếu email tồn tại, mã OTP xác thực đã được gửi."))
+                .orElseGet(() -> genericOtpResponse(req.getEmail()));
     }
 
     @Transactional
     public Map<String, Object> verifyEmailOtp(VerifyEmailOtpRequest req) {
         Users user = usersRepository.findByEmail(req.getEmail().trim().toLowerCase())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y tÃ i khoáº£n vá»›i Email nÃ y!"));
+                .orElseThrow(() -> new AppException(ErrorCode.BAD_REQUEST, OTP_INVALID_MESSAGE));
 
         validateOtpToken(user.getUserId(), 0, req.getOtpCode());
         user.setIsEmailVerified(true);
@@ -215,15 +191,15 @@ public class NxvAuthService {
     // Chuc nang #6: Quen mat khau & Dat lai mat khau qua OTP (TokenType = 1)
     @Transactional
     public Map<String, Object> forgotPasswordSendOtp(SendOtpRequest req) {
-        Users user = usersRepository.findByEmail(req.getEmail().trim().toLowerCase())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y tÃ i khoáº£n vá»›i Email nÃ y!"));
-        return generateAndSaveOtp(user, 1, "MÃ£ OTP khÃ´i phá»¥c máº­t kháº©u Ä‘Ã£ Ä‘Æ°á»£c khá»Ÿi táº¡o!");
+        return usersRepository.findByEmail(req.getEmail().trim().toLowerCase())
+                .map(user -> generateAndSaveOtp(user, 1, "Nếu email tồn tại, mã OTP khôi phục mật khẩu đã được gửi."))
+                .orElseGet(() -> genericOtpResponse(req.getEmail()));
     }
 
     @Transactional
     public Map<String, Object> resetPasswordWithOtp(ResetPasswordRequest req) {
         Users user = usersRepository.findByEmail(req.getEmail().trim().toLowerCase())
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y tÃ i khoáº£n vá»›i Email nÃ y!"));
+                .orElseThrow(() -> new AppException(ErrorCode.BAD_REQUEST, OTP_INVALID_MESSAGE));
 
         validateOtpToken(user.getUserId(), 1, req.getOtpCode());
         user.setPasswordHash(passwordEncoder.encode(req.getNewPassword()));
@@ -231,28 +207,30 @@ public class NxvAuthService {
         user.setLoginFailCount(0);
         user.setUpdatedAt(LocalDateTime.now());
         usersRepository.save(user);
+        userSessionsRepository.deactivateAllByUserId(user.getUserId()); // doi mat khau -> dang xuat moi thiet bi
 
-        return Map.of("email", user.getEmail(), "status", "ÄÃ£ Ä‘áº·t láº¡i máº­t kháº©u vÃ  má»Ÿ khÃ³a tÃ i khoáº£n thÃ nh cÃ´ng!");
+        return Map.of("email", user.getEmail(), "status", "Đã đặt lại mật khẩu và mở khóa tài khoản thành công!");
     }
 
     // Chuc nang #7: Thay doi mat khau
     @Transactional
     public void changePassword(Long userId, ChangePasswordRequest req) {
         Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         if (user.getPasswordHash() != null && !passwordEncoder.matches(req.getOldPassword(), user.getPasswordHash())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Máº­t kháº©u hiá»‡n táº¡i khÃ´ng chÃ­nh xÃ¡c!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Mật khẩu hiện tại không chính xác!");
         }
         user.setPasswordHash(passwordEncoder.encode(req.getNewPassword()));
         user.setUpdatedAt(LocalDateTime.now());
         usersRepository.save(user);
+        userSessionsRepository.deactivateAllByUserId(userId); // doi mat khau -> dang xuat moi thiet bi, phai dang nhap lai
     }
 
     // Chuc nang #8: Xem & Cap nhat Profile ca nhan
     @Transactional(readOnly = true)
     public AuthResponse getMyProfile(Long userId) {
         Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         NxvCharacters character = getOrCreateCharacter(user);
         return buildAuthResponse(user, character, null, null);
     }
@@ -260,7 +238,7 @@ public class NxvAuthService {
     @Transactional
     public AuthResponse updateMyProfile(Long userId, UpdateProfileRequest req) {
         Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         NxvCharacters character = getOrCreateCharacter(user);
 
         if (req.getGender() != null) {
@@ -305,7 +283,7 @@ public class NxvAuthService {
     @Transactional
     public void revokeSession(Long userId, Long sessionId) {
         NxvUserSessions session = userSessionsRepository.findBySessionIdAndUser_UserId(sessionId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y phiÃªn Ä‘Äƒng nháº­p nÃ y!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy phiên đăng nhập này!"));
         session.setIsActive(false);
         userSessionsRepository.save(session);
     }
@@ -323,67 +301,132 @@ public class NxvAuthService {
     }
 
     // --- Helpers ---
+    private static final String OTP_INVALID_MESSAGE = "Mã OTP không hợp lệ, đã hết hạn hoặc đã được sử dụng!";
+
+    /** Phản hồi giống hệt khi email không tồn tại, để kẻ xấu không dò được email nào đã đăng ký. */
+    private Map<String, Object> genericOtpResponse(String email) {
+        Map<String, Object> res = new LinkedHashMap<>();
+        res.put("email", email.trim().toLowerCase());
+        res.put("expiresInMinutes", 10);
+        res.put("note", "Nếu email tồn tại trong hệ thống, mã OTP đã được gửi.");
+        return res;
+    }
+
     private Map<String, Object> generateAndSaveOtp(Users user, int tokenType, String message) {
+        // Chong spam: moi OTP cach nhau toi thieu 60 giay
+        otpTokensRepository
+                .findTopByUser_UserIdAndTokenTypeAndIsUsedFalseOrderByCreatedAtDesc(user.getUserId(), tokenType)
+                .filter(t -> t.getCreatedAt().isAfter(LocalDateTime.now().minusSeconds(OTP_RESEND_COOLDOWN_SECONDS)))
+                .ifPresent(t -> {
+                    throw new AppException(ErrorCode.TOO_MANY_REQUESTS,
+                            "Vui lòng đợi " + OTP_RESEND_COOLDOWN_SECONDS + " giây trước khi yêu cầu mã OTP mới!");
+                });
+
         String rawOtp = String.format("%06d", RANDOM.nextInt(1000000));
-        NxvOtpTokens otp = NxvOtpTokens.builder()
+        NxvOtpTokens otp = otpTokensRepository.save(NxvOtpTokens.builder()
                 .user(user)
                 .tokenType(tokenType)
                 .tokenHash(passwordEncoder.encode(rawOtp))
                 .expiresAt(LocalDateTime.now().plusMinutes(10))
                 .isUsed(false)
                 .createdAt(LocalDateTime.now())
-                .build();
-        otpTokensRepository.save(otp);
+                .build());
+        // TODO: gui rawOtp qua email bang JavaMailSender khi da cau hinh SMTP (spring.mail.*)
 
         Map<String, Object> res = new LinkedHashMap<>();
         res.put("email", user.getEmail());
         res.put("expiresInMinutes", 10);
-        res.put("otpDebugCode", rawOtp); // Giup test ngay tren Swagger khong can SMTP
         res.put("note", message);
+        if (otpDebugEnabled) {
+            res.put("otpDebugCode", rawOtp); // CHI dung khi dev: test tren Swagger khong can SMTP
+        }
         return res;
     }
 
     private void validateOtpToken(Long userId, int tokenType, String rawOtp) {
         NxvOtpTokens token = otpTokensRepository
                 .findTopByUser_UserIdAndTokenTypeAndIsUsedFalseOrderByCreatedAtDesc(userId, tokenType)
-                .orElseThrow(() -> new AppException(ErrorCode.BAD_REQUEST, "KhÃ´ng tÃ¬m tháº¥y mÃ£ OTP há»£p lá»‡ hoáº·c mÃ£ Ä‘Ã£ Ä‘Æ°á»£c sá»­ dá»¥ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.BAD_REQUEST, OTP_INVALID_MESSAGE));
 
         if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "MÃ£ OTP Ä‘Ã£ háº¿t háº¡n (quÃ¡ 10 phÃºt). Vui lÃ²ng yÃªu cáº§u mÃ£ má»›i!");
+            otpFailedAttempts.remove(token.getTokenId());
+            throw new AppException(ErrorCode.BAD_REQUEST, "Mã OTP đã hết hạn (quá 10 phút). Vui lòng yêu cầu mã mới!");
+        }
+        // Chong brute-force 6 chu so: sai qua 5 lan thi phai xin ma moi
+        int attempts = otpFailedAttempts.getOrDefault(token.getTokenId(), 0);
+        if (attempts >= OTP_MAX_ATTEMPTS) {
+            throw new AppException(ErrorCode.TOO_MANY_REQUESTS, "Nhập sai OTP quá nhiều lần. Vui lòng yêu cầu mã mới!");
         }
         if (!passwordEncoder.matches(rawOtp.trim(), token.getTokenHash())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "MÃ£ OTP khÃ´ng chÃ­nh xÃ¡c!");
+            otpFailedAttempts.merge(token.getTokenId(), 1, Integer::sum);
+            throw new AppException(ErrorCode.BAD_REQUEST, "Mã OTP không chính xác!");
         }
+        otpFailedAttempts.remove(token.getTokenId());
         token.setIsUsed(true);
         otpTokensRepository.save(token);
     }
 
-    private NxvCharacters getOrCreateCharacter(Users user) {
-        return charactersRepository.findByUser_UserId(user.getUserId()).orElseGet(() -> {
-            NxvCharacters c = NxvCharacters.builder()
+    private String generateUniqueUsername(String email) {
+        String base = email.split("@")[0].replaceAll("[^a-zA-Z0-9_]", "");
+        if (base.length() < 3) base = "hero" + base;
+        if (base.length() > 40) base = base.substring(0, 40);
+        String candidate = base;
+        while (usersRepository.existsByUsername(candidate)) {
+            candidate = base + "_" + (1000 + RANDOM.nextInt(9000));
+        }
+        return candidate;
+    }
+
+    /** Khoi tao nguoi choi moi: danh hieu khoi dau + nhan vat (Base 100 HP / 50 MP) + tui do 50 o. Dung chung cho dang ky va Google. */
+    private NxvCharacters initNewPlayer(Users user, String preferredCharacterName) {
+        NxvTitles starterTitle = titlesRepository.findFirstByTitleName(STARTER_TITLE_NAME).orElse(null);
+        if (starterTitle != null) {
+            userTitlesRepository.save(NxvUserTitles.builder()
                     .user(user)
-                    .characterName(user.getUsername())
-                    .avatarUrl(user.getDefaultAvatarUrl() != null ? user.getDefaultAvatarUrl() : DEFAULT_MALE_AVATAR)
-                    .currentLevel(1)
-                    .currentExp(0L)
-                    .expToNextLevel(100L)
-                    .baseMaxHp(100)
-                    .baseMaxMp(50)
-                    .maxHp(100)
-                    .currentHp(100)
-                    .maxMp(50)
-                    .currentMp(50)
-                    .gold(100L)
-                    .build();
-            c = charactersRepository.save(c);
-            if (!inventoryConfigRepository.existsById(user.getUserId())) {
-                inventoryConfigRepository.save(NxvUserInventoryConfig.builder()
-                        .userId(user.getUserId())
-                        .maxSlots(50)
-                        .build());
-            }
-            return c;
-        });
+                    .title(starterTitle)
+                    .unlockedAt(LocalDateTime.now())
+                    .build());
+        }
+
+        String charName = (preferredCharacterName != null && !preferredCharacterName.isBlank())
+                ? preferredCharacterName.trim() : user.getUsername();
+        if (charName.length() > 100) charName = charName.substring(0, 100);
+        String avatar = user.getDefaultAvatarUrl() != null ? user.getDefaultAvatarUrl() : DEFAULT_MALE_AVATAR;
+
+        NxvCharacters character = charactersRepository.save(NxvCharacters.builder()
+                .user(user)
+                .characterName(charName)
+                .avatarUrl(avatar)
+                .currentLevel(1)
+                .currentExp(0L)
+                .expToNextLevel(100L)
+                .baseMaxHp(100)
+                .baseMaxMp(50)
+                .maxHp(100)
+                .currentHp(100)
+                .maxMp(50)
+                .currentMp(50)
+                .gold(100L) // Tang 100 Gold khoi nghiep
+                .skillPoints(0)
+                .isShieldActive(false)
+                .totalTasksDone(0)
+                .currentTitle(starterTitle)
+                .streakDays(0)
+                .updatedAt(LocalDateTime.now())
+                .build());
+
+        if (!inventoryConfigRepository.existsById(user.getUserId())) {
+            inventoryConfigRepository.save(NxvUserInventoryConfig.builder()
+                    .userId(user.getUserId())
+                    .maxSlots(50)
+                    .build());
+        }
+        return character;
+    }
+
+    private NxvCharacters getOrCreateCharacter(Users user) {
+        return charactersRepository.findByUser_UserId(user.getUserId())
+                .orElseGet(() -> initNewPlayer(user, null));
     }
 
     private AuthResponse createSessionAndBuildResponse(Users user, NxvCharacters character, String deviceName) {

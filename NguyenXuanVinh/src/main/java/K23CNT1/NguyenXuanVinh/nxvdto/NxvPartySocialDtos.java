@@ -11,7 +11,7 @@ public class NxvPartySocialDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreatePartyRequest {
-        @NotBlank(message = "TÃªn Tá»• Ä‘á»™i (Party) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tên Tổ đội (Party) không được để trống")
         private String partyName;
         private String description;
         private Integer maxMembers;
@@ -56,7 +56,7 @@ public class NxvPartySocialDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreatePartySharedTaskRequest {
-        @NotBlank(message = "TiÃªu Ä‘á» Task chung cá»§a Party khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tiêu đề Task chung của Party không được để trống")
         private String title;
         private String descriptionMarkdown;
         private Integer difficulty; // 1=Easy, 2=Normal, 3=Hard
@@ -68,7 +68,7 @@ public class NxvPartySocialDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreatePartyBossQuestRequest {
-        @NotBlank(message = "TÃªn Boss / Dá»± Ã¡n chung cá»§a Party khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tên Boss / Dự án chung của Party không được để trống")
         private String title;
         private Integer rewardExp;
         private Integer rewardGold;
@@ -76,7 +76,7 @@ public class NxvPartySocialDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class SendPartyMessageRequest {
-        @NotBlank(message = "Ná»™i dung tin nháº¯n khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Nội dung tin nhắn không được để trống")
         private String content;
     }
 

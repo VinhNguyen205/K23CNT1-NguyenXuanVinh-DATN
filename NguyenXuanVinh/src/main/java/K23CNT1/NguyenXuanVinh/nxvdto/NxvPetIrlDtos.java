@@ -20,7 +20,7 @@ public class NxvPetIrlDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class RenameAndElementRequest {
-        @NotBlank(message = "TÃªn thÃº cÆ°ng khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tên thú cưng không được để trống")
         private String petName;
         private String elementType; // Hoa, Loi, Thuy, Moc, Tu nhien
     }
@@ -90,7 +90,7 @@ public class NxvPetIrlDtos {
     // --- IRL JOURNAL & FOCUS SESSION DTOS ---
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateJournalRequest {
-        @NotBlank(message = "Ná»™i dung nháº­t kÃ½ khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Nội dung nhật ký không được để trống")
         private String content;
         private String moodTag; // HAPPY, TIRED, FOCUSED, STRESSED, DETERMINED
     }
@@ -107,8 +107,8 @@ public class NxvPetIrlDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CompleteFocusRequest {
-        @NotNull(message = "Thá»i lÆ°á»£ng táº­p trung (phÃºt) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Min(value = 10, message = "Thá»i lÆ°á»£ng táº­p trung tá»‘i thiá»ƒu lÃ  10 phÃºt Ä‘á»ƒ nháº­n thÆ°á»Ÿng")
+        @NotNull(message = "Thời lượng tập trung (phút) không được để trống")
+        @Min(value = 10, message = "Thời lượng tập trung tối thiểu là 10 phút để nhận thưởng")
         private Integer durationMinutes;
     }
 

@@ -34,7 +34,7 @@ public class NxvPaymentRevivalDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateRevivalOrderRequest {
-        @NotNull(message = "packageId (GÃ³i VÃ© Há»“i Sinh) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "packageId (Gói Vé Hồi Sinh) không được để trống")
         private Integer packageId;
 
         @Builder.Default
@@ -63,16 +63,16 @@ public class NxvPaymentRevivalDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class BankWebhookPayload {
-        @NotBlank(message = "orderCode khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "orderCode không được để trống")
         private String orderCode;
 
-        @NotNull(message = "amountVnd khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "amountVnd không được để trống")
         private Integer amountVnd;
 
         private String bankTransactionId;
         private String transferContent;
 
-        @NotBlank(message = "Chá»¯ kÃ½ báº£o máº­t (signatureHash) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Chữ ký bảo mật (signatureHash) không được để trống")
         private String signatureHash;
     }
 

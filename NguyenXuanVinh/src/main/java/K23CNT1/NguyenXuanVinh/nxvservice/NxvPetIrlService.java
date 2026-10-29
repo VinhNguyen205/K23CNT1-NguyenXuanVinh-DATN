@@ -52,13 +52,13 @@ public class NxvPetIrlService {
         Users user = getUserAlive(userId);
         List<NxvPetSpecies> allSpecies = petSpeciesRepository.findAll();
         if (allSpecies.isEmpty()) {
-            throw new AppException(ErrorCode.NOT_FOUND, "ChÆ°a cÃ³ dá»¯ liá»‡u loÃ i ThÃº cÆ°ng (NxvPetSpecies) trong há»‡ thá»‘ng!");
+            throw new AppException(ErrorCode.NOT_FOUND, "Chưa có dữ liệu loài Thú cưng (NxvPetSpecies) trong hệ thống!");
         }
 
         NxvPetSpecies species;
         if (req != null && req.getSpeciesId() != null) {
             species = petSpeciesRepository.findById(req.getSpeciesId())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y loÃ i ThÃº cÆ°ng ID: " + req.getSpeciesId()));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy loài Thú cưng ID: " + req.getSpeciesId()));
         } else {
             species = allSpecies.get(RANDOM.nextInt(allSpecies.size()));
         }
@@ -76,7 +76,7 @@ public class NxvPetIrlService {
                 ? species.getEggImageUrl() : "/images/pets/egg_default_static.png";
 
         String petName = (req != null && req.getPetName() != null && !req.getPetName().isBlank())
-                ? req.getPetName().trim() : "Trá»©ng " + species.getSpeciesName();
+                ? req.getPetName().trim() : "Trứng " + species.getSpeciesName();
         String element = (req != null && req.getElementType() != null && !req.getElementType().isBlank())
                 ? req.getElementType().trim() : species.getElementType();
 
@@ -107,7 +107,7 @@ public class NxvPetIrlService {
         NxvUserPets pet = getUserPet(userId, userPetId);
 
         if (pet.getStage() != NxvConstants.PET_STAGE_EGG) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "ThÃº cÆ°ng nÃ y Ä‘Ã£ ná»Ÿ khá»i trá»©ng rá»“i!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Thú cưng này đã nở khỏi trứng rồi!");
         }
 
         NxvPetSpecies species = pet.getSpecies();
@@ -117,7 +117,7 @@ public class NxvPetIrlService {
         pet.setStage(NxvConstants.PET_STAGE_BABY); // 1 = Baby
         pet.setCurrentImageUrl(babyImg);
         pet.setHatchedAt(LocalDateTime.now());
-        if (pet.getPetName().startsWith("Trá»©ng ")) {
+        if (pet.getPetName().startsWith("Trứng ")) {
             pet.setPetName(species.getSpeciesName());
         }
         pet = userPetsRepository.save(pet);
@@ -134,7 +134,7 @@ public class NxvPetIrlService {
         petInteractionLogsRepository.save(NxvPetInteractionLogs.builder()
                 .userPet(pet)
                 .interactionType("HATCH")
-                .aiMessage("ChÃ o chá»§ nhÃ¢n " + c.getCharacterName() + "! MÃ¬nh vá»«a ná»Ÿ khá»i lá»“ng áº¥p, hÃ£y cÃ¹ng nhau duy trÃ¬ chuá»—i ká»· luáº­t má»—i ngÃ y nhÃ©!")
+                .aiMessage("Chào chủ nhân " + c.getCharacterName() + "! Mình vừa nở khỏi lồng ấp, hãy cùng nhau duy trì chuỗi kỷ luật mỗi ngày nhé!")
                 .createdAt(LocalDateTime.now())
                 .build());
 
@@ -189,7 +189,7 @@ public class NxvPetIrlService {
         NxvUserPets pet = getUserPet(userId, userPetId);
 
         if (pet.getStage() == NxvConstants.PET_STAGE_EGG) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Trá»©ng Ä‘ang trong lá»“ng áº¥p chÆ°a thá»ƒ Äƒn! HÃ£y áº¥p ná»Ÿ trá»©ng trÆ°á»›c.");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Trứng đang trong lồng ấp chưa thể ăn! Hãy ấp nở trứng trước.");
         }
 
         Integer usedItemId = null;
@@ -198,7 +198,7 @@ public class NxvPetIrlService {
         if (payWithGold) {
             if (c.getGold() < FEED_PET_GOLD_COST) {
                 throw new AppException(ErrorCode.INSUFFICIENT_GOLD,
-                        "KhÃ´ng Ä‘á»§ VÃ ng Ä‘á»ƒ mua thá»©c Äƒn cho Pet! Cáº§n " + FEED_PET_GOLD_COST + " Gold.");
+                        "Không đủ Vàng để mua thức ăn cho Pet! Cần " + FEED_PET_GOLD_COST + " Gold.");
             }
             c.setGold(c.getGold() - FEED_PET_GOLD_COST);
             c.setUpdatedAt(LocalDateTime.now());
@@ -215,7 +215,7 @@ public class NxvPetIrlService {
         } else {
             NxvInventory inv = inventoryRepository.findByUser_UserIdAndItem_ItemId(userId, req.getConsumableItemId())
                     .filter(i -> i.getQuantity() > 0)
-                    .orElseThrow(() -> new AppException(ErrorCode.INSUFFICIENT_ITEM_QTY, "KhÃ´ng cÃ³ váº­t pháº©m nÃ y trong tÃºi Ä‘á»“ Ä‘á»ƒ cho Pet Äƒn!"));
+                    .orElseThrow(() -> new AppException(ErrorCode.INSUFFICIENT_ITEM_QTY, "Không có vật phẩm này trong túi đồ để cho Pet ăn!"));
             inv.setQuantity(inv.getQuantity() - 1);
             inventoryRepository.save(inv);
             usedItemId = inv.getItem().getItemId();
@@ -228,8 +228,8 @@ public class NxvPetIrlService {
         pet = userPetsRepository.save(pet);
 
         String msg = wokeUpFromHibernation
-                ? "NhoÃ m nhoÃ m! " + pet.getPetName() + " Ä‘Ã£ tá»‰nh giáº¥c sau ká»³ ngá»§ Ä‘Ã´ng vÃ  phá»¥c há»“i toÃ n bá»™ Buff Ä‘á»“ng hÃ nh!"
-                : pet.getPetName() + " Äƒn ráº¥t ngon miá»‡ng! (Äá»™ no: " + pet.getHunger() + "/100, ThÃ¢n thiáº¿t: " + pet.getAffection() + "/100).";
+                ? "Nhoàm nhoàm! " + pet.getPetName() + " đã tỉnh giấc sau kỳ ngủ đông và phục hồi toàn bộ Buff đồng hành!"
+                : pet.getPetName() + " ăn rất ngon miệng! (Độ no: " + pet.getHunger() + "/100, Thân thiết: " + pet.getAffection() + "/100).";
 
         petInteractionLogsRepository.save(NxvPetInteractionLogs.builder()
                 .userPet(pet)
@@ -255,10 +255,10 @@ public class NxvPetIrlService {
         NxvUserPets pet = getUserPet(userId, userPetId);
 
         if (pet.getStage() == NxvConstants.PET_STAGE_EGG) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "HÃ£y áº¥p ná»Ÿ trá»©ng thÃ nh ThÃº non (Stage 1) trÆ°á»›c khi tiáº¿n hÃ³a!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Hãy ấp nở trứng thành Thú non (Stage 1) trước khi tiến hóa!");
         }
         if (pet.getStage() >= NxvConstants.PET_STAGE_ADULT) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "ThÃº cÆ°ng nÃ y Ä‘Ã£ á»Ÿ hÃ¬nh thÃ¡i TrÆ°á»Ÿng thÃ nh (Stage 2) tá»‘i Ä‘a rá»“i!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Thú cưng này đã ở hình thái Trưởng thành (Stage 2) tối đa rồi!");
         }
 
         int reqDays = (pet.getSpecies().getEvolveDays() != null && pet.getSpecies().getEvolveDays() > 0)
@@ -270,8 +270,8 @@ public class NxvPetIrlService {
         boolean eligibleByStreakOrDays = (c.getStreakDays() >= reqDays) || (daysSinceHatch >= reqDays) || (pet.getAffection() >= 80);
         if (!eligibleByStreakOrDays) {
             throw new AppException(ErrorCode.BAD_REQUEST,
-                    "ChÆ°a Ä‘á»§ Ä‘iá»u kiá»‡n tiáº¿n hÃ³a! Cáº§n Ä‘áº¡t chuá»—i Streak " + reqDays + " ngÃ y (Hiá»‡n táº¡i: " + c.getStreakDays()
-                            + ") hoáº·c Äá»™ thÃ¢n thiáº¿t >= 80 (Hiá»‡n táº¡i: " + pet.getAffection() + "/100).");
+                    "Chưa đủ điều kiện tiến hóa! Cần đạt chuỗi Streak " + reqDays + " ngày (Hiện tại: " + c.getStreakDays()
+                            + ") hoặc Độ thân thiết >= 80 (Hiện tại: " + pet.getAffection() + "/100).");
         }
 
         NxvPetSpecies sp = pet.getSpecies();
@@ -286,7 +286,7 @@ public class NxvPetIrlService {
         petInteractionLogsRepository.save(NxvPetInteractionLogs.builder()
                 .userPet(pet)
                 .interactionType("EVOLVE")
-                .aiMessage("Ãnh sÃ¡ng tiáº¿n hÃ³a bÃ¹ng ná»•! [" + pet.getPetName() + "] Ä‘Ã£ tiáº¿n hÃ³a lÃªn hÃ¬nh thÃ¡i TrÆ°á»Ÿng thÃ nh nhá» chuá»—i ká»· luáº­t cá»§a báº¡n!")
+                .aiMessage("Ánh sáng tiến hóa bùng nổ! [" + pet.getPetName() + "] đã tiến hóa lên hình thái Trưởng thành nhờ chuỗi kỷ luật của bạn!")
                 .createdAt(LocalDateTime.now())
                 .build());
 
@@ -301,17 +301,17 @@ public class NxvPetIrlService {
         NxvUserPets pet = getUserPet(userId, userPetId);
 
         if (Boolean.TRUE.equals(pet.getIsHibernating())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, pet.getPetName() + " Ä‘ang ngá»§ Ä‘Ã´ng vÃ¬ Ä‘Ã³i! HÃ£y cho Pet Äƒn Ä‘á»ƒ Ä‘Ã¡nh thá»©c nhÃ©.");
+            throw new AppException(ErrorCode.BAD_REQUEST, pet.getPetName() + " đang ngủ đông vì đói! Hãy cho Pet ăn để đánh thức nhé.");
         }
 
         pet.setAffection(Math.min(100, pet.getAffection() + 5));
         pet = userPetsRepository.save(pet);
 
         String[] dialogues = new String[]{
-                pet.getPetName() + " dá»¥i Ä‘áº§u vÃ o tay " + c.getCharacterName() + ": \"HÃ´m nay chÃºng ta lÃ m thÃªm 1 Task láº¥y VÃ ng quay há»™p mÃ¹ Ä‘i chá»§ nhÃ¢n!\"",
-                pet.getPetName() + " váº«y Ä‘uÃ´i hÃ o há»©ng: \"Chá»‰ sá»‘ ThÃ¢n thiáº¿t Ä‘Ã£ tÄƒng lÃªn " + pet.getAffection() + "/100 rá»“i Ä‘Ã³!\"",
-                pet.getPetName() + " nháº¯c nháº¹: \"Äá»«ng quÃªn Ä‘iá»ƒm danh giá»¯ chuá»—i Streak " + c.getStreakDays() + " ngÃ y Ä‘á»ƒ mÃ¬nh sá»›m tiáº¿n hÃ³a nhÃ©!\"",
-                pet.getPetName() + " tá»a ra nÄƒng lÆ°á»£ng há»‡ " + pet.getElementType() + ", giÃºp báº¡n nháº­n thÃªm +" + pet.getSpecies().getPassiveGoldBonus().multiply(BigDecimal.valueOf(100)).intValue() + "% VÃ ng má»—i khi hoÃ n thÃ nh Task!"
+                pet.getPetName() + " dụi đầu vào tay " + c.getCharacterName() + ": \"Hôm nay chúng ta làm thêm 1 Task lấy Vàng quay hộp mù đi chủ nhân!\"",
+                pet.getPetName() + " vẫy đuôi hào hứng: \"Chỉ số Thân thiết đã tăng lên " + pet.getAffection() + "/100 rồi đó!\"",
+                pet.getPetName() + " nhắc nhẹ: \"Đừng quên điểm danh giữ chuỗi Streak " + c.getStreakDays() + " ngày để mình sớm tiến hóa nhé!\"",
+                pet.getPetName() + " tỏa ra năng lượng hệ " + pet.getElementType() + ", giúp bạn nhận thêm +" + pet.getSpecies().getPassiveGoldBonus().multiply(BigDecimal.valueOf(100)).intValue() + "% Vàng mỗi khi hoàn thành Task!"
         };
         String chosenLine = dialogues[RANDOM.nextInt(dialogues.length)];
 
@@ -370,7 +370,7 @@ public class NxvPetIrlService {
         NxvUserPets pet = getUserPet(userId, userPetId);
 
         if (Boolean.TRUE.equals(pet.getIsHibernating())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, pet.getPetName() + " Ä‘ang ngá»§ Ä‘Ã´ng vÃ¬ bá»‹ bá» bÃª! HÃ£y cho Pet Äƒn trÆ°á»›c khi trÃ² chuyá»‡n.");
+            throw new AppException(ErrorCode.BAD_REQUEST, pet.getPetName() + " đang ngủ đông vì bị bỏ bê! Hãy cho Pet ăn trước khi trò chuyện.");
         }
 
         List<NxvTasks> allTasks = tasksRepository.findByUser_UserIdOrderBySortOrderAscCreatedAtDesc(userId);
@@ -396,7 +396,7 @@ public class NxvPetIrlService {
         res.put("userPetId", pet.getUserPetId());
         res.put("petName", pet.getPetName());
         res.put("interactionType", interactionType);
-        res.put("mood", isLazyState ? "ROASTING_REMIND (Äang khá»‹a/nháº¯c nhá»Ÿ)" : "PRAISING_MOTIVATE (Äang khen ngá»£i/Ä‘á»™ng viÃªn)");
+        res.put("mood", isLazyState ? "ROASTING_REMIND (Đang khịa/nhắc nhở)" : "PRAISING_MOTIVATE (Đang khen ngợi/động viên)");
         res.put("taskStats", Map.of(
                 "pendingTasks", pendingCount,
                 "completedTasks", completedCount,
@@ -446,14 +446,14 @@ public class NxvPetIrlService {
                 petInteractionLogsRepository.save(NxvPetInteractionLogs.builder()
                         .userPet(pet)
                         .interactionType("HIBERNATE")
-                        .aiMessage(pet.getPetName() + " Ä‘Ã£ rÆ¡i vÃ o tráº¡ng thÃ¡i Ngá»§ Ä‘Ã´ng do bá»‹ bá» Ä‘Ã³i hoáº·c chá»§ nhÃ¢n offline quÃ¡ lÃ¢u. Buff thá»¥ Ä‘á»™ng táº¡m thá»i bá»‹ vÃ´ hiá»‡u hÃ³a!")
+                        .aiMessage(pet.getPetName() + " đã rơi vào trạng thái Ngủ đông do bị bỏ đói hoặc chủ nhân offline quá lâu. Buff thụ động tạm thời bị vô hiệu hóa!")
                         .createdAt(LocalDateTime.now())
                         .build());
 
                 notificationsRepository.save(NxvNotifications.builder()
                         .user(owner)
-                        .title("ThÃº cÆ°ng [" + pet.getPetName() + "] Ä‘Ã£ ngá»§ Ä‘Ã´ng!")
-                        .content("Do báº¡n bá» bÃª nhiá»‡m vá»¥ hoáº·c chÆ°a cho Äƒn, " + pet.getPetName() + " Ä‘Ã£ ngá»§ Ä‘Ã´ng. HÃ£y vÃ o cho Pet Äƒn Ä‘á»ƒ khÃ´i phá»¥c Buff nhÃ©!")
+                        .title("Thú cưng [" + pet.getPetName() + "] đã ngủ đông!")
+                        .content("Do bạn bỏ bê nhiệm vụ hoặc chưa cho ăn, " + pet.getPetName() + " đã ngủ đông. Hãy vào cho Pet ăn để khôi phục Buff nhé!")
                         .notificationType("SYSTEM")
                         .isRead(false)
                         .createdAt(LocalDateTime.now())
@@ -475,7 +475,7 @@ public class NxvPetIrlService {
         NxvCharacters c = getCharacter(userId);
         String mood = (req.getMoodTag() != null && !req.getMoodTag().isBlank()) ? req.getMoodTag().trim().toUpperCase() : "NEUTRAL";
 
-        String aiFeedback = "Nháº­t kÃ½ cá»§a " + c.getCharacterName() + " Ä‘Ã£ Ä‘Æ°á»£c ghi nháº­n! Duy trÃ¬ thÃ³i quen nhÃ¬n láº¡i báº£n thÃ¢n má»—i ngÃ y sáº½ giÃºp báº¡n giá»¯ vá»¯ng chuá»—i Streak " + c.getStreakDays() + " ngÃ y.";
+        String aiFeedback = "Nhật ký của " + c.getCharacterName() + " đã được ghi nhận! Duy trì thói quen nhìn lại bản thân mỗi ngày sẽ giúp bạn giữ vững chuỗi Streak " + c.getStreakDays() + " ngày.";
         NxvJournals journal = journalsRepository.save(NxvJournals.builder()
                 .user(user)
                 .content(req.getContent().trim())
@@ -550,7 +550,7 @@ public class NxvPetIrlService {
                                                   boolean isLazy,
                                                   String userPrompt) {
         String contextSummary = String.format(
-                "Chá»§ nhÃ¢n: %s (Level %d, HP: %d/%d, Streak: %d ngÃ y). ThÃº cÆ°ng: %s (Há»‡ %s). Tiáº¿n Ä‘á»™ Task: ÄÃ£ xong %d, Trá»… háº¡n %d, Äang chá» %d (Tá»· lá»‡ hoÃ n thÃ nh: %.1f%%).",
+                "Chủ nhân: %s (Level %d, HP: %d/%d, Streak: %d ngày). Thú cưng: %s (Hệ %s). Tiến độ Task: Đã xong %d, Trễ hạn %d, Đang chờ %d (Tỷ lệ hoàn thành: %.1f%%).",
                 c.getCharacterName(), c.getCurrentLevel(), c.getCurrentHp(), c.getMaxHp(), c.getStreakDays(),
                 pet.getPetName(), pet.getElementType(), completed, failed, pending, rate
         );
@@ -565,9 +565,9 @@ public class NxvPetIrlService {
                     String url = "https://generativelanguage.googleapis.com/v1beta/models/"
                             + (cfg.getModelName() != null ? cfg.getModelName() : "gemini-2.5-flash")
                             + ":generateContent?key=" + cfg.getApiKeyEncrypted().trim();
-                    String sys = (cfg.getSystemPrompt() != null ? cfg.getSystemPrompt() : "Báº¡n lÃ  thÃº cÆ°ng RPG thÃ´ng minh.")
-                            + " Dá»¯ liá»‡u hiá»‡n táº¡i: " + contextSummary
-                            + (userPrompt != null && !userPrompt.isBlank() ? " CÃ¢u há»i cá»§a chá»§ nhÃ¢n: " + userPrompt : "");
+                    String sys = (cfg.getSystemPrompt() != null ? cfg.getSystemPrompt() : "Bạn là thú cưng RPG thông minh.")
+                            + " Dữ liệu hiện tại: " + contextSummary
+                            + (userPrompt != null && !userPrompt.isBlank() ? " Câu hỏi của chủ nhân: " + userPrompt : "");
 
                     Map<String, Object> body = Map.of("contents", List.of(Map.of("parts", List.of(Map.of("text", sys)))));
                     HttpHeaders headers = new HttpHeaders();
@@ -591,22 +591,22 @@ public class NxvPetIrlService {
 
         // Contextual AI Fallback (Dam bao chay muot 100% moi luc ke ca khi offline bao ve do an)
         if (isLazy) {
-            return "[" + pet.getPetName() + " nhÃ­u mÃ y khá»‹a]: \"Chá»§ nhÃ¢n " + c.getCharacterName()
-                    + " Æ¡i! Tá»· lá»‡ hoÃ n thÃ nh task Ä‘ang tá»¥t xuá»‘ng " + String.format("%.1f%%", rate)
-                    + " (Trá»… háº¡n " + failed + " task, cÃ²n tá»“n " + pending + " task chÆ°a Ä‘á»¥ng tá»›i) kÃ¬a! MÃ¡u nhÃ¢n váº­t chá»‰ cÃ²n "
-                    + c.getCurrentHp() + "/" + c.getMaxHp() + " HP thÃ´i, bá»™ Ä‘á»‹nh Ä‘á»ƒ nhÃ¢n váº­t gá»¥c ngÃ£ tá»‘n tiá»n tháº­t quÃ©t VietQR mua VÃ© Há»“i Sinh hay sao? Báº¯t tay xá»­ lÃ½ ngay 1 task Ä‘i nÃ o!\"";
+            return "[" + pet.getPetName() + " nhíu mày khịa]: \"Chủ nhân " + c.getCharacterName()
+                    + " ơi! Tỷ lệ hoàn thành task đang tụt xuống " + String.format("%.1f%%", rate)
+                    + " (Trễ hạn " + failed + " task, còn tồn " + pending + " task chưa đụng tới) kìa! Máu nhân vật chỉ còn "
+                    + c.getCurrentHp() + "/" + c.getMaxHp() + " HP thôi, bộ định để nhân vật gục ngã tốn tiền thật quét VietQR mua Vé Hồi Sinh hay sao? Bắt tay xử lý ngay 1 task đi nào!\"";
         } else {
-            return "[" + pet.getPetName() + " nháº£y lÃªn cá»• vÅ©]: \"Äá»‰nh quÃ¡ chá»§ nhÃ¢n " + c.getCharacterName()
-                    + " Æ¡i! Báº¡n Ä‘Ã£ hoÃ n thÃ nh " + completed + " nhiá»‡m vá»¥ vá»›i tá»· lá»‡ " + String.format("%.1f%%", rate)
-                    + " vÃ  giá»¯ vá»¯ng chuá»—i Streak " + c.getStreakDays() + " ngÃ y liÃªn tiáº¿p! Cá»© Ä‘Ã  ká»· luáº­t tháº¿ nÃ y thÃ¬ cáº£ mÃ¬nh vÃ  báº¡n Ä‘á»u sá»›m max cáº¥p thÃ´i!\"";
+            return "[" + pet.getPetName() + " nhảy lên cổ vũ]: \"Đỉnh quá chủ nhân " + c.getCharacterName()
+                    + " ơi! Bạn đã hoàn thành " + completed + " nhiệm vụ với tỷ lệ " + String.format("%.1f%%", rate)
+                    + " và giữ vững chuỗi Streak " + c.getStreakDays() + " ngày liên tiếp! Cứ đà kỷ luật thế này thì cả mình và bạn đều sớm max cấp thôi!\"";
         }
     }
 
     private UserPetDto toUserPetDto(NxvUserPets p, NxvCharacters c) {
         String stLabel = switch (p.getStage() != null ? p.getStage() : 0) {
-            case 2 -> "Adult (TrÆ°á»Ÿng thÃ nh)";
-            case 1 -> "Baby (ThÃº non)";
-            default -> "Egg (Trá»©ng trong lá»“ng áº¥p)";
+            case 2 -> "Adult (Trưởng thành)";
+            case 1 -> "Baby (Thú non)";
+            default -> "Egg (Trứng trong lồng ấp)";
         };
         int reqDays = (p.getSpecies().getEvolveDays() != null) ? p.getSpecies().getEvolveDays() : 14;
         boolean canEvolve = (p.getStage() == 1) && (c.getStreakDays() >= reqDays || p.getAffection() >= 80);
@@ -638,7 +638,7 @@ public class NxvPetIrlService {
 
     private Users getUserAlive(Long userId) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ngÆ°á»i dÃ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         if (Boolean.TRUE.equals(u.getIsDead())) {
             throw new AppException(ErrorCode.CHARACTER_DEAD);
         }
@@ -647,11 +647,11 @@ public class NxvPetIrlService {
 
     private NxvCharacters getCharacter(Long userId) {
         return charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y nhÃ¢n váº­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy nhân vật!"));
     }
 
     private NxvUserPets getUserPet(Long userId, Long userPetId) {
         return userPetsRepository.findByUserPetIdAndUser_UserId(userPetId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃ´ng tÃ¬m tháº¥y ThÃº cÆ°ng cá»§a báº¡n vá»›i ID: " + userPetId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Thú cưng của bạn với ID: " + userPetId));
     }
 }

@@ -2,7 +2,6 @@ package K23CNT1.NguyenXuanVinh.nxvconfig;
 
 import K23CNT1.NguyenXuanVinh.nxvrepository.NxvUserSessionsRepository;
 import K23CNT1.NguyenXuanVinh.nxvutils.NxvJwtUtils;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,12 +15,22 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Xác thực JWT theo phiên (session-based JWT):
+ *  1. Chữ ký + hạn của token hợp lệ.
+ *  2. Token phải tồn tại trong NxvUserSessions với IsActive = 1 (đăng xuất / thu hồi thiết bị có hiệu lực ngay).
+ *  3. Tài khoản không bị khóa; quyền (role) lấy từ DB nên đổi quyền có hiệu lực ngay, không phải chờ token hết hạn.
+ */
 @Component
 @RequiredArgsConstructor
 public class NxvJwtAuthenticationFilter extends OncePerRequestFilter {
+
+    /** Chỉ ghi LastActiveAt khi đã quá khoảng này, tránh UPDATE DB trên mỗi request. */
+    private static final Duration TOUCH_INTERVAL = Duration.ofMinutes(1);
 
     private final NxvJwtUtils jwtUtils;
     private final NxvUserSessionsRepository sessionsRepository;
@@ -32,27 +41,33 @@ public class NxvJwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+            String token = header.substring(7).trim();
             if (jwtUtils.validateToken(token)) {
-                var sessionOpt = sessionsRepository.findByDeviceTokenAndIsActiveTrue(token);
-                if (sessionOpt.isPresent()) {
-                    var session = sessionOpt.get();
-                    session.setLastActiveAt(LocalDateTime.now());
-                    sessionsRepository.save(session);
+                sessionsRepository.findActiveByTokenWithUser(token).ifPresent(session -> {
+                    var user = session.getUser();
+                    if (Boolean.TRUE.equals(user.getIsLocked())) {
+                        return;
+                    }
 
-                    Claims claims = jwtUtils.parseClaims(token);
-                    Long userId = Long.parseLong(claims.getSubject());
-                    Integer role = claims.get("role", Integer.class);
-                    String roleName = (role != null && role == 2) ? "ROLE_SUPER_ADMIN"
-                            : (role != null && role == 1) ? "ROLE_MODERATOR" : "ROLE_USER";
+                    LocalDateTime now = LocalDateTime.now();
+                    if (session.getLastActiveAt() == null
+                            || Duration.between(session.getLastActiveAt(), now).compareTo(TOUCH_INTERVAL) > 0) {
+                        sessionsRepository.touch(session.getSessionId(), now);
+                    }
+
+                    int role = user.getRole() == null ? 0 : user.getRole();
+                    String roleName = switch (role) {
+                        case 2 -> "ROLE_SUPER_ADMIN";
+                        case 1 -> "ROLE_MODERATOR";
+                        default -> "ROLE_USER";
+                    };
 
                     var auth = new UsernamePasswordAuthenticationToken(
-                            userId,
-                            token,
-                            List.of(new SimpleGrantedAuthority(roleName))
-                    );
+                            user.getUserId(),
+                            null,
+                            List.of(new SimpleGrantedAuthority(roleName)));
                     SecurityContextHolder.getContext().setAuthentication(auth);
-                }
+                });
             }
         }
         filterChain.doFilter(request, response);

@@ -47,7 +47,7 @@ public class NxvSkillClassDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class ChangeClassRequest {
-        @NotNull(message = "classId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "classId không được để trống")
         private Integer classId;
     }
 

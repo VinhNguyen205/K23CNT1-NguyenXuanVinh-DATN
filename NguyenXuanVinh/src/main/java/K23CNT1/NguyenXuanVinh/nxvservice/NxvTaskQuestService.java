@@ -111,7 +111,7 @@ public class NxvTaskQuestService {
     @Transactional
     public TaskDto spawnTaskFromTemplate(Long userId, Long templateId) {
         NxvTaskTemplates tpl = taskTemplatesRepository.findByTemplateIdAndUser_UserId(templateId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y mÃ¡ÂºÂ«u thÃƒÂ³i quen lÃ¡ÂºÂ·p lÃ¡ÂºÂ¡i ID: " + templateId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy mẫu thói quen lặp lại ID: " + templateId));
 
         LocalDateTime deadline = LocalDateTime.now().plusDays(1);
         if ("WEEKLY".equalsIgnoreCase(tpl.getRecurringRule())) {
@@ -146,7 +146,7 @@ public class NxvTaskQuestService {
         NxvEpicQuests epicQuest = null;
         if (req.getEpicQuestId() != null) {
             epicQuest = epicQuestsRepository.findById(req.getEpicQuestId())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y Epic Quest ID: " + req.getEpicQuestId()));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Epic Quest ID: " + req.getEpicQuestId()));
         }
 
         NxvTasks task = NxvTasks.builder()
@@ -213,7 +213,7 @@ public class NxvTaskQuestService {
 
         if (req.getEpicQuestId() != null) {
             NxvEpicQuests eq = epicQuestsRepository.findById(req.getEpicQuestId())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y Epic Quest ID: " + req.getEpicQuestId()));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Epic Quest ID: " + req.getEpicQuestId()));
             task.setEpicQuest(eq);
         }
 
@@ -282,7 +282,7 @@ public class NxvTaskQuestService {
         NxvTasks task = getUserTask(userId, taskId);
 
         if (Boolean.TRUE.equals(task.getIsFrozen())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Task nÃƒÂ y Ã„â€˜ang bÃ¡Â»â€¹ Ã„ÂÃƒÂ³ng bÃ„Æ’ng (Paused)! Vui lÃƒÂ²ng mÃ¡Â»Å¸ Ã„â€˜ÃƒÂ³ng bÃ„Æ’ng trÃ†Â°Ã¡Â»â€ºc khi hoÃƒÂ n thÃƒÂ nh.");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Task này đang bị Đóng băng (Paused)! Vui lòng mở đóng băng trước khi hoàn thành.");
         }
 
         // Goi Stored Procedure NxvSp_CompleteTask (Tinh buff Trang bi + Class + Pet, Level Up, SkillPoints)
@@ -312,16 +312,16 @@ public class NxvTaskQuestService {
         NxvTasks task = getUserTask(userId, taskId);
 
         if (task.getStatus() != NxvConstants.TASK_PENDING) {
-            throw new AppException(ErrorCode.TASK_ALREADY_PROCESSED, "ChÃ¡Â»â€° cÃƒÂ³ thÃ¡Â»Æ’ BÃ¡Â»Â qua (Skip) Task Ã„â€˜ang Ã¡Â»Å¸ trÃ¡ÂºÂ¡ng thÃƒÂ¡i Pending!");
+            throw new AppException(ErrorCode.TASK_ALREADY_PROCESSED, "Chỉ có thể Bỏ qua (Skip) Task đang ở trạng thái Pending!");
         }
 
         NxvCharacters c = charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y NhÃƒÂ¢n vÃ¡ÂºÂ­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Nhân vật!"));
 
         int mpCost = SKIP_TASK_MP_COST * normalizeDifficulty(task.getDifficulty());
         if (c.getCurrentMp() < mpCost) {
             throw new AppException(ErrorCode.INSUFFICIENT_MP,
-                    "KhÃƒÂ´ng Ã„â€˜Ã¡Â»Â§ Mana (MP) Ã„â€˜Ã¡Â»Æ’ Skip Task nÃƒÂ y! CÃ¡ÂºÂ§n " + mpCost + " MP (HiÃ¡Â»â€¡n cÃƒÂ³: " + c.getCurrentMp() + " MP).");
+                    "Không đủ Mana (MP) để Skip Task này! Cần " + mpCost + " MP (Hiện có: " + c.getCurrentMp() + " MP).");
         }
 
         c.setCurrentMp(c.getCurrentMp() - mpCost);
@@ -363,11 +363,11 @@ public class NxvTaskQuestService {
         NxvTasks task = getUserTask(userId, taskId);
 
         if (task.getStatus() != NxvConstants.TASK_COMPLETED || !Boolean.TRUE.equals(task.getUndoAvailable())) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Task nÃƒÂ y khÃƒÂ´ng thÃ¡Â»Æ’ HoÃƒÂ n tÃƒÂ¡c (ChÃ†Â°a hoÃƒÂ n thÃƒÂ nh hoÃ¡ÂºÂ·c Ã„â€˜ÃƒÂ£ hÃ¡ÂºÂ¿t hiÃ¡Â»â€¡u lÃ¡Â»Â±c Undo)!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Task này không thể Hoàn tác (Chưa hoàn thành hoặc đã hết hiệu lực Undo)!");
         }
 
         NxvCharacters c = charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y NhÃƒÂ¢n vÃ¡ÂºÂ­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Nhân vật!"));
 
         long expRollback = Math.min(c.getCurrentExp(), task.getRewardExp().longValue());
         long goldRollback = Math.min(c.getGold(), task.getRewardGold().longValue());
@@ -401,7 +401,7 @@ public class NxvTaskQuestService {
         NxvTasks task = getUserTask(userId, taskId);
 
         if (task.getStatus() != NxvConstants.TASK_PENDING) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "ChÃ¡Â»â€° cÃƒÂ³ thÃ¡Â»Æ’ Ã„ÂÃƒÂ³ng bÃ„Æ’ng/MÃ¡Â»Å¸ Ã„â€˜ÃƒÂ³ng bÃ„Æ’ng cho Task Ã„â€˜ang Pending!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Chỉ có thể Đóng băng/Mở đóng băng cho Task đang Pending!");
         }
 
         boolean newFrozenState = !Boolean.TRUE.equals(task.getIsFrozen());
@@ -463,8 +463,8 @@ public class NxvTaskQuestService {
                 if (minsLeft <= t.getReminderBeforeMins()) {
                     notificationsRepository.save(NxvNotifications.builder()
                             .user(t.getUser())
-                            .title("SÃ¡ÂºÂ¯p hÃ¡ÂºÂ¿t hÃ¡ÂºÂ¡n Task: " + t.getTitle())
-                            .content("Task \"" + t.getTitle() + "\" chÃ¡Â»â€° cÃƒÂ²n " + minsLeft + " phÃƒÂºt nÃ¡Â»Â¯a lÃƒÂ  tÃ¡Â»â€ºi hÃ¡ÂºÂ¡n! HÃƒÂ£y hoÃƒÂ n thÃƒÂ nh hoÃ¡ÂºÂ·c dÃƒÂ¹ng ChiÃƒÂªu LÃ†Â°Ã¡Â»â€ºt/KhiÃƒÂªn ChÃ¡ÂºÂ¯n ngay.")
+                            .title("Sắp hết hạn Task: " + t.getTitle())
+                            .content("Task \"" + t.getTitle() + "\" chỉ còn " + minsLeft + " phút nữa là tới hạn! Hãy hoàn thành hoặc dùng Chiêu Lướt/Khiên Chắn ngay.")
                             .notificationType("REMINDER")
                             .isRead(false)
                             .createdAt(now)
@@ -492,7 +492,7 @@ public class NxvTaskQuestService {
         NxvParties party = null;
         if (req.getPartyId() != null) {
             party = partiesRepository.findById(req.getPartyId())
-                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y Party ID: " + req.getPartyId()));
+                    .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Party ID: " + req.getPartyId()));
         }
 
         boolean isGpa = Boolean.TRUE.equals(req.getIsGpaQuest());
@@ -527,7 +527,7 @@ public class NxvTaskQuestService {
         NxvEpicQuests eq = getUserEpicQuest(userId, epicQuestId);
         BigDecimal calcGpa = null;
         if (Boolean.TRUE.equals(eq.getIsGpaQuest())) {
-            calcGpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId); if (calcGpa != null) calcGpa = calcGpa.setScale(2, java.math.RoundingMode.HALF_UP);
+            calcGpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId);
         }
         return buildEpicQuestDetailDto(eq, calcGpa);
     }
@@ -550,7 +550,7 @@ public class NxvTaskQuestService {
     public EpicQuestDetailDto toggleSubTask(Long userId, Long subTaskId) {
         getUserAlive(userId);
         NxvSubTasks st = subTasksRepository.findBySubTaskIdAndEpicQuest_User_UserId(subTaskId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y Sub-task ID: " + subTaskId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Sub-task ID: " + subTaskId));
         st.setIsDone(!Boolean.TRUE.equals(st.getIsDone()));
         subTasksRepository.save(st);
         return getEpicQuestDetail(userId, st.getEpicQuest().getEpicQuestId());
@@ -575,14 +575,14 @@ public class NxvTaskQuestService {
                 .isExcluded(false)
                 .build());
 
-        BigDecimal calculatedGpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId); if (calculatedGpa != null) calculatedGpa = calculatedGpa.setScale(2, java.math.RoundingMode.HALF_UP);
+        BigDecimal calculatedGpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId);
         return buildEpicQuestDetailDto(eq, calculatedGpa);
     }
 
     @Transactional
     public EpicQuestDetailDto deleteGpaSubject(Long userId, Long subjectId) {
         NxvGPASubjects subj = gpaSubjectsRepository.findBySubjectIdAndEpicQuest_User_UserId(subjectId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y mÃƒÂ´n hÃ¡Â»Âc ID: " + subjectId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy môn học ID: " + subjectId));
         Long eqId = subj.getEpicQuest().getEpicQuestId();
         gpaSubjectsRepository.delete(subj);
         return getEpicQuestDetail(userId, eqId);
@@ -594,22 +594,22 @@ public class NxvTaskQuestService {
         Users user = getUserAlive(userId);
         NxvEpicQuests eq = getUserEpicQuest(userId, epicQuestId);
         if (eq.getStatus() != 0) {
-            throw new AppException(ErrorCode.BAD_REQUEST, "Epic Quest nÃƒÂ y Ã„â€˜ÃƒÂ£ Ã„â€˜Ã†Â°Ã¡Â»Â£c xÃ¡Â»Â­ lÃƒÂ½ trÃ†Â°Ã¡Â»â€ºc Ã„â€˜ÃƒÂ³!");
+            throw new AppException(ErrorCode.BAD_REQUEST, "Epic Quest này đã được xử lý trước đó!");
         }
 
         BigDecimal gpa = null;
         if (Boolean.TRUE.equals(eq.getIsGpaQuest())) {
-            gpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId); if (gpa != null) gpa = gpa.setScale(2, java.math.RoundingMode.HALF_UP);
+            gpa = epicQuestsRepository.executeCalculateGpaSp(epicQuestId);
             BigDecimal target = eq.getTargetGpa() != null ? eq.getTargetGpa() : new BigDecimal("3.20");
             if (gpa == null || gpa.compareTo(target) < 0) {
                 throw new AppException(ErrorCode.BAD_REQUEST,
-                        "GPA hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i (" + (gpa != null ? gpa : "0.00") + ") chÃ†Â°a Ã„â€˜Ã¡ÂºÂ¡t mÃ¡Â»Â¥c tiÃƒÂªu Ã„â€˜Ã¡Â»Â ra (" + target + ")!");
+                        "GPA hiện tại (" + (gpa != null ? gpa : "0.00") + ") chưa đạt mục tiêu đề ra (" + target + ")!");
             }
         } else {
             List<NxvSubTasks> subs = subTasksRepository.findByEpicQuest_EpicQuestIdOrderByCreatedAtAsc(epicQuestId);
             boolean anyIncomplete = subs.stream().anyMatch(st -> !Boolean.TRUE.equals(st.getIsDone()));
             if (anyIncomplete) {
-                throw new AppException(ErrorCode.BAD_REQUEST, "Vui lÃƒÂ²ng hoÃƒÂ n thÃƒÂ nh toÃƒÂ n bÃ¡Â»â„¢ cÃƒÂ¡c Check-list (Sub-tasks) trÃ†Â°Ã¡Â»â€ºc khi chÃ¡Â»â€˜t Epic Quest!");
+                throw new AppException(ErrorCode.BAD_REQUEST, "Vui lòng hoàn thành toàn bộ các Check-list (Sub-tasks) trước khi chốt Epic Quest!");
             }
         }
 
@@ -617,7 +617,7 @@ public class NxvTaskQuestService {
         epicQuestsRepository.save(eq);
 
         NxvCharacters c = charactersRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y NhÃƒÂ¢n vÃ¡ÂºÂ­t!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Nhân vật!"));
 
         long goldReward = eq.getRewardGold() != null ? eq.getRewardGold() : 300L;
         long expReward = eq.getRewardExp() != null ? eq.getRewardExp() : 500L;
@@ -685,15 +685,15 @@ public class NxvTaskQuestService {
 
     private TaskDto toTaskDtoWithTags(NxvTasks t, List<TagDto> tags) {
         String diffLabel = switch (t.getDifficulty() != null ? t.getDifficulty() : 1) {
-            case 3 -> "Hard (KhÃƒÂ³)";
-            case 2 -> "Normal (Trung bÃƒÂ¬nh)";
-            default -> "Easy (DÃ¡Â»â€¦)";
+            case 3 -> "Hard (Khó)";
+            case 2 -> "Normal (Trung bình)";
+            default -> "Easy (Dễ)";
         };
         String statusLabel = switch (t.getStatus() != null ? t.getStatus() : 0) {
-            case 1 -> "COMPLETED (Ã„ÂÃƒÂ£ hoÃƒÂ n thÃƒÂ nh)";
-            case 2 -> "FAILED (QuÃƒÂ¡ hÃ¡ÂºÂ¡n / ThÃ¡ÂºÂ¥t bÃ¡ÂºÂ¡i)";
-            case 3 -> "SKIPPED (Ã„ÂÃƒÂ£ bÃ¡Â»Â qua bÃ¡ÂºÂ±ng MP)";
-            default -> "PENDING (Ã„Âang chÃ¡Â»Â)";
+            case 1 -> "COMPLETED (Đã hoàn thành)";
+            case 2 -> "FAILED (Quá hạn / Thất bại)";
+            case 3 -> "SKIPPED (Đã bỏ qua bằng MP)";
+            default -> "PENDING (Đang chờ)";
         };
 
         return TaskDto.builder()
@@ -799,7 +799,7 @@ public class NxvTaskQuestService {
 
     private Users getUserAlive(Long userId) {
         Users u = usersRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y ngÃ†Â°Ã¡Â»Âi dÃƒÂ¹ng!"));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy người dùng!"));
         if (Boolean.TRUE.equals(u.getIsDead())) {
             throw new AppException(ErrorCode.CHARACTER_DEAD);
         }
@@ -808,12 +808,12 @@ public class NxvTaskQuestService {
 
     private NxvTasks getUserTask(Long userId, Long taskId) {
         return tasksRepository.findByTaskIdAndUser_UserId(taskId, userId)
-                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y Task ID: " + taskId));
+                .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND, "Không tìm thấy Task ID: " + taskId));
     }
 
     private NxvEpicQuests getUserEpicQuest(Long userId, Long epicQuestId) {
         return epicQuestsRepository.findById(epicQuestId)
                 .filter(eq -> Objects.equals(eq.getUser().getUserId(), userId))
-                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "KhÃƒÂ´ng tÃƒÂ¬m thÃ¡ÂºÂ¥y Epic Quest ID: " + epicQuestId));
+                .orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "Không tìm thấy Epic Quest ID: " + epicQuestId));
     }
 }

@@ -20,169 +20,169 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/admin-system")
 @RequiredArgsConstructor
-@Tag(name = "Module 8: Quáº£n trá»‹ viÃªn Admin Dashboard & Há»‡ thá»‘ng (Chá»©c nÄƒng #103 - #115)", description = "Thá»‘ng kÃª tá»•ng quan, Ban/Unban Users, PhÃ¢n quyá»n, Cáº¥u hÃ¬nh Ä‘á»™ng Gacha/Item/Banner/Pháº¡t HP, Cronjobs, Global Notifications, Log VÃ ng, Report & AI Config")
+@Tag(name = "Module 8: Quản trị viên Admin Dashboard & Hệ thống (Chức năng #103 - #115)", description = "Thống kê tổng quan, Ban/Unban Users, Phân quyền, Cấu hình động Gacha/Item/Banner/Phạt HP, Cronjobs, Global Notifications, Log Vàng, Report & AI Config")
 public class NxvSystemAdminController {
 
     private final NxvSystemAdminService systemAdminService;
 
-    @Operation(summary = "[#103] Dashboard thá»‘ng kÃª tá»•ng quan toÃ n há»‡ thá»‘ng (Users, Tasks, Gacha, Marketplace, Doanh thu Há»“i sinh VNÄ)")
+    @Operation(summary = "[#103] Dashboard thống kê tổng quan toàn hệ thống (Users, Tasks, Gacha, Marketplace, Doanh thu Hồi sinh VNĐ)")
     @GetMapping("/dashboard/summary")
     public ApiResponse<AdminDashboardSummaryDto> getDashboardSummary() {
         return ApiResponse.ok(systemAdminService.getSystemDashboardSummary());
     }
 
-    @Operation(summary = "[#104A] Xem danh sÃ¡ch toÃ n bá»™ tÃ i khoáº£n ngÆ°á»i dÃ¹ng trong báº£ng Users")
+    @Operation(summary = "[#104A] Xem danh sách toàn bộ tài khoản người dùng trong bảng Users")
     @GetMapping("/users")
     public ApiResponse<List<AdminUserRowDto>> getAllUsers() {
         return ApiResponse.ok(systemAdminService.getAllUsersForAdmin());
     }
 
-    @Operation(summary = "[#104B] KhÃ³a / Má»Ÿ khÃ³a tÃ i khoáº£n ngÆ°á»i dÃ¹ng (Ban / Unban báº£ng Users)")
+    @Operation(summary = "[#104B] Khóa / Mở khóa tài khoản người dùng (Ban / Unban bảng Users)")
     @PostMapping("/users/{targetUserId}/ban-toggle")
     public ApiResponse<AdminUserRowDto> toggleBanUser(@PathVariable Long targetUserId,
                                                       @RequestParam(defaultValue = "true") boolean lock) {
-        return ApiResponse.ok(lock ? "ÄÃ£ khÃ³a (Ban) tÃ i khoáº£n thÃ nh cÃ´ng!" : "ÄÃ£ má»Ÿ khÃ³a (Unban) tÃ i khoáº£n thÃ nh cÃ´ng!",
+        return ApiResponse.ok(lock ? "Đã khóa (Ban) tài khoản thành công!" : "Đã mở khóa (Unban) tài khoản thành công!",
                 systemAdminService.toggleBanUser(targetUserId, lock));
     }
 
-    @Operation(summary = "[#113] PhÃ¢n quyá»n Admin Ä‘a cáº¥p (0 = User, 1 = Moderator, 2 = SuperAdmin)")
+    @Operation(summary = "[#113] Phân quyền Admin đa cấp (0 = User, 1 = Moderator, 2 = SuperAdmin)")
     @PutMapping("/users/{targetUserId}/role")
     public ApiResponse<AdminUserRowDto> changeUserRole(@PathVariable Long targetUserId,
                                                        @Valid @RequestBody ChangeUserRoleRequest request) {
-        return ApiResponse.ok("Cáº­p nháº­t phÃ¢n quyá»n tÃ i khoáº£n thÃ nh cÃ´ng!", systemAdminService.changeUserRole(targetUserId, request));
+        return ApiResponse.ok("Cập nhật phân quyền tài khoản thành công!", systemAdminService.changeUserRole(targetUserId, request));
     }
 
     // --- ITEM, BANNER & GACHA DYNAMIC CONFIG (#105, #106, #107) ---
-    @Operation(summary = "[#106A] ThÃªm má»›i Váº­t pháº©m vÃ o danh má»¥c (Gáº¯n icon 2D tÄ©nh, setup chá»‰ sá»‘ Buff)")
+    @Operation(summary = "[#106A] Thêm mới Vật phẩm vào danh mục (Gắn icon 2D tĩnh, setup chỉ số Buff)")
     @PostMapping("/items")
     public ApiResponse<ItemDetailDto> createItem(@Valid @RequestBody UpsertItemRequest request) {
-        return ApiResponse.ok("ThÃªm má»›i váº­t pháº©m vÃ o há»‡ thá»‘ng thÃ nh cÃ´ng!", systemAdminService.createCatalogItem(request));
+        return ApiResponse.ok("Thêm mới vật phẩm vào hệ thống thành công!", systemAdminService.createCatalogItem(request));
     }
 
-    @Operation(summary = "[#106B] Chá»‰nh sá»­a thÃ´ng sá»‘ Buff / GiÃ¡ bÃ¡n / áº¢nh 2D tÄ©nh cá»§a Váº­t pháº©m")
+    @Operation(summary = "[#106B] Chỉnh sửa thông số Buff / Giá bán / Ảnh 2D tĩnh của Vật phẩm")
     @PutMapping("/items/{itemId}")
     public ApiResponse<ItemDetailDto> updateItem(@PathVariable Integer itemId,
                                                  @RequestBody UpsertItemRequest request) {
-        return ApiResponse.ok("Cáº­p nháº­t váº­t pháº©m thÃ nh cÃ´ng!", systemAdminService.updateCatalogItem(itemId, request));
+        return ApiResponse.ok("Cập nhật vật phẩm thành công!", systemAdminService.updateCatalogItem(itemId, request));
     }
 
-    @Operation(summary = "[#107A] Táº¡o má»›i Banner Há»™p mÃ¹ (Gáº¯n áº£nh tÄ©nh, GiÃ¡ má»Ÿ, Má»‘c báº£o hiá»ƒm Pity)")
+    @Operation(summary = "[#107A] Tạo mới Banner Hộp mù (Gắn ảnh tĩnh, Giá mở, Mốc bảo hiểm Pity)")
     @PostMapping("/gacha/banners")
     public ApiResponse<NxvGachaBanners> createBanner(@Valid @RequestBody UpsertGachaBannerRequest request) {
-        return ApiResponse.ok("Táº¡o má»›i Banner Há»™p mÃ¹ thÃ nh cÃ´ng!", systemAdminService.createGachaBanner(request));
+        return ApiResponse.ok("Tạo mới Banner Hộp mù thành công!", systemAdminService.createGachaBanner(request));
     }
 
-    @Operation(summary = "[#107B, #105] Cáº­p nháº­t Banner Há»™p mÃ¹ (Äá»•i giÃ¡ quay, chá»‰nh sá»­a má»‘c Pity, Ä‘Ã³ng/má»Ÿ Banner)")
+    @Operation(summary = "[#107B, #105] Cập nhật Banner Hộp mù (Đổi giá quay, chỉnh sửa mốc Pity, đóng/mở Banner)")
     @PutMapping("/gacha/banners/{bannerId}")
     public ApiResponse<NxvGachaBanners> updateBanner(@PathVariable Integer bannerId,
                                                      @RequestBody UpsertGachaBannerRequest request) {
-        return ApiResponse.ok("Cáº­p nháº­t Banner Há»™p mÃ¹ thÃ nh cÃ´ng!", systemAdminService.updateGachaBanner(bannerId, request));
+        return ApiResponse.ok("Cập nhật Banner Hộp mù thành công!", systemAdminService.updateGachaBanner(bannerId, request));
     }
 
-    @Operation(summary = "[#105] Cáº¥u hÃ¬nh Ä‘á»™ng Tá»· lá»‡ rá»›t Ä‘á»“ (Drop Rate) vÃ  Váº­t pháº©m Featured cho Banner Gacha")
+    @Operation(summary = "[#105] Cấu hình động Tỷ lệ rớt đồ (Drop Rate) và Vật phẩm Featured cho Banner Gacha")
     @PostMapping("/gacha/drop-rates")
     public ApiResponse<Map<String, Object>> upsertDropRate(@Valid @RequestBody UpsertDropRateRequest request) {
-        return ApiResponse.ok("Cáº­p nháº­t tá»· lá»‡ rá»›t Ä‘á»“ Gacha thÃ nh cÃ´ng!", systemAdminService.upsertGachaDropRate(request));
+        return ApiResponse.ok("Cập nhật tỷ lệ rớt đồ Gacha thành công!", systemAdminService.upsertGachaDropRate(request));
     }
 
     // --- DIFFICULTY PENALTY & CRONJOB MONITOR (#108, #109) ---
-    @Operation(summary = "[#108A] Xem cáº¥u hÃ¬nh há»‡ sá»‘ Pháº¡t HP vÃ  ThÆ°á»Ÿng máº·c Ä‘á»‹nh cho tá»«ng Ä‘á»™ khÃ³ cá»§a Task")
+    @Operation(summary = "[#108A] Xem cấu hình hệ số Phạt HP và Thưởng mặc định cho từng độ khó của Task")
     @GetMapping("/config/difficulty-penalties")
     public ApiResponse<DifficultyPenaltyConfigDto> getDifficultyConfig() {
         return ApiResponse.ok(systemAdminService.getDifficultyPenaltyConfig());
     }
 
-    @Operation(summary = "[#108B] Cáº­p nháº­t há»‡ sá»‘ Pháº¡t (LÆ°á»£ng HP bá»‹ trá»«) máº·c Ä‘á»‹nh cho tá»«ng Ä‘á»™ khÃ³ cá»§a Task")
+    @Operation(summary = "[#108B] Cập nhật hệ số Phạt (Lượng HP bị trừ) mặc định cho từng độ khó của Task")
     @PutMapping("/config/difficulty-penalties")
     public ApiResponse<Map<String, Object>> updateDifficultyConfig(
             @RequestBody DifficultyPenaltyConfigDto request,
             @RequestParam(defaultValue = "false") boolean applyToExistingPendingTasks) {
-        return ApiResponse.ok("ÄÃ£ cáº­p nháº­t há»‡ sá»‘ pháº¡t Ä‘á»™ khÃ³!", systemAdminService.updateDifficultyPenaltyConfig(request, applyToExistingPendingTasks));
+        return ApiResponse.ok("Đã cập nhật hệ số phạt độ khó!", systemAdminService.updateDifficultyPenaltyConfig(request, applyToExistingPendingTasks));
     }
 
-    @Operation(summary = "[#109] Theo dÃµi vÃ  kÃ­ch hoáº¡t cháº¡y kiá»ƒm tra toÃ n bá»™ cÃ¡c Cronjob ngáº§m (Trá»« mÃ¡u Task quÃ¡ háº¡n & Pet ngá»§ Ä‘Ã´ng)")
+    @Operation(summary = "[#109] Theo dõi và kích hoạt chạy kiểm tra toàn bộ các Cronjob ngầm (Trừ máu Task quá hạn & Pet ngủ đông)")
     @PostMapping("/cronjobs/run-all")
     public ApiResponse<Map<String, Object>> runAllCronjobs() {
-        return ApiResponse.ok("ÄÃ£ thá»±c thi toÃ n bá»™ Cronjob há»‡ thá»‘ng!", systemAdminService.triggerAllSystemCronjobsManually());
+        return ApiResponse.ok("Đã thực thi toàn bộ Cronjob hệ thống!", systemAdminService.triggerAllSystemCronjobsManually());
     }
 
     // --- GLOBAL NOTIFICATIONS (#110) ---
-    @Operation(summary = "[#110A] Gá»­i thÃ´ng bÃ¡o (Global Notification Ä‘áº©y Ä‘áº¿n toÃ n bá»™ Client náº¿u targetUserId = null)")
+    @Operation(summary = "[#110A] Gửi thông báo (Global Notification đẩy đến toàn bộ Client nếu targetUserId = null)")
     @PostMapping("/notifications/send")
     public ApiResponse<NotificationDto> sendNotification(@Valid @RequestBody SendNotificationRequest request) {
-        return ApiResponse.ok("ÄÃ£ phÃ¡t thÃ´ng bÃ¡o thÃ nh cÃ´ng!", systemAdminService.sendNotification(request));
+        return ApiResponse.ok("Đã phát thông báo thành công!", systemAdminService.sendNotification(request));
     }
 
-    @Operation(summary = "[#110B] Xem danh sÃ¡ch thÃ´ng bÃ¡o cá»§a tÃ´i vÃ  Global Notifications")
+    @Operation(summary = "[#110B] Xem danh sách thông báo của tôi và Global Notifications")
     @GetMapping("/notifications/me")
     public ApiResponse<List<NotificationDto>> getMyNotifications() {
         Long userId = NxvSecurityUtils.getCurrentUserId();
         return ApiResponse.ok(systemAdminService.getMyAndGlobalNotifications(userId));
     }
 
-    @Operation(summary = "[#110C] ÄÃ¡nh dáº¥u Ä‘Ã£ Ä‘á»c thÃ´ng bÃ¡o")
+    @Operation(summary = "[#110C] Đánh dấu đã đọc thông báo")
     @PatchMapping("/notifications/{notificationId}/read")
     public ApiResponse<NotificationDto> markRead(@PathVariable Long notificationId) {
         return ApiResponse.ok(systemAdminService.markNotificationRead(notificationId));
     }
 
     // --- SYSTEM LOGS, TAGS, REPORTS & AI CONFIG (#111, #112, #114, #115) ---
-    @Operation(summary = "[#111] Xem Log há»‡ thá»‘ng (Lá»‹ch sá»­ náº¡p/trá»« VÃ ng, EXP, HP toÃ n Server Ä‘á»ƒ phÃ¡t hiá»‡n bug)")
+    @Operation(summary = "[#111] Xem Log hệ thống (Lịch sử nạp/trừ Vàng, EXP, HP toàn Server để phát hiện bug)")
     @GetMapping("/logs/stat-logs")
     public ApiResponse<List<Map<String, Object>>> getGlobalStatLogs(@RequestParam(required = false) String logType) {
         return ApiResponse.ok(systemAdminService.getGlobalServerStatLogs(logType));
     }
 
-    @Operation(summary = "[#121-ADMIN] Äá»‘i soÃ¡t toÃ n bá»™ HÃ³a Ä‘Æ¡n tiá»n tháº­t (Billing) & Lá»‹ch sá»­ Webhook NgÃ¢n hÃ ng")
+    @Operation(summary = "[#121-ADMIN] Đối soát toàn bộ Hóa đơn tiền thật (Billing) & Lịch sử Webhook Ngân hàng")
     @GetMapping("/logs/billing-webhooks")
     public ApiResponse<Map<String, Object>> getBillingAndWebhookLogs() {
         return ApiResponse.ok(systemAdminService.getAllBillingAndWebhookLogsForAdmin());
     }
 
-    @Operation(summary = "[#112A] Cáº­p nháº­t Tháº» chuyÃªn mÃ´n (Tag) máº·c Ä‘á»‹nh cá»§a há»‡ thá»‘ng")
+    @Operation(summary = "[#112A] Cập nhật Thẻ chuyên môn (Tag) mặc định của hệ thống")
     @PutMapping("/tags/{tagId}")
     public ApiResponse<NxvTags> updateTag(@PathVariable Integer tagId,
                                           @RequestParam String tagName,
                                           @RequestParam(required = false) String colorHex) {
-        return ApiResponse.ok("Cáº­p nháº­t Tag thÃ nh cÃ´ng!", systemAdminService.updateSystemTag(tagId, tagName, colorHex));
+        return ApiResponse.ok("Cập nhật Tag thành công!", systemAdminService.updateSystemTag(tagId, tagName, colorHex));
     }
 
-    @Operation(summary = "[#112B] XÃ³a Tháº» chuyÃªn mÃ´n (Tag)")
+    @Operation(summary = "[#112B] Xóa Thẻ chuyên môn (Tag)")
     @DeleteMapping("/tags/{tagId}")
     public ApiResponse<Void> deleteTag(@PathVariable Integer tagId) {
         systemAdminService.deleteSystemTag(tagId);
-        return ApiResponse.ok("ÄÃ£ xÃ³a Tag thÃ nh cÃ´ng!", null);
+        return ApiResponse.ok("Đã xóa Tag thành công!", null);
     }
 
-    @Operation(summary = "[#114A] NgÆ°á»i chÆ¡i gá»­i Khiáº¿u náº¡i / BÃ¡o cÃ¡o lá»—i (Report)")
+    @Operation(summary = "[#114A] Người chơi gửi Khiếu nại / Báo cáo lỗi (Report)")
     @PostMapping("/reports")
     public ApiResponse<UserReportDto> submitReport(@Valid @RequestBody CreateUserReportRequest request) {
         Long userId = NxvSecurityUtils.getCurrentUserId();
-        return ApiResponse.ok("ÄÃ£ gá»­i bÃ¡o cÃ¡o lÃªn Ban quáº£n trá»‹!", systemAdminService.submitUserReport(userId, request));
+        return ApiResponse.ok("Đã gửi báo cáo lên Ban quản trị!", systemAdminService.submitUserReport(userId, request));
     }
 
-    @Operation(summary = "[#114B] Admin xem danh sÃ¡ch Khiáº¿u náº¡i / Report tá»« ngÆ°á»i dÃ¹ng")
+    @Operation(summary = "[#114B] Admin xem danh sách Khiếu nại / Report từ người dùng")
     @GetMapping("/reports")
     public ApiResponse<List<UserReportDto>> getAllReports(@RequestParam(required = false) Integer status) {
         return ApiResponse.ok(systemAdminService.getAllUserReports(status));
     }
 
-    @Operation(summary = "[#114C] Admin duyá»‡t vÃ  xá»­ lÃ½ Khiáº¿u náº¡i / Report (1 = Resolved, 2 = Rejected)")
+    @Operation(summary = "[#114C] Admin duyệt và xử lý Khiếu nại / Report (1 = Resolved, 2 = Rejected)")
     @PutMapping("/reports/{reportId}/resolve")
     public ApiResponse<UserReportDto> resolveReport(@PathVariable Long reportId,
                                                     @Valid @RequestBody ResolveReportRequest request) {
-        return ApiResponse.ok("ÄÃ£ xá»­ lÃ½ bÃ¡o cÃ¡o khiáº¿u náº¡i!", systemAdminService.resolveUserReport(reportId, request));
+        return ApiResponse.ok("Đã xử lý báo cáo khiếu nại!", systemAdminService.resolveUserReport(reportId, request));
     }
 
-    @Operation(summary = "[#115A] Xem cáº¥u hÃ¬nh API káº¿t ná»‘i AI Chatbot hiá»‡n táº¡i")
+    @Operation(summary = "[#115A] Xem cấu hình API kết nối AI Chatbot hiện tại")
     @GetMapping("/ai-config")
     public ApiResponse<List<NxvAIConfig>> getAiConfigs() {
         return ApiResponse.ok(systemAdminService.getAllAiConfigs());
     }
 
-    @Operation(summary = "[#115B] Cáº­p nháº­t cáº¥u hÃ¬nh API káº¿t ná»‘i AI Chatbot (Äá»•i Token / Model / System Prompt)")
+    @Operation(summary = "[#115B] Cập nhật cấu hình API kết nối AI Chatbot (Đổi Token / Model / System Prompt)")
     @PutMapping("/ai-config")
     public ApiResponse<NxvAIConfig> upsertAiConfig(@Valid @RequestBody UpsertAiConfigRequest request) {
-        return ApiResponse.ok("Cáº­p nháº­t cáº¥u hÃ¬nh AI Chatbot thÃ nh cÃ´ng!", systemAdminService.upsertAiConfig(request));
+        return ApiResponse.ok("Cập nhật cấu hình AI Chatbot thành công!", systemAdminService.upsertAiConfig(request));
     }
 }

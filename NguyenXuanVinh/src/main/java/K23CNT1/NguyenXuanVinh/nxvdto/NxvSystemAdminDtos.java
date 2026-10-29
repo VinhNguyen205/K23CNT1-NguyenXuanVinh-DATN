@@ -53,16 +53,16 @@ public class NxvSystemAdminDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class ChangeUserRoleRequest {
-        @NotNull(message = "role (0=User, 1=Moderator, 2=SuperAdmin) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "role (0=User, 1=Moderator, 2=SuperAdmin) không được để trống")
         private Integer role;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class UpsertItemRequest {
-        @NotBlank(message = "TÃªn váº­t pháº©m khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tên vật phẩm không được để trống")
         private String itemName;
 
-        @NotNull(message = "Loáº¡i váº­t pháº©m (0=Equip, 1=Consumable, 2=Avatar, 3=Frame, 4=PetEgg, 5=Title) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "Loại vật phẩm (0=Equip, 1=Consumable, 2=Avatar, 3=Frame, 4=PetEgg, 5=Title) không được để trống")
         private Integer itemType;
 
         private String imageUrl;
@@ -78,17 +78,17 @@ public class NxvSystemAdminDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class UpsertGachaBannerRequest {
-        @NotBlank(message = "TÃªn Banner khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tên Banner không được để trống")
         private String bannerName;
 
         private String bannerImageUrl;
 
-        @NotNull(message = "GiÃ¡ má»—i láº§n má»Ÿ (costPerPull) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Min(value = 1, message = "GiÃ¡ má»Ÿ tá»‘i thiá»ƒu lÃ  1 Gold")
+        @NotNull(message = "Giá mỗi lần mở (costPerPull) không được để trống")
+        @Min(value = 1, message = "Giá mở tối thiểu là 1 Gold")
         private Integer costPerPull;
 
-        @NotNull(message = "Má»‘c báº£o hiá»ƒm Pity (pityLimit) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
-        @Min(value = 1, message = "Má»‘c Pity tá»‘i thiá»ƒu lÃ  1")
+        @NotNull(message = "Mốc bảo hiểm Pity (pityLimit) không được để trống")
+        @Min(value = 1, message = "Mốc Pity tối thiểu là 1")
         private Integer pityLimit;
 
         @Builder.Default
@@ -97,13 +97,13 @@ public class NxvSystemAdminDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class UpsertDropRateRequest {
-        @NotNull(message = "bannerId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "bannerId không được để trống")
         private Integer bannerId;
 
-        @NotNull(message = "itemId khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "itemId không được để trống")
         private Integer itemId;
 
-        @NotNull(message = "Tá»· lá»‡ rá»›t (dropRate, VD: 0.050000) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "Tỷ lệ rớt (dropRate, VD: 0.050000) không được để trống")
         private BigDecimal dropRate;
 
         @Builder.Default
@@ -126,9 +126,9 @@ public class NxvSystemAdminDtos {
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class SendNotificationRequest {
         private Long targetUserId; // null = Global Notification day den toan bo Client
-        @NotBlank(message = "TiÃªu Ä‘á» thÃ´ng bÃ¡o khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Tiêu đề thông báo không được để trống")
         private String title;
-        @NotBlank(message = "Ná»™i dung thÃ´ng bÃ¡o khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Nội dung thông báo không được để trống")
         private String content;
     }
 
@@ -147,15 +147,15 @@ public class NxvSystemAdminDtos {
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class CreateUserReportRequest {
         private Long targetUserId;
-        @NotBlank(message = "Loáº¡i bÃ¡o cÃ¡o (BUG, CHEAT, ABUSE, PAYMENT...) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Loại báo cáo (BUG, CHEAT, ABUSE, PAYMENT...) không được để trống")
         private String reportType;
-        @NotBlank(message = "MÃ´ táº£ chi tiáº¿t khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Mô tả chi tiết không được để trống")
         private String description;
     }
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class ResolveReportRequest {
-        @NotNull(message = "Tráº¡ng thÃ¡i xá»­ lÃ½ (1=Resolved, 2=Rejected) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotNull(message = "Trạng thái xử lý (1=Resolved, 2=Rejected) không được để trống")
         private Integer status;
         private String adminNote;
     }
@@ -176,11 +176,11 @@ public class NxvSystemAdminDtos {
 
     @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
     public static class UpsertAiConfigRequest {
-        @NotBlank(message = "Provider (GEMINI / OPENAI) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "Provider (GEMINI / OPENAI) không được để trống")
         private String provider;
-        @NotBlank(message = "ModelName (VD: gemini-2.5-flash) khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "ModelName (VD: gemini-2.5-flash) không được để trống")
         private String modelName;
-        @NotBlank(message = "APIKey khÃ´ng Ä‘Æ°á»£c Ä‘á»ƒ trá»‘ng")
+        @NotBlank(message = "APIKey không được để trống")
         private String apiKeyEncrypted;
         private String systemPrompt;
         @Builder.Default
